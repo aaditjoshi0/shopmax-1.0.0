@@ -1,0 +1,25 @@
+{
+  "name": "shopmax",
+  "version": "1.0.0",
+  "description": "ShopMax — full e-commerce + community designer marketplace built on the Colorlib ShopMax template.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node src/seed/seed.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "marketplace",
+    "supabase",
+    "express"
+  ],
+  "author": "",
+  "license": "CC-BY-3.0",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

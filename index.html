@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ShopMax &mdash; Colorlib e-Commerce Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custom.css">
+  </head>
+  <body>
+
+  <div class="site-wrap">
+
+    <!-- DYNAMIC NAVBAR — injected by js/app.js (MEN / WOMEN / HOME / MARKETPLACE / CUSTOMIZE + search + profile + cart) -->
+    <div data-sm-navbar></div>
+
+    <div class="site-blocks-cover" data-aos="fade">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 ml-auto order-md-2 align-self-start">
+            <div class="site-block-cover-content">
+            <h2 class="sub-title">#New Summer Collection 2026</h2>
+            <h1>Arrivals Sales</h1>
+            <p><a href="/men.html" class="btn btn-black rounded-0">Shop Now</a></p>
+            </div>
+          </div>
+          <div class="col-md-6 order-1 align-self-end">
+            <img src="images/model_3.png" alt="Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="title-section mb-5">
+          <h2 class="text-uppercase"><span class="d-block">Discover</span> The Collections</h2>
+        </div>
+        <div class="row align-items-stretch">
+          <div class="col-lg-8">
+            <div class="product-item sm-height full-height bg-gray">
+              <a href="/women.html" class="product-category">Women <span id="sm-women-count"></span></a>
+              <img src="images/model_4.png" alt="Image" class="img-fluid">
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="product-item sm-height bg-gray mb-4">
+              <a href="/men.html" class="product-category">Men <span id="sm-men-count"></span></a>
+              <img src="images/model_5.png" alt="Image" class="img-fluid">
+            </div>
+
+            <div class="product-item sm-height bg-gray">
+              <a href="/home-goods.html" class="product-category">Home <span id="sm-home-count"></span></a>
+              <img src="images/model_6.png" alt="Image" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="title-section mb-5 col-12">
+            <h2 class="text-uppercase">Popular Products</h2>
+          </div>
+        </div>
+        <div id="sm-featured-grid" class="row">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="title-section text-center mb-5 col-12">
+            <h2 class="text-uppercase">Most Rated</h2>
+          </div>
+        </div>
+        <div id="sm-rated-grid" class="row">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div class="site-blocks-cover inner-page py-5" data-aos="fade">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 ml-auto order-md-2 align-self-start">
+            <div class="site-block-cover-content">
+            <h2 class="sub-title">#New Summer Collection 2026</h2>
+            <h1>New Shoes</h1>
+            <p><a href="/men.html" class="btn btn-black rounded-0">Shop Now</a></p>
+            </div>
+          </div>
+          <div class="col-md-6 order-1 align-self-end">
+            <img src="images/model_6.png" alt="Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYNAMIC FOOTER — injected by js/app.js -->
+    <div data-sm-footer></div>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Homepage: load featured + top-rated products dynamically
+    document.addEventListener('DOMContentLoaded', function () {
+      var SM = window.ShopMax;
+      // category counts
+      SM.api('/api/products/categories/summary').then(function (c) {
+        if (document.getElementById('sm-men-count'))   document.getElementById('sm-men-count').textContent = c.men + ' items';
+        if (document.getElementById('sm-women-count'))  document.getElementById('sm-women-count').textContent = c.women + ' items';
+        if (document.getElementById('sm-home-count'))   document.getElementById('sm-home-count').textContent = c.home + ' items';
+      });
+      // featured
+      SM.api('/api/products?featured=true').then(function (items) {
+        document.getElementById('sm-featured-grid').innerHTML = items.slice(0, 6).map(SM.productCard).join('');
+      });
+      // top rated
+      SM.api('/api/products?sort=rating&featured=true').then(function (items) {
+        document.getElementById('sm-rated-grid').innerHTML = items.slice(0, 4).map(SM.productCard).join('');
+        // init AOS for newly-added elements
+        if (window.AOS) AOS.refresh();
+      });
+    });
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Account &mdash; ShopMax</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custom.css">
+  </head>
+  <body>
+
+  <div class="site-wrap">
+    <div data-sm-navbar></div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+
+            <h2 class="h3 mb-4 text-uppercase text-center" style="color:#000;font-weight:700;">My Profile</h2>
+
+            <div class="sm-profile-card">
+
+              <!-- Profile Picture -->
+              <div class="sm-profile-pic-wrap">
+                <div class="sm-profile-pic" id="sm-profile-pic" title="Double-click to change photo">
+                  <img id="sm-avatar-img" alt="Profile">
+                  <div class="sm-profile-pic-overlay">
+                    <span class="icon-camera"></span>
+                  </div>
+                </div>
+                <input type="file" id="sm-avatar-input" accept="image/*" style="display:none;">
+                <p class="sm-profile-pic-hint">Double-click to change photo</p>
+              </div>
+
+              <!-- Profile Info -->
+              <form id="sm-profile-form" autocomplete="off">
+                <div id="sm-profile-msg" class="alert d-none" style="font-size:13px;"></div>
+
+                <div class="form-group">
+                  <label class="text-black">Full Name</label>
+                  <input type="text" id="sm-prof-name" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="text-black">Email</label>
+                  <input type="email" id="sm-prof-email" class="form-control" readonly style="background:#f5f5f5;">
+                </div>
+                <div class="form-group">
+                  <label class="text-black">Mobile No</label>
+                  <input type="tel" id="sm-prof-mobile" class="form-control" readonly style="background:#f5f5f5;">
+                </div>
+                <div class="form-group">
+                  <label class="text-black">Birthdate</label>
+                  <input type="date" id="sm-prof-birthdate" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="text-black">Member Since</label>
+                  <input type="text" id="sm-prof-joined" class="form-control" readonly style="background:#f5f5f5;">
+                </div>
+
+                <div class="form-group mt-4">
+                  <button type="submit" class="btn btn-black btn-block rounded-0">Save Profile</button>
+                </div>
+              </form>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-sm-footer></div>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var SM = window.ShopMax;
+
+      // Neutral placeholder shown until the saved avatar loads, so we never
+      // see a black/empty box even if the DB read fails.
+      var PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">' +
+        '<rect fill="#e9e9ef" width="240" height="240"/>' +
+        '<text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" ' +
+        'font-family="sans-serif" font-size="110" fill="#b0b0bb">?</text></svg>'
+      );
+      var avatarImg = document.getElementById('sm-avatar-img');
+      avatarImg.src = PLACEHOLDER;
+
+      SM.api('/api/auth/me').then(function (res) {
+        var u = res.user;
+        if (!u) { window.location.href = '/login.html'; return; }
+        document.getElementById('sm-prof-name').value = u.name || '';
+        document.getElementById('sm-prof-email').value = u.email || '';
+        document.getElementById('sm-prof-mobile').value = u.mobile || '';
+        return SM.api('/api/auth/profile');
+      }).then(function (res) {
+        if (!res || !res.profile) return;
+        var p = res.profile;
+        if (p.full_name) document.getElementById('sm-prof-name').value = p.full_name;
+        if (p.birthdate) document.getElementById('sm-prof-birthdate').value = p.birthdate;
+        // Only swap to the saved avatar if it actually looks like image data;
+        // otherwise keep the placeholder. Avoids rendering a broken/black image.
+        if (p.avatar_url && /^data:image\/|^https?:\/\//.test(p.avatar_url)) {
+          avatarImg.src = p.avatar_url;
+        } else {
+          avatarImg.src = PLACEHOLDER;
+        }
+        if (p.created_at) {
+          var d = new Date(p.created_at);
+          document.getElementById('sm-prof-joined').value = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+      }).catch(function (err) {
+        // Don't silently swallow — surface the read failure so the user knows.
+        console.warn('[profile] could not load:', err);
+      });
+
+      // Save profile
+      document.getElementById('sm-profile-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var msg = document.getElementById('sm-profile-msg');
+        msg.classList.add('d-none');
+        SM.api('/api/auth/profile', {
+          method: 'PUT',
+          body: JSON.stringify({
+            full_name: document.getElementById('sm-prof-name').value.trim(),
+            birthdate: document.getElementById('sm-prof-birthdate').value
+          })
+        }).then(function () {
+          msg.textContent = 'Profile updated successfully.';
+          msg.className = 'alert alert-success';
+          SM.toast('Profile updated!');
+        }).catch(function (err) {
+          msg.textContent = err.message || 'Failed to update.';
+          msg.className = 'alert alert-danger';
+        });
+      });
+
+      // Profile picture double-click to upload
+      var picWrap = document.getElementById('sm-profile-pic');
+      var fileInput = document.getElementById('sm-avatar-input');
+
+      picWrap.addEventListener('dblclick', function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+          SM.toast('Image must be under 5MB', 'error');
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          var img = new Image();
+          img.onload = function () {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var maxSize = 400;
+            var w = img.width, h = img.height;
+            if (w > maxSize || h > maxSize) {
+              if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+              else { w = Math.round(w * maxSize / h); h = maxSize; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+            var resized = canvas.toDataURL('image/png');
+            // Optimistically show the new image, then confirm it actually saved.
+            avatarImg.src = resized;
+            SM.api('/api/auth/profile/avatar', {
+              method: 'PUT',
+              body: JSON.stringify({ avatar_url: resized })
+            }).then(function () {
+              SM.toast('Profile picture updated!');
+            }).catch(function (err) {
+              // Save failed (e.g. RLS) — revert to the placeholder and tell the user.
+              avatarImg.src = PLACEHOLDER;
+              SM.toast(err.message || 'Failed to upload.', 'error');
+            });
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+  </body>
+</html>

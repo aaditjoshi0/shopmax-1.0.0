@@ -1,0 +1,572 @@
+{
+  "profiles": [
+    {
+      "id": "2",
+      "email": "test@test.com",
+      "full_name": "Test User",
+      "created_at": "2026-07-16T15:15:39.333Z"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Denim Jacket",
+      "slug": "denim-jacket",
+      "description": "Classic blue denim jacket with a relaxed fit. A wardrobe staple that pairs with everything from tees to dresses. Pre-washed for that perfectly broken-in feel.",
+      "price": 28,
+      "compare_at_price": 46,
+      "category": "men",
+      "image_url": "images/model_5.png",
+      "stock": 24,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "rating": 4.8,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.306Z"
+    },
+    {
+      "id": 2,
+      "name": "Yellow Jacket",
+      "slug": "yellow-jacket",
+      "description": "Bold mustard-yellow windbreaker. Lightweight, water-resistant, and impossible to ignore. Zip front with two side pockets.",
+      "price": 58,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/model_7.png",
+      "stock": 18,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "rating": 4.6,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 3,
+      "name": "Smooth Cloth Shirt",
+      "slug": "smooth-cloth-shirt",
+      "description": "Soft-touch everyday shirt with a tailored cut. Breathable cotton blend that drapes cleanly and holds its shape wash after wash.",
+      "price": 28,
+      "compare_at_price": 46,
+      "category": "men",
+      "image_url": "images/model_1.png",
+      "stock": 40,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "rating": 4.5,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 4,
+      "name": "Summer Linen Shirt",
+      "slug": "summer-linen-shirt",
+      "description": "Lightweight 100% linen shirt made for warm days. Relaxed fit, mother-of-pearl buttons, and a subtle natural texture.",
+      "price": 42,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/cloth_1.jpg",
+      "stock": 30,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "rating": 4.4,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 5,
+      "name": "Casual Polo",
+      "slug": "casual-polo",
+      "description": "Pique cotton polo with a clean placket and ribbed collar. The no-effort staple that always looks intentional.",
+      "price": 32,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/cloth_2.jpg",
+      "stock": 35,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "rating": 4.3,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 6,
+      "name": "Everyday Crew Tee",
+      "slug": "everyday-crew-tee",
+      "description": "Premium ringspun cotton tee with a classic crew neckline. Pre-shrunk and built to be your most-worn layer.",
+      "price": 18,
+      "compare_at_price": 24,
+      "category": "men",
+      "image_url": "images/cloth_3.jpg",
+      "stock": 80,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "rating": 4.7,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 7,
+      "name": "Floral Summer Dress",
+      "slug": "floral-summer-dress",
+      "description": "Flowy midi dress in a playful floral print. Adjustable straps, side seam pockets, and a flattering A-line silhouette.",
+      "price": 38,
+      "compare_at_price": 52,
+      "category": "women",
+      "image_url": "images/model_3.png",
+      "stock": 22,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "rating": 4.9,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 8,
+      "name": "Knit Sweater",
+      "slug": "knit-sweater",
+      "description": "Cozy chunky-knit pullover in soft merino wool. Oversized fit with drop shoulders — your go-to layer for chilly mornings.",
+      "price": 54,
+      "compare_at_price": null,
+      "category": "women",
+      "image_url": "images/model_4.png",
+      "stock": 16,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "rating": 4.8,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 9,
+      "name": "Tailored Blazer",
+      "slug": "tailored-blazer",
+      "description": "Structured single-button blazer in a wrinkle-resistant weave. Sharp shoulders, clean lapels — instantly pulls an outfit together.",
+      "price": 72,
+      "compare_at_price": 95,
+      "category": "women",
+      "image_url": "images/model_2.png",
+      "stock": 12,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "rating": 4.7,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 10,
+      "name": "Pleated Midi Skirt",
+      "slug": "pleated-midi-skirt",
+      "description": "Satin-finish pleated skirt that catches the light as you move. Elastic waistband for all-day comfort.",
+      "price": 36,
+      "compare_at_price": null,
+      "category": "women",
+      "image_url": "images/model_6.png",
+      "stock": 20,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "rating": 4.5,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 11,
+      "name": "Leather Green Bag",
+      "slug": "leather-green-bag",
+      "description": "Structured top-handle bag in rich emerald leather. Gold-tone hardware and a detachable crossbody strap.",
+      "price": 28,
+      "compare_at_price": 46,
+      "category": "women",
+      "image_url": "images/prod_1.png",
+      "stock": 14,
+      "sizes": [
+        "One Size"
+      ],
+      "rating": 4.6,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 12,
+      "name": "Blue High-Heel Shoes",
+      "slug": "blue-high-heel-shoes",
+      "description": "Pointed-toe stiletto in cobalt blue suede. Slim heel and cushioned footbed for a surprisingly walkable lift.",
+      "price": 28,
+      "compare_at_price": 46,
+      "category": "women",
+      "image_url": "images/prod_3.png",
+      "stock": 18,
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "rating": 4.4,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 13,
+      "name": "Gray Sneakers",
+      "slug": "gray-sneakers",
+      "description": "Minimalist low-top sneakers in soft heather gray. Memory-foam insole and a flexible rubber outsole for all-day comfort.",
+      "price": 20,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/prod_2.png",
+      "stock": 25,
+      "sizes": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "rating": 4.5,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 14,
+      "name": "Classic Leather Shoe",
+      "slug": "classic-leather-shoe",
+      "description": "Timeless derby in full-grain leather. Goodyear-welted construction means these can be resoled for years of wear.",
+      "price": 64,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/shoe.png",
+      "stock": 15,
+      "sizes": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "rating": 4.7,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 15,
+      "name": "Suede Loafers",
+      "slug": "suede-loafers",
+      "description": "Slip-on loafers in soft cognac suede. Padded footbed and a flexible sole — equally at home with denim or trousers.",
+      "price": 48,
+      "compare_at_price": null,
+      "category": "men",
+      "image_url": "images/shoe_1.jpg",
+      "stock": 17,
+      "sizes": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "rating": 4.3,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 16,
+      "name": "Cotton Throw Blanket",
+      "slug": "cotton-throw-blanket",
+      "description": "Woven cotton throw in warm earth tones. The perfect weight for the sofa — soft, breathable, and gets cozier with every wash.",
+      "price": 34,
+      "compare_at_price": null,
+      "category": "home",
+      "image_url": "images/about_1.jpg",
+      "stock": 28,
+      "sizes": [
+        "50x60 in"
+      ],
+      "rating": 4.8,
+      "featured": true,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 17,
+      "name": "Ceramic Vase Set",
+      "slug": "ceramic-vase-set",
+      "description": "Set of three matte-glazed ceramic vases in graduated heights. Minimal silhouettes that suit dried stems or fresh blooms.",
+      "price": 26,
+      "compare_at_price": 38,
+      "category": "home",
+      "image_url": "images/about_1.png",
+      "stock": 22,
+      "sizes": [
+        "Set of 3"
+      ],
+      "rating": 4.6,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 18,
+      "name": "Children's Play Tee",
+      "slug": "childrens-play-tee",
+      "description": "Soft organic-cotton tee sized for active kids. Reinforced seams and tagless necks for scratch-free comfort.",
+      "price": 14,
+      "compare_at_price": null,
+      "category": "home",
+      "image_url": "images/children.jpg",
+      "stock": 60,
+      "sizes": [
+        "2T",
+        "3T",
+        "4T",
+        "5T"
+      ],
+      "rating": 4.7,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    },
+    {
+      "id": 19,
+      "name": "Linen Cushion Cover",
+      "slug": "linen-cushion-cover",
+      "description": "Natural linen cushion cover with a hidden zipper. Pairs beautifully with textured throws and woven rugs.",
+      "price": 16,
+      "compare_at_price": null,
+      "category": "home",
+      "image_url": "images/blog_1.jpg",
+      "stock": 45,
+      "sizes": [
+        "18x18 in"
+      ],
+      "rating": 4.4,
+      "featured": false,
+      "created_at": "2026-07-16T15:15:03.308Z"
+    }
+  ],
+  "carts": [
+    {
+      "id": "d9634d8ecfd90de855c02d75",
+      "owner": "user:089bc418-5678-4c17-a24f-747dd334f4d7",
+      "items": [
+        {
+          "id": "b5d98fd9fa4d919f5a0add17",
+          "product_id": 324,
+          "name": "Test T-Shirt",
+          "price": 999,
+          "image_url": "https://i.scdn.co/image/ab67616d00001e0202ca2eecfb94328edfa83233",
+          "size": "S",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "dff1f63f9c33197eaf10ea26",
+      "owner": "user:3a506ec1-cdb7-4259-add6-e60727a4f280",
+      "items": [
+        {
+          "id": "8e28da0c0819c3f62d41e71a",
+          "product_id": 324,
+          "name": "Test T-Shirt",
+          "price": 999,
+          "image_url": "https://i.scdn.co/image/ab67616d00001e0202ca2eecfb94328edfa83233",
+          "size": "S",
+          "quantity": 3,
+          "meta": null
+        },
+        {
+          "id": "a01ad5caeda2f1bd0fb0afa4",
+          "product_id": 325,
+          "name": "Sharingan Hoodie",
+          "price": 1,
+          "image_url": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS-MeOABvIH3M2Et5cYiwSkxR7pCtHCvDxwKofLwswDMsjmVKY4cLWHSNJX7mMsEWfGGcyb5V690CCCydepntj_VzZoz-dmEFrUhdFWY5BCLnsI2ZDjpsAffLw",
+          "size": "S",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "03dbed0b6d5fb9ef49b8d58e",
+      "owner": "guest:guest-7f055d8c9e20dbb4220f346a",
+      "items": [
+        {
+          "id": "c6769ad9acae05a1790f602d",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "275b3625b09b69901a6b6ef3",
+      "owner": "guest:guest-082e405afe9ffc78b7929523",
+      "items": [
+        {
+          "id": "30afa675a4787a7f1c6d5541",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "99ea1eef826e7186e92f263a",
+      "owner": "guest:guest-9479feafc5e8cabe4a9017a6",
+      "items": [
+        {
+          "id": "d5504c049189730d5d664ac3",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "3d1818f524985cb9756b5532",
+      "owner": "guest:guest-8a9615295f1b232af00fd2d4",
+      "items": [
+        {
+          "id": "30543d991e3a62e6f78d6b6e",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "fd9f1b2995f24ab382f64aa4",
+      "owner": "guest:guest-b5441dac6b299c5818d92435",
+      "items": [
+        {
+          "id": "ff2348149adaabb83dcbd631",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 5,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "dea8c51870e6b15d814fe794",
+      "owner": "guest:guest-92bde70a7f91167271bc5080",
+      "items": []
+    },
+    {
+      "id": "3f9ad4ac1a41717e44f982a2",
+      "owner": "guest:guest-6859126ae84c8f4107a64513",
+      "items": [
+        {
+          "id": "eabca80ab88d72c15f32cb6a",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 2,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "af54465e07dac6869d7948c7",
+      "owner": "guest:guest-2d72b3b674f7f6eb56f6b89a",
+      "items": [
+        {
+          "id": "7d551e9399c1a6a2de77b041",
+          "product_id": 58,
+          "name": "Denim Jacket",
+          "price": 28,
+          "image_url": null,
+          "size": "M",
+          "color": "Blue",
+          "quantity": 2,
+          "meta": null
+        }
+      ]
+    }
+  ],
+  "orders": [],
+  "designs": [],
+  "listings": [],
+  "users": [
+    {
+      "id": 2,
+      "email": "test@test.com",
+      "password": "5d477962c0049eeb98df5f3f6cf1b6f069e6bdd8ae157d27752590b066019392",
+      "name": "Test User"
+    }
+  ],
+  "counters": {
+    "product": 100,
+    "order": 100,
+    "design": 100,
+    "listing": 100,
+    "user": 2
+  }
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Admin Login &mdash; ShopMax</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custom.css">
+  </head>
+  <body class="sm-admin-body">
+
+  <div class="site-wrap">
+    <div class="site-section sm-auth-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <h2 class="h3 mb-2 text-uppercase sm-auth-title">Admin Login</h2>
+            <p class="sm-auth-subtitle">ShopMax Administration Panel</p>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-6 col-lg-5">
+            <div class="sm-auth-card">
+
+              <form id="sm-admin-login-form" autocomplete="off">
+                <div id="sm-login-error" class="alert alert-danger d-none"></div>
+                <div class="form-group">
+                  <label for="login-email" class="text-black">Email <span class="text-danger">*</span></label>
+                  <input type="email" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="login-password" class="text-black">Password <span class="text-danger">*</span></label>
+                  <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-black btn-block rounded-0">Log In to Admin</button>
+                </div>
+              </form>
+
+              <div class="text-center">
+                <p><a href="/login.html">Back to Customer Login</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sm-auth-footer">
+      <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> ShopMax. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('sm-admin-login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var errEl = document.getElementById('sm-login-error');
+      errEl.classList.add('d-none');
+      var email = document.getElementById('login-email').value.trim();
+      var password = document.getElementById('login-password').value;
+
+      window.ShopMax.api('/api/auth/admin-login', {
+        method: 'POST',
+        body: JSON.stringify({ email: email, password: password })
+      }).then(function (res) {
+        if (res.user && res.user.role !== 'admin') {
+          throw new Error('This account does not have admin access.');
+        }
+        window.location.href = '/admin.html';
+      }).catch(function (err) {
+        errEl.textContent = err.message || 'Login failed.';
+        errEl.classList.remove('d-none');
+      });
+    });
+  </script>
+
+  </body>
+</html>

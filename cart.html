@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Shopping Bag &mdash; ShopMax</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custom.css">
+  </head>
+  <body>
+
+  <div class="site-wrap">
+    <div data-sm-navbar></div>
+
+    <div class="sm-cart-page">
+      <div class="container-fluid sm-cart-container">
+        <div class="row">
+
+          <!-- Left: Cart Items -->
+          <div class="col-lg-8 col-md-7">
+            <h1 class="sm-cart-title">SHOPPING BAG</h1>
+
+            <div class="sm-cart-notice">
+              UPI PAYMENT SUPPORTS QUICKER REFUNDS
+            </div>
+
+            <div id="sm-cart-empty" class="sm-cart-empty-msg" style="display:none;">
+              YOUR SHOPPING BAG IS EMPTY.
+            </div>
+
+            <div id="sm-cart-items"></div>
+          </div>
+
+          <!-- Right: Summary -->
+          <div class="col-lg-4 col-md-5">
+            <div class="sm-cart-summary">
+
+              <div class="sm-summary-row">
+                <span class="sm-summary-label">DISCOUNTS</span>
+                <a href="#" class="sm-summary-add">ADD</a>
+              </div>
+
+              <div class="sm-summary-row sm-summary-total">
+                <span class="sm-summary-label">TOTAL</span>
+                <span class="sm-summary-value" id="sm-cart-total">$0.00</span>
+              </div>
+
+              <a href="/checkout.html" class="sm-cart-checkout-btn" id="sm-checkout-btn">CONTINUE TO CHECKOUT</a>
+
+              <div class="sm-payment-icons">
+                <span class="sm-payment-icon">VISA</span>
+                <span class="sm-payment-icon sm-pay-mc">&bull;</span>
+                <span class="sm-payment-icon">CASH ON DELIVERY</span>
+                <span class="sm-payment-icon sm-pay-upi">UPI</span>
+              </div>
+
+              <p class="sm-cart-note">Prices and delivery costs are not confirmed until you've reached the checkout.</p>
+
+              <p class="sm-cart-note">15 days free returns. Read more about <a href="#">return and refund policy</a>.</p>
+
+              <p class="sm-cart-note">Need help? Please contact <a href="#">Customer Support</a>.
+              Customers would receive an SMS/WhatsApp notifications regarding deliveries on the registered phone number</p>
+
+              <a href="#" class="sm-cart-delivery-link">DELIVERY AND RETURN OPTIONS</a>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div data-sm-footer></div>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var SM = window.ShopMax;
+
+      SM.api('/api/cart').then(function (cart) {
+        var items = cart.items || [];
+        var emptyEl = document.getElementById('sm-cart-empty');
+        var itemsEl = document.getElementById('sm-cart-items');
+        var totalEl = document.getElementById('sm-cart-total');
+
+        if (items.length === 0) {
+          emptyEl.style.display = 'block';
+          itemsEl.innerHTML = '';
+          totalEl.textContent = '$0.00';
+          return;
+        }
+
+        emptyEl.style.display = 'none';
+        var html = '';
+        items.forEach(function (item) {
+          html += '<div class="sm-cart-item" data-id="' + item.id + '">' +
+            '<div class="sm-cart-item-img">' +
+              '<img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="' + SM.escapeHtml(item.name) + '">' +
+            '</div>' +
+            '<div class="sm-cart-item-info">' +
+              '<h3 class="sm-cart-item-name">' + SM.escapeHtml(item.name) + '</h3>' +
+              (item.size ? '<p class="sm-cart-item-size">Size: ' + SM.escapeHtml(item.size) + '</p>' : '') +
+              (item.color ? '<p class="sm-cart-item-color">Color: ' + SM.escapeHtml(item.color) + '</p>' : '') +
+              '<div class="sm-cart-item-qty">' +
+                '<button class="sm-qty-btn js-qty-minus" data-id="' + item.id + '">&minus;</button>' +
+                '<span class="sm-qty-value">' + item.quantity + '</span>' +
+                '<button class="sm-qty-btn js-qty-plus" data-id="' + item.id + '">&plus;</button>' +
+              '</div>' +
+              '<p class="sm-cart-item-price">' + SM.money(item.price * item.quantity) + '</p>' +
+              '<button class="sm-cart-item-remove js-remove-item" data-id="' + item.id + '">&times;</button>' +
+            '</div>' +
+          '</div>';
+        });
+        itemsEl.innerHTML = html;
+        totalEl.textContent = SM.money(cart.subtotal);
+
+        // qty +/-
+        itemsEl.querySelectorAll('.js-qty-minus').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            var item = items.find(function (i) { return i.id === id; });
+            if (item && item.quantity > 1) {
+              SM.api('/api/cart/items/' + id, { method: 'PATCH', body: JSON.stringify({ quantity: item.quantity - 1 }) })
+                .then(function () { location.reload(); });
+            }
+          });
+        });
+        itemsEl.querySelectorAll('.js-qty-plus').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            var item = items.find(function (i) { return i.id === id; });
+            if (item) {
+              SM.api('/api/cart/items/' + id, { method: 'PATCH', body: JSON.stringify({ quantity: item.quantity + 1 }) })
+                .then(function () { location.reload(); });
+            }
+          });
+        });
+        // remove
+        itemsEl.querySelectorAll('.js-remove-item').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            SM.api('/api/cart/items/' + id, { method: 'DELETE' })
+              .then(function () { location.reload(); });
+          });
+        });
+      }).catch(function () {
+        document.getElementById('sm-cart-empty').style.display = 'block';
+      });
+    });
+  </script>
+  </body>
+</html>
