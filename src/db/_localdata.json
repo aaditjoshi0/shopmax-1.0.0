@@ -1,10 +1,14 @@
 {
   "profiles": [
     {
-      "id": "2",
-      "email": "test@test.com",
-      "full_name": "Test User",
-      "created_at": "2026-07-16T15:15:39.333Z"
+      "id": "local-125c553f5d38fd8a5c915e29",
+      "email": "admin@shopmax.com",
+      "full_name": "ShopMax Admin",
+      "mobile": "",
+      "birthdate": "",
+      "avatar_url": null,
+      "role": "admin",
+      "created_at": "2026-07-21T01:28:39.197Z"
     }
   ],
   "products": [
@@ -26,7 +30,24 @@
       ],
       "rating": 4.8,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.306Z"
+      "colors": [
+        {
+          "name": "Blue",
+          "hex": "#2c5f8a",
+          "image_url": "images/model_5.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_1.png"
+        },
+        {
+          "name": "Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/cloth_1.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.188Z"
     },
     {
       "id": 2,
@@ -46,7 +67,24 @@
       ],
       "rating": 4.6,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Yellow",
+          "hex": "#d4a017",
+          "image_url": "images/model_7.png"
+        },
+        {
+          "name": "Red",
+          "hex": "#8b0000",
+          "image_url": "images/cloth_2.jpg"
+        },
+        {
+          "name": "Navy",
+          "hex": "#1a2940",
+          "image_url": "images/cloth_3.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 3,
@@ -67,7 +105,24 @@
       ],
       "rating": 4.5,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "White",
+          "hex": "#f0f0f0",
+          "image_url": "images/model_1.png"
+        },
+        {
+          "name": "Blue",
+          "hex": "#4169e1",
+          "image_url": "images/cloth_1.jpg"
+        },
+        {
+          "name": "Green",
+          "hex": "#228b22",
+          "image_url": "images/cloth_2.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 4,
@@ -87,7 +142,24 @@
       ],
       "rating": 4.4,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Beige",
+          "hex": "#d4c5a9",
+          "image_url": "images/cloth_1.jpg"
+        },
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/model_1.png"
+        },
+        {
+          "name": "Blue",
+          "hex": "#5b9bd5",
+          "image_url": "images/cloth_2.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 5,
@@ -107,7 +179,24 @@
       ],
       "rating": 4.3,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Navy",
+          "hex": "#1a2940",
+          "image_url": "images/cloth_2.jpg"
+        },
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/model_1.png"
+        },
+        {
+          "name": "Green",
+          "hex": "#2e8b57",
+          "image_url": "images/cloth_3.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 6,
@@ -128,7 +217,24 @@
       ],
       "rating": 4.7,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Heather Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/cloth_3.jpg"
+        },
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/model_1.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_5.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 7,
@@ -148,7 +254,24 @@
       ],
       "rating": 4.9,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Pink Floral",
+          "hex": "#d4a0b0",
+          "image_url": "images/model_3.png"
+        },
+        {
+          "name": "Blue",
+          "hex": "#5b9bd5",
+          "image_url": "images/model_4.png"
+        },
+        {
+          "name": "Red",
+          "hex": "#cc3333",
+          "image_url": "images/model_6.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 8,
@@ -167,7 +290,24 @@
       ],
       "rating": 4.8,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Cream",
+          "hex": "#f5e6d3",
+          "image_url": "images/model_4.png"
+        },
+        {
+          "name": "Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/model_6.png"
+        },
+        {
+          "name": "Blush",
+          "hex": "#e8b4b8",
+          "image_url": "images/model_2.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 9,
@@ -187,7 +327,19 @@
       ],
       "rating": 4.7,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Navy",
+          "hex": "#1a2940",
+          "image_url": "images/model_2.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_5.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 10,
@@ -207,7 +359,24 @@
       ],
       "rating": 4.5,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_6.png"
+        },
+        {
+          "name": "Navy",
+          "hex": "#1a2940",
+          "image_url": "images/model_2.png"
+        },
+        {
+          "name": "Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/model_4.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 11,
@@ -224,7 +393,24 @@
       ],
       "rating": 4.6,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Emerald",
+          "hex": "#2e8b57",
+          "image_url": "images/prod_1.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_5.png"
+        },
+        {
+          "name": "Brown",
+          "hex": "#5c4033",
+          "image_url": "images/shoe.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.191Z"
     },
     {
       "id": 12,
@@ -245,7 +431,24 @@
       ],
       "rating": 4.4,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Cobalt Blue",
+          "hex": "#0047ab",
+          "image_url": "images/prod_3.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/model_6.png"
+        },
+        {
+          "name": "Red",
+          "hex": "#cc3333",
+          "image_url": "images/prod_1.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 13,
@@ -267,7 +470,24 @@
       ],
       "rating": 4.5,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/prod_2.png"
+        },
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/shoe.png"
+        },
+        {
+          "name": "Brown",
+          "hex": "#5c4033",
+          "image_url": "images/shoe_1.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 14,
@@ -288,7 +508,19 @@
       ],
       "rating": 4.7,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Brown",
+          "hex": "#5c4033",
+          "image_url": "images/shoe.png"
+        },
+        {
+          "name": "Black",
+          "hex": "#1a1a1a",
+          "image_url": "images/shoe_1.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 15,
@@ -309,7 +541,24 @@
       ],
       "rating": 4.3,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Cognac",
+          "hex": "#9a4e2c",
+          "image_url": "images/shoe_1.jpg"
+        },
+        {
+          "name": "Brown",
+          "hex": "#5c4033",
+          "image_url": "images/shoe.png"
+        },
+        {
+          "name": "Navy",
+          "hex": "#1a2940",
+          "image_url": "images/cloth_2.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 16,
@@ -326,7 +575,19 @@
       ],
       "rating": 4.8,
       "featured": true,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Beige",
+          "hex": "#d4c5a9",
+          "image_url": "images/about_1.jpg"
+        },
+        {
+          "name": "Gray",
+          "hex": "#8a8a8a",
+          "image_url": "images/model_4.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 17,
@@ -343,7 +604,19 @@
       ],
       "rating": 4.6,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/about_1.png"
+        },
+        {
+          "name": "Blue",
+          "hex": "#5b9bd5",
+          "image_url": "images/model_6.png"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 18,
@@ -363,7 +636,24 @@
       ],
       "rating": 4.7,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Blue",
+          "hex": "#4169e1",
+          "image_url": "images/children.jpg"
+        },
+        {
+          "name": "Green",
+          "hex": "#228b22",
+          "image_url": "images/cloth_3.jpg"
+        },
+        {
+          "name": "Red",
+          "hex": "#cc3333",
+          "image_url": "images/cloth_2.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     },
     {
       "id": 19,
@@ -380,186 +670,2762 @@
       ],
       "rating": 4.4,
       "featured": false,
-      "created_at": "2026-07-16T15:15:03.308Z"
+      "colors": [
+        {
+          "name": "Natural",
+          "hex": "#d4c5a9",
+          "image_url": "images/blog_1.jpg"
+        },
+        {
+          "name": "White",
+          "hex": "#f5f5f5",
+          "image_url": "images/about_1.jpg"
+        }
+      ],
+      "created_at": "2026-07-21T01:28:39.192Z"
     }
   ],
   "carts": [
     {
-      "id": "d9634d8ecfd90de855c02d75",
-      "owner": "user:089bc418-5678-4c17-a24f-747dd334f4d7",
-      "items": [
-        {
-          "id": "b5d98fd9fa4d919f5a0add17",
-          "product_id": 324,
-          "name": "Test T-Shirt",
-          "price": 999,
-          "image_url": "https://i.scdn.co/image/ab67616d00001e0202ca2eecfb94328edfa83233",
-          "size": "S",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "dff1f63f9c33197eaf10ea26",
-      "owner": "user:3a506ec1-cdb7-4259-add6-e60727a4f280",
-      "items": [
-        {
-          "id": "8e28da0c0819c3f62d41e71a",
-          "product_id": 324,
-          "name": "Test T-Shirt",
-          "price": 999,
-          "image_url": "https://i.scdn.co/image/ab67616d00001e0202ca2eecfb94328edfa83233",
-          "size": "S",
-          "quantity": 3,
-          "meta": null
-        },
-        {
-          "id": "a01ad5caeda2f1bd0fb0afa4",
-          "product_id": 325,
-          "name": "Sharingan Hoodie",
-          "price": 1,
-          "image_url": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS-MeOABvIH3M2Et5cYiwSkxR7pCtHCvDxwKofLwswDMsjmVKY4cLWHSNJX7mMsEWfGGcyb5V690CCCydepntj_VzZoz-dmEFrUhdFWY5BCLnsI2ZDjpsAffLw",
-          "size": "S",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "03dbed0b6d5fb9ef49b8d58e",
-      "owner": "guest:guest-7f055d8c9e20dbb4220f346a",
-      "items": [
-        {
-          "id": "c6769ad9acae05a1790f602d",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
-          "image_url": null,
-          "size": "M",
-          "color": "Blue",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "275b3625b09b69901a6b6ef3",
-      "owner": "guest:guest-082e405afe9ffc78b7929523",
-      "items": [
-        {
-          "id": "30afa675a4787a7f1c6d5541",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
-          "image_url": null,
-          "size": "M",
-          "color": "Blue",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "99ea1eef826e7186e92f263a",
-      "owner": "guest:guest-9479feafc5e8cabe4a9017a6",
-      "items": [
-        {
-          "id": "d5504c049189730d5d664ac3",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
-          "image_url": null,
-          "size": "M",
-          "color": "Blue",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "3d1818f524985cb9756b5532",
-      "owner": "guest:guest-8a9615295f1b232af00fd2d4",
-      "items": [
-        {
-          "id": "30543d991e3a62e6f78d6b6e",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
-          "image_url": null,
-          "size": "M",
-          "color": "Blue",
-          "quantity": 1,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "fd9f1b2995f24ab382f64aa4",
-      "owner": "guest:guest-b5441dac6b299c5818d92435",
-      "items": [
-        {
-          "id": "ff2348149adaabb83dcbd631",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
-          "image_url": null,
-          "size": "M",
-          "color": "Blue",
-          "quantity": 5,
-          "meta": null
-        }
-      ]
-    },
-    {
-      "id": "dea8c51870e6b15d814fe794",
+      "id": "ba12913db9833a4c6da08cd1",
       "owner": "guest:guest-92bde70a7f91167271bc5080",
       "items": []
     },
     {
-      "id": "3f9ad4ac1a41717e44f982a2",
-      "owner": "guest:guest-6859126ae84c8f4107a64513",
+      "id": "83ea15397bc6dbb902fc4903",
+      "owner": "guest:guest-cee1e02f4d33032d1b9d6e42",
+      "items": []
+    },
+    {
+      "id": "2d4c63290f1df83c283e301a",
+      "owner": "guest:guest-55e7a8deb71d488081c523c1",
       "items": [
         {
-          "id": "eabca80ab88d72c15f32cb6a",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
+          "id": "b1f77a13a9e63c4adb919108",
+          "product_id": 63,
+          "variant_id": null,
+          "name": "Everyday Crew Tee",
+          "price": 18,
           "image_url": null,
           "size": "M",
-          "color": "Blue",
-          "quantity": 2,
+          "color": "White",
+          "quantity": 1,
           "meta": null
         }
       ]
     },
     {
-      "id": "af54465e07dac6869d7948c7",
-      "owner": "guest:guest-2d72b3b674f7f6eb56f6b89a",
+      "id": "1efd11b2703b3e404d1bdc59",
+      "owner": "guest:guest-c955d2ddcbcdb37341595a9d",
       "items": [
         {
-          "id": "7d551e9399c1a6a2de77b041",
-          "product_id": 58,
-          "name": "Denim Jacket",
-          "price": 28,
+          "id": "6283919576ae4575973903e9",
+          "product_id": 63,
+          "variant_id": null,
+          "name": "Everyday Crew Tee",
+          "price": 18,
           "image_url": null,
           "size": "M",
-          "color": "Blue",
-          "quantity": 2,
+          "color": "White",
+          "quantity": 1,
           "meta": null
         }
       ]
+    },
+    {
+      "id": "678877421468d2057eb2748c",
+      "owner": "guest:guest-b9b276a0495d8b4e3b793951",
+      "items": [
+        {
+          "id": "c04d5a5f0a265459260c10b4",
+          "product_id": 63,
+          "variant_id": null,
+          "name": "Everyday Crew Tee",
+          "price": 18,
+          "image_url": null,
+          "size": "M",
+          "color": "White",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "2ac09ddf09cf25bbcaa03ac0",
+      "owner": "guest:guest-40c321854922716d47247af0",
+      "items": []
+    },
+    {
+      "id": "2b4bcdd9c54b8ed4d9abf889",
+      "owner": "guest:guest-28110827b543519c04fe393b",
+      "items": []
+    },
+    {
+      "id": "79287c02ca570ccc6dfb8c2d",
+      "owner": "guest:guest-632f5798ad7cc658bc77c303",
+      "items": [
+        {
+          "id": "96fefbed923213761b6afaf3",
+          "product_id": 63,
+          "variant_id": null,
+          "name": "Everyday Crew Tee",
+          "price": 18,
+          "image_url": null,
+          "size": "M",
+          "color": "White",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "ae9e0e608dae135abd8eaf34",
+      "owner": "guest:guest-d2f1f1124c5fd7a0dda33fc4",
+      "items": [
+        {
+          "id": "86180c8ee2c80255db16e19b",
+          "product_id": 63,
+          "variant_id": 71,
+          "name": "Everyday Crew Tee",
+          "price": 18,
+          "image_url": null,
+          "size": "M",
+          "color": "White",
+          "quantity": 1,
+          "meta": null
+        }
+      ]
+    },
+    {
+      "id": "f758c3172bdda4dce1141618",
+      "owner": "guest:guest-40f64dd9fff48273622a6319",
+      "items": []
+    },
+    {
+      "id": "347d6c6353d4c0e007535bc2",
+      "owner": "guest:guest-791dcea38e805c8aea4efac4",
+      "items": []
     }
   ],
   "orders": [],
   "designs": [],
   "listings": [],
+  "variants": [
+    {
+      "id": 1002,
+      "product_id": 1,
+      "sku": "",
+      "size": "S",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1003,
+      "product_id": 1,
+      "sku": "",
+      "size": "S",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1004,
+      "product_id": 1,
+      "sku": "",
+      "size": "S",
+      "color": "Gray",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1005,
+      "product_id": 1,
+      "sku": "",
+      "size": "M",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1006,
+      "product_id": 1,
+      "sku": "",
+      "size": "M",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1007,
+      "product_id": 1,
+      "sku": "",
+      "size": "M",
+      "color": "Gray",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1008,
+      "product_id": 1,
+      "sku": "",
+      "size": "L",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1009,
+      "product_id": 1,
+      "sku": "",
+      "size": "L",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1010,
+      "product_id": 1,
+      "sku": "",
+      "size": "L",
+      "color": "Gray",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1011,
+      "product_id": 1,
+      "sku": "",
+      "size": "XL",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1012,
+      "product_id": 1,
+      "sku": "",
+      "size": "XL",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1013,
+      "product_id": 1,
+      "sku": "",
+      "size": "XL",
+      "color": "Gray",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.188Z",
+      "updated_at": "2026-07-21T01:28:39.188Z"
+    },
+    {
+      "id": 1014,
+      "product_id": 2,
+      "sku": "",
+      "size": "S",
+      "color": "Yellow",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1015,
+      "product_id": 2,
+      "sku": "",
+      "size": "S",
+      "color": "Red",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1016,
+      "product_id": 2,
+      "sku": "",
+      "size": "S",
+      "color": "Navy",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1017,
+      "product_id": 2,
+      "sku": "",
+      "size": "M",
+      "color": "Yellow",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1018,
+      "product_id": 2,
+      "sku": "",
+      "size": "M",
+      "color": "Red",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1019,
+      "product_id": 2,
+      "sku": "",
+      "size": "M",
+      "color": "Navy",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1020,
+      "product_id": 2,
+      "sku": "",
+      "size": "L",
+      "color": "Yellow",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1021,
+      "product_id": 2,
+      "sku": "",
+      "size": "L",
+      "color": "Red",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1022,
+      "product_id": 2,
+      "sku": "",
+      "size": "L",
+      "color": "Navy",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1023,
+      "product_id": 2,
+      "sku": "",
+      "size": "XL",
+      "color": "Yellow",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1024,
+      "product_id": 2,
+      "sku": "",
+      "size": "XL",
+      "color": "Red",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1025,
+      "product_id": 2,
+      "sku": "",
+      "size": "XL",
+      "color": "Navy",
+      "price": 58,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1026,
+      "product_id": 3,
+      "sku": "",
+      "size": "S",
+      "color": "White",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1027,
+      "product_id": 3,
+      "sku": "",
+      "size": "S",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1028,
+      "product_id": 3,
+      "sku": "",
+      "size": "S",
+      "color": "Green",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1029,
+      "product_id": 3,
+      "sku": "",
+      "size": "M",
+      "color": "White",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1030,
+      "product_id": 3,
+      "sku": "",
+      "size": "M",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1031,
+      "product_id": 3,
+      "sku": "",
+      "size": "M",
+      "color": "Green",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1032,
+      "product_id": 3,
+      "sku": "",
+      "size": "L",
+      "color": "White",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1033,
+      "product_id": 3,
+      "sku": "",
+      "size": "L",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1034,
+      "product_id": 3,
+      "sku": "",
+      "size": "L",
+      "color": "Green",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1035,
+      "product_id": 3,
+      "sku": "",
+      "size": "XL",
+      "color": "White",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1036,
+      "product_id": 3,
+      "sku": "",
+      "size": "XL",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1037,
+      "product_id": 3,
+      "sku": "",
+      "size": "XL",
+      "color": "Green",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1038,
+      "product_id": 3,
+      "sku": "",
+      "size": "XXL",
+      "color": "White",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1039,
+      "product_id": 3,
+      "sku": "",
+      "size": "XXL",
+      "color": "Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1040,
+      "product_id": 3,
+      "sku": "",
+      "size": "XXL",
+      "color": "Green",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1041,
+      "product_id": 4,
+      "sku": "",
+      "size": "S",
+      "color": "Beige",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1042,
+      "product_id": 4,
+      "sku": "",
+      "size": "S",
+      "color": "White",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1043,
+      "product_id": 4,
+      "sku": "",
+      "size": "S",
+      "color": "Blue",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1044,
+      "product_id": 4,
+      "sku": "",
+      "size": "M",
+      "color": "Beige",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1045,
+      "product_id": 4,
+      "sku": "",
+      "size": "M",
+      "color": "White",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1046,
+      "product_id": 4,
+      "sku": "",
+      "size": "M",
+      "color": "Blue",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1047,
+      "product_id": 4,
+      "sku": "",
+      "size": "L",
+      "color": "Beige",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1048,
+      "product_id": 4,
+      "sku": "",
+      "size": "L",
+      "color": "White",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1049,
+      "product_id": 4,
+      "sku": "",
+      "size": "L",
+      "color": "Blue",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1050,
+      "product_id": 4,
+      "sku": "",
+      "size": "XL",
+      "color": "Beige",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1051,
+      "product_id": 4,
+      "sku": "",
+      "size": "XL",
+      "color": "White",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1052,
+      "product_id": 4,
+      "sku": "",
+      "size": "XL",
+      "color": "Blue",
+      "price": 42,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1053,
+      "product_id": 5,
+      "sku": "",
+      "size": "S",
+      "color": "Navy",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1054,
+      "product_id": 5,
+      "sku": "",
+      "size": "S",
+      "color": "White",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1055,
+      "product_id": 5,
+      "sku": "",
+      "size": "S",
+      "color": "Green",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1056,
+      "product_id": 5,
+      "sku": "",
+      "size": "M",
+      "color": "Navy",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1057,
+      "product_id": 5,
+      "sku": "",
+      "size": "M",
+      "color": "White",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1058,
+      "product_id": 5,
+      "sku": "",
+      "size": "M",
+      "color": "Green",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1059,
+      "product_id": 5,
+      "sku": "",
+      "size": "L",
+      "color": "Navy",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1060,
+      "product_id": 5,
+      "sku": "",
+      "size": "L",
+      "color": "White",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1061,
+      "product_id": 5,
+      "sku": "",
+      "size": "L",
+      "color": "Green",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1062,
+      "product_id": 5,
+      "sku": "",
+      "size": "XL",
+      "color": "Navy",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1063,
+      "product_id": 5,
+      "sku": "",
+      "size": "XL",
+      "color": "White",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1064,
+      "product_id": 5,
+      "sku": "",
+      "size": "XL",
+      "color": "Green",
+      "price": 32,
+      "compare_at_price": null,
+      "stock": 2,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1065,
+      "product_id": 6,
+      "sku": "",
+      "size": "XS",
+      "color": "Heather Gray",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1066,
+      "product_id": 6,
+      "sku": "",
+      "size": "XS",
+      "color": "White",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1067,
+      "product_id": 6,
+      "sku": "",
+      "size": "XS",
+      "color": "Black",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1068,
+      "product_id": 6,
+      "sku": "",
+      "size": "S",
+      "color": "Heather Gray",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1069,
+      "product_id": 6,
+      "sku": "",
+      "size": "S",
+      "color": "White",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1070,
+      "product_id": 6,
+      "sku": "",
+      "size": "S",
+      "color": "Black",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1071,
+      "product_id": 6,
+      "sku": "",
+      "size": "M",
+      "color": "Heather Gray",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1072,
+      "product_id": 6,
+      "sku": "",
+      "size": "M",
+      "color": "White",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1073,
+      "product_id": 6,
+      "sku": "",
+      "size": "M",
+      "color": "Black",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1074,
+      "product_id": 6,
+      "sku": "",
+      "size": "L",
+      "color": "Heather Gray",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1075,
+      "product_id": 6,
+      "sku": "",
+      "size": "L",
+      "color": "White",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1076,
+      "product_id": 6,
+      "sku": "",
+      "size": "L",
+      "color": "Black",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1077,
+      "product_id": 6,
+      "sku": "",
+      "size": "XL",
+      "color": "Heather Gray",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1078,
+      "product_id": 6,
+      "sku": "",
+      "size": "XL",
+      "color": "White",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1079,
+      "product_id": 6,
+      "sku": "",
+      "size": "XL",
+      "color": "Black",
+      "price": 18,
+      "compare_at_price": 24,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1080,
+      "product_id": 7,
+      "sku": "",
+      "size": "XS",
+      "color": "Pink Floral",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1081,
+      "product_id": 7,
+      "sku": "",
+      "size": "XS",
+      "color": "Blue",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1082,
+      "product_id": 7,
+      "sku": "",
+      "size": "XS",
+      "color": "Red",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1083,
+      "product_id": 7,
+      "sku": "",
+      "size": "S",
+      "color": "Pink Floral",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1084,
+      "product_id": 7,
+      "sku": "",
+      "size": "S",
+      "color": "Blue",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1085,
+      "product_id": 7,
+      "sku": "",
+      "size": "S",
+      "color": "Red",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1086,
+      "product_id": 7,
+      "sku": "",
+      "size": "M",
+      "color": "Pink Floral",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1087,
+      "product_id": 7,
+      "sku": "",
+      "size": "M",
+      "color": "Blue",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1088,
+      "product_id": 7,
+      "sku": "",
+      "size": "M",
+      "color": "Red",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1089,
+      "product_id": 7,
+      "sku": "",
+      "size": "L",
+      "color": "Pink Floral",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1090,
+      "product_id": 7,
+      "sku": "",
+      "size": "L",
+      "color": "Blue",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1091,
+      "product_id": 7,
+      "sku": "",
+      "size": "L",
+      "color": "Red",
+      "price": 38,
+      "compare_at_price": 52,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1092,
+      "product_id": 8,
+      "sku": "",
+      "size": "S",
+      "color": "Cream",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1093,
+      "product_id": 8,
+      "sku": "",
+      "size": "S",
+      "color": "Gray",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1094,
+      "product_id": 8,
+      "sku": "",
+      "size": "S",
+      "color": "Blush",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1095,
+      "product_id": 8,
+      "sku": "",
+      "size": "M",
+      "color": "Cream",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1096,
+      "product_id": 8,
+      "sku": "",
+      "size": "M",
+      "color": "Gray",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1097,
+      "product_id": 8,
+      "sku": "",
+      "size": "M",
+      "color": "Blush",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1098,
+      "product_id": 8,
+      "sku": "",
+      "size": "L",
+      "color": "Cream",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1099,
+      "product_id": 8,
+      "sku": "",
+      "size": "L",
+      "color": "Gray",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1100,
+      "product_id": 8,
+      "sku": "",
+      "size": "L",
+      "color": "Blush",
+      "price": 54,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1101,
+      "product_id": 9,
+      "sku": "",
+      "size": "XS",
+      "color": "Navy",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1102,
+      "product_id": 9,
+      "sku": "",
+      "size": "XS",
+      "color": "Black",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1103,
+      "product_id": 9,
+      "sku": "",
+      "size": "S",
+      "color": "Navy",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1104,
+      "product_id": 9,
+      "sku": "",
+      "size": "S",
+      "color": "Black",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1105,
+      "product_id": 9,
+      "sku": "",
+      "size": "M",
+      "color": "Navy",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1106,
+      "product_id": 9,
+      "sku": "",
+      "size": "M",
+      "color": "Black",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1107,
+      "product_id": 9,
+      "sku": "",
+      "size": "L",
+      "color": "Navy",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1108,
+      "product_id": 9,
+      "sku": "",
+      "size": "L",
+      "color": "Black",
+      "price": 72,
+      "compare_at_price": 95,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1109,
+      "product_id": 10,
+      "sku": "",
+      "size": "XS",
+      "color": "Black",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1110,
+      "product_id": 10,
+      "sku": "",
+      "size": "XS",
+      "color": "Navy",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1111,
+      "product_id": 10,
+      "sku": "",
+      "size": "XS",
+      "color": "Gray",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1112,
+      "product_id": 10,
+      "sku": "",
+      "size": "S",
+      "color": "Black",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1113,
+      "product_id": 10,
+      "sku": "",
+      "size": "S",
+      "color": "Navy",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1114,
+      "product_id": 10,
+      "sku": "",
+      "size": "S",
+      "color": "Gray",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1115,
+      "product_id": 10,
+      "sku": "",
+      "size": "M",
+      "color": "Black",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1116,
+      "product_id": 10,
+      "sku": "",
+      "size": "M",
+      "color": "Navy",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1117,
+      "product_id": 10,
+      "sku": "",
+      "size": "M",
+      "color": "Gray",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1118,
+      "product_id": 10,
+      "sku": "",
+      "size": "L",
+      "color": "Black",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1119,
+      "product_id": 10,
+      "sku": "",
+      "size": "L",
+      "color": "Navy",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1120,
+      "product_id": 10,
+      "sku": "",
+      "size": "L",
+      "color": "Gray",
+      "price": 36,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1121,
+      "product_id": 11,
+      "sku": "",
+      "size": "One Size",
+      "color": "Emerald",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 4,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1122,
+      "product_id": 11,
+      "sku": "",
+      "size": "One Size",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 4,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1123,
+      "product_id": 11,
+      "sku": "",
+      "size": "One Size",
+      "color": "Brown",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 4,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.191Z",
+      "updated_at": "2026-07-21T01:28:39.191Z"
+    },
+    {
+      "id": 1124,
+      "product_id": 12,
+      "sku": "",
+      "size": "6",
+      "color": "Cobalt Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1125,
+      "product_id": 12,
+      "sku": "",
+      "size": "6",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1126,
+      "product_id": 12,
+      "sku": "",
+      "size": "6",
+      "color": "Red",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1127,
+      "product_id": 12,
+      "sku": "",
+      "size": "7",
+      "color": "Cobalt Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1128,
+      "product_id": 12,
+      "sku": "",
+      "size": "7",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1129,
+      "product_id": 12,
+      "sku": "",
+      "size": "7",
+      "color": "Red",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1130,
+      "product_id": 12,
+      "sku": "",
+      "size": "8",
+      "color": "Cobalt Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1131,
+      "product_id": 12,
+      "sku": "",
+      "size": "8",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1132,
+      "product_id": 12,
+      "sku": "",
+      "size": "8",
+      "color": "Red",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1133,
+      "product_id": 12,
+      "sku": "",
+      "size": "9",
+      "color": "Cobalt Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1134,
+      "product_id": 12,
+      "sku": "",
+      "size": "9",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1135,
+      "product_id": 12,
+      "sku": "",
+      "size": "9",
+      "color": "Red",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1136,
+      "product_id": 12,
+      "sku": "",
+      "size": "10",
+      "color": "Cobalt Blue",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1137,
+      "product_id": 12,
+      "sku": "",
+      "size": "10",
+      "color": "Black",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1138,
+      "product_id": 12,
+      "sku": "",
+      "size": "10",
+      "color": "Red",
+      "price": 28,
+      "compare_at_price": 46,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1139,
+      "product_id": 13,
+      "sku": "",
+      "size": "7",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1140,
+      "product_id": 13,
+      "sku": "",
+      "size": "7",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1141,
+      "product_id": 13,
+      "sku": "",
+      "size": "7",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1142,
+      "product_id": 13,
+      "sku": "",
+      "size": "8",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1143,
+      "product_id": 13,
+      "sku": "",
+      "size": "8",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1144,
+      "product_id": 13,
+      "sku": "",
+      "size": "8",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1145,
+      "product_id": 13,
+      "sku": "",
+      "size": "9",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1146,
+      "product_id": 13,
+      "sku": "",
+      "size": "9",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1147,
+      "product_id": 13,
+      "sku": "",
+      "size": "9",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1148,
+      "product_id": 13,
+      "sku": "",
+      "size": "10",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1149,
+      "product_id": 13,
+      "sku": "",
+      "size": "10",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1150,
+      "product_id": 13,
+      "sku": "",
+      "size": "10",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1151,
+      "product_id": 13,
+      "sku": "",
+      "size": "11",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1152,
+      "product_id": 13,
+      "sku": "",
+      "size": "11",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1153,
+      "product_id": 13,
+      "sku": "",
+      "size": "11",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1154,
+      "product_id": 13,
+      "sku": "",
+      "size": "12",
+      "color": "Gray",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1155,
+      "product_id": 13,
+      "sku": "",
+      "size": "12",
+      "color": "White",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1156,
+      "product_id": 13,
+      "sku": "",
+      "size": "12",
+      "color": "Brown",
+      "price": 20,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1157,
+      "product_id": 14,
+      "sku": "",
+      "size": "7",
+      "color": "Brown",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1158,
+      "product_id": 14,
+      "sku": "",
+      "size": "7",
+      "color": "Black",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1159,
+      "product_id": 14,
+      "sku": "",
+      "size": "8",
+      "color": "Brown",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1160,
+      "product_id": 14,
+      "sku": "",
+      "size": "8",
+      "color": "Black",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1161,
+      "product_id": 14,
+      "sku": "",
+      "size": "9",
+      "color": "Brown",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1162,
+      "product_id": 14,
+      "sku": "",
+      "size": "9",
+      "color": "Black",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1163,
+      "product_id": 14,
+      "sku": "",
+      "size": "10",
+      "color": "Brown",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1164,
+      "product_id": 14,
+      "sku": "",
+      "size": "10",
+      "color": "Black",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1165,
+      "product_id": 14,
+      "sku": "",
+      "size": "11",
+      "color": "Brown",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1166,
+      "product_id": 14,
+      "sku": "",
+      "size": "11",
+      "color": "Black",
+      "price": 64,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1167,
+      "product_id": 15,
+      "sku": "",
+      "size": "7",
+      "color": "Cognac",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1168,
+      "product_id": 15,
+      "sku": "",
+      "size": "7",
+      "color": "Brown",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1169,
+      "product_id": 15,
+      "sku": "",
+      "size": "7",
+      "color": "Navy",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1170,
+      "product_id": 15,
+      "sku": "",
+      "size": "8",
+      "color": "Cognac",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1171,
+      "product_id": 15,
+      "sku": "",
+      "size": "8",
+      "color": "Brown",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1172,
+      "product_id": 15,
+      "sku": "",
+      "size": "8",
+      "color": "Navy",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1173,
+      "product_id": 15,
+      "sku": "",
+      "size": "9",
+      "color": "Cognac",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1174,
+      "product_id": 15,
+      "sku": "",
+      "size": "9",
+      "color": "Brown",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1175,
+      "product_id": 15,
+      "sku": "",
+      "size": "9",
+      "color": "Navy",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1176,
+      "product_id": 15,
+      "sku": "",
+      "size": "10",
+      "color": "Cognac",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1177,
+      "product_id": 15,
+      "sku": "",
+      "size": "10",
+      "color": "Brown",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1178,
+      "product_id": 15,
+      "sku": "",
+      "size": "10",
+      "color": "Navy",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1179,
+      "product_id": 15,
+      "sku": "",
+      "size": "11",
+      "color": "Cognac",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1180,
+      "product_id": 15,
+      "sku": "",
+      "size": "11",
+      "color": "Brown",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1181,
+      "product_id": 15,
+      "sku": "",
+      "size": "11",
+      "color": "Navy",
+      "price": 48,
+      "compare_at_price": null,
+      "stock": 1,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1182,
+      "product_id": 16,
+      "sku": "",
+      "size": "50x60 in",
+      "color": "Beige",
+      "price": 34,
+      "compare_at_price": null,
+      "stock": 14,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1183,
+      "product_id": 16,
+      "sku": "",
+      "size": "50x60 in",
+      "color": "Gray",
+      "price": 34,
+      "compare_at_price": null,
+      "stock": 14,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1184,
+      "product_id": 17,
+      "sku": "",
+      "size": "Set of 3",
+      "color": "White",
+      "price": 26,
+      "compare_at_price": 38,
+      "stock": 11,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1185,
+      "product_id": 17,
+      "sku": "",
+      "size": "Set of 3",
+      "color": "Blue",
+      "price": 26,
+      "compare_at_price": 38,
+      "stock": 11,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1186,
+      "product_id": 18,
+      "sku": "",
+      "size": "2T",
+      "color": "Blue",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1187,
+      "product_id": 18,
+      "sku": "",
+      "size": "2T",
+      "color": "Green",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1188,
+      "product_id": 18,
+      "sku": "",
+      "size": "2T",
+      "color": "Red",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1189,
+      "product_id": 18,
+      "sku": "",
+      "size": "3T",
+      "color": "Blue",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1190,
+      "product_id": 18,
+      "sku": "",
+      "size": "3T",
+      "color": "Green",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1191,
+      "product_id": 18,
+      "sku": "",
+      "size": "3T",
+      "color": "Red",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1192,
+      "product_id": 18,
+      "sku": "",
+      "size": "4T",
+      "color": "Blue",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1193,
+      "product_id": 18,
+      "sku": "",
+      "size": "4T",
+      "color": "Green",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1194,
+      "product_id": 18,
+      "sku": "",
+      "size": "4T",
+      "color": "Red",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1195,
+      "product_id": 18,
+      "sku": "",
+      "size": "5T",
+      "color": "Blue",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1196,
+      "product_id": 18,
+      "sku": "",
+      "size": "5T",
+      "color": "Green",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1197,
+      "product_id": 18,
+      "sku": "",
+      "size": "5T",
+      "color": "Red",
+      "price": 14,
+      "compare_at_price": null,
+      "stock": 5,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1198,
+      "product_id": 19,
+      "sku": "",
+      "size": "18x18 in",
+      "color": "Natural",
+      "price": 16,
+      "compare_at_price": null,
+      "stock": 22,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    },
+    {
+      "id": 1199,
+      "product_id": 19,
+      "sku": "",
+      "size": "18x18 in",
+      "color": "White",
+      "price": 16,
+      "compare_at_price": null,
+      "stock": 22,
+      "status": "published",
+      "created_at": "2026-07-21T01:28:39.192Z",
+      "updated_at": "2026-07-21T01:28:39.192Z"
+    }
+  ],
+  "images": [],
   "users": [
     {
-      "id": 2,
-      "email": "test@test.com",
-      "password": "5d477962c0049eeb98df5f3f6cf1b6f069e6bdd8ae157d27752590b066019392",
-      "name": "Test User"
+      "id": "local-125c553f5d38fd8a5c915e29",
+      "email": "admin@shopmax.com",
+      "full_name": "ShopMax Admin",
+      "mobile": "",
+      "birthdate": "",
+      "password": "6d7e5450c508efff231435ebf45bf7bcbfa705c6f4563e02415aa3d0aeea4f9b",
+      "role": "admin",
+      "created_at": "2026-07-21T01:28:39.197Z"
+    }
+  ],
+  "coupons": [
+    {
+      "code": "SHOPMAX10",
+      "type": "percent",
+      "value": 10,
+      "min_cart": 0,
+      "max_uses": 1000,
+      "used_count": 0,
+      "active": true
+    },
+    {
+      "code": "SHOPMAX20",
+      "type": "percent",
+      "value": 20,
+      "min_cart": 0,
+      "max_uses": 500,
+      "used_count": 0,
+      "active": true
+    },
+    {
+      "code": "FIRSTORDER",
+      "type": "fixed",
+      "value": 100,
+      "min_cart": 200,
+      "max_uses": 1000,
+      "used_count": 0,
+      "active": true
     }
   ],
   "counters": {
@@ -567,6 +3433,8 @@
     "order": 100,
     "design": 100,
     "listing": 100,
-    "user": 2
+    "user": 1,
+    "variant": 1199,
+    "image": 1000
   }
 }

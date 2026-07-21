@@ -131,12 +131,24 @@ router.get('/:id', async (req, res, next) => {
     if (MODE === 'local') {
       const item = store.raw.products.find(p => p.id === id);
       if (!item) return res.status(404).json({ error: 'Product not found' });
-      return res.json(item);
+      const variants = store.raw.variants.filter(v => v.product_id === id);
+      const images = store.raw.images.filter(img => img.product_id === id).sort((a, b) => a.sort_order - b.sort_order);
+      const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : item.stock;
+      const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : item.sizes;
+      const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : item.colors;
+      return res.json({ ...item, variants, images, stock, sizes, colors });
     }
     const { data, error } = await supabase.from('products').select('*').eq('id', id).maybeSingle();
     if (error) throw error;
     if (!data) return res.status(404).json({ error: 'Product not found' });
-    res.json(data);
+    const [variants, images] = await Promise.all([
+      supabase.from('product_variants').select('*').eq('product_id', id).then(r => r.data || []),
+      supabase.from('product_images').select('*').eq('product_id', id).order('sort_order', { ascending: true }).then(r => r.data || [])
+    ]);
+    const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : data.stock;
+    const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : (data.sizes || []);
+    const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : (data.colors || []);
+    res.json({ ...data, variants, images, stock, sizes, colors });
   } catch (e) { next(e); }
 });
 

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { supabase, MODE } = require('../../config/supabase');
+var { supabase, MODE, getServiceClient } = require('../../config/supabase');
 var store = require('../db/localStore');
 var { getUser, requireAdmin } = require('../middleware/auth');
 
@@ -13,6 +13,7 @@ router.get('/dashboard', getUser, requireAdmin, async (req, res, next) => {
     var totalRevenue = 0;
     var recentOrders = [];
     var productStatusCounts = { published: 0, draft: 0, hidden: 0, inactive: 0 };
+    var inventoryStats = { totalStock: 0, lowStockCount: 0, outOfStockCount: 0, totalVariants: 0 };
 
     if (MODE === 'local') {
       totalUsers = store.raw.profiles.length;
@@ -37,14 +38,21 @@ router.get('/dashboard', getUser, requireAdmin, async (req, res, next) => {
             date: o.created_at
           };
         });
+      // Inventory stats from variants
+      var variants = store.raw.variants || [];
+      inventoryStats.totalVariants = variants.length;
+      inventoryStats.totalStock = variants.reduce(function (s, v) { return s + (v.stock || 0); }, 0);
+      inventoryStats.lowStockCount = variants.filter(function (v) { return v.stock > 0 && v.stock <= 5; }).length;
+      inventoryStats.outOfStockCount = variants.filter(function (v) { return v.stock === 0; }).length;
     } else {
-      var sb = req.supabase || supabase;
-      var [userRes, prodRes, prodStatusRes, countRes, allOrdersRes] = await Promise.all([
+      var sb = getServiceClient() || req.supabase || supabase;
+      var [userRes, prodRes, prodStatusRes, countRes, allOrdersRes, variantRes] = await Promise.all([
         sb.from('profiles').select('id', { count: 'exact', head: true }),
         sb.from('products').select('id', { count: 'exact', head: true }),
         sb.from('products').select('status'),
         sb.from('orders').select('id,total', { count: 'exact' }),
-        sb.from('orders').select('*').order('created_at', { ascending: false }).limit(10)
+        sb.from('orders').select('*').order('created_at', { ascending: false }).limit(10),
+        sb.from('product_variants').select('stock')
       ]);
       totalUsers = userRes.count || 0;
       totalProducts = prodRes.count || 0;
@@ -63,9 +71,14 @@ router.get('/dashboard', getUser, requireAdmin, async (req, res, next) => {
           date: o.created_at
         };
       });
+      var vData = variantRes.data || [];
+      inventoryStats.totalVariants = vData.length;
+      inventoryStats.totalStock = vData.reduce(function (s, v) { return s + (v.stock || 0); }, 0);
+      inventoryStats.lowStockCount = vData.filter(function (v) { return v.stock > 0 && v.stock <= 5; }).length;
+      inventoryStats.outOfStockCount = vData.filter(function (v) { return v.stock === 0; }).length;
     }
 
-    res.json({ totalUsers: totalUsers, totalProducts: totalProducts, totalOrders: totalOrders, totalRevenue: totalRevenue, recentOrders: recentOrders, productStatusCounts: productStatusCounts });
+    res.json({ totalUsers: totalUsers, totalProducts: totalProducts, totalOrders: totalOrders, totalRevenue: totalRevenue, recentOrders: recentOrders, productStatusCounts: productStatusCounts, inventoryStats: inventoryStats });
   } catch (e) { next(e); }
 });
 
@@ -100,7 +113,7 @@ router.get('/orders', getUser, requireAdmin, async (req, res, next) => {
       return res.json(orders);
     }
 
-    var sb = req.supabase || supabase;
+    var sb = getServiceClient() || req.supabase || supabase;
     var { data, error } = await sb
       .from('orders')
       .select('*')

@@ -61,7 +61,11 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
       };
       store.raw.orders.push(order);
       cart.items.forEach(function (i) {
-        if (i.product_id) {
+        var vid = i.variant_id || (i.meta && i.meta.variant_id);
+        if (vid) {
+          var v = store.raw.variants.find(function (x) { return x.id === vid; });
+          if (v) v.stock = Math.max(0, v.stock - Number(i.quantity));
+        } else if (i.product_id) {
           var p = store.raw.products.find(function (x) { return x.id === i.product_id; });
           if (p) p.stock = Math.max(0, p.stock - Number(i.quantity));
         }
@@ -97,6 +101,38 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
     var errors = [];
     for (var ei = 0; ei < items.length; ei++) {
       var item = items[ei];
+
+      var vid = item.variant_id || (item.meta && item.meta.variant_id);
+      if (vid) {
+        var { data: variant } = await sb
+          .from('product_variants')
+          .select('id, stock, status')
+          .eq('id', vid)
+          .single();
+
+        if (!variant) {
+          errors.push(item.name + ' variant is no longer available.');
+          continue;
+        }
+        if (variant.status !== 'published') {
+          errors.push(item.name + ' variant is no longer available for purchase.');
+          continue;
+        }
+        if (variant.stock < item.quantity) {
+          errors.push('Only ' + variant.stock + ' of "' + item.name + '" available (you requested ' + item.quantity + ').');
+          continue;
+        }
+
+        var { error: vErr } = await sb
+          .from('product_variants')
+          .update({ stock: variant.stock - item.quantity })
+          .eq('id', vid)
+          .eq('stock', variant.stock);
+
+        if (vErr) errors.push('Could not reserve stock for "' + item.name + '".');
+        continue;
+      }
+
       if (!item.product_id) continue;
 
       var { data: product } = await sb

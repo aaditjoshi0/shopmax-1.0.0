@@ -56,11 +56,20 @@
     var stock = p.stock || 0;
     if (stock === 0) return '<span class="sm-stock-label sm-out-of-stock">Out of Stock</span>';
     if (stock <= 5) return '<span class="sm-stock-label sm-low-stock">Only ' + stock + ' left</span>';
+    if (p.variants && p.variants.length > 0) {
+      var publicVariants = p.variants.filter(function (v) { return v.status === 'published'; });
+      if (publicVariants.length === 0) return '<span class="sm-stock-label sm-out-of-stock">Out of Stock</span>';
+      var anyInStock = publicVariants.some(function (v) { return v.stock > 0; });
+      if (!anyInStock) return '<span class="sm-stock-label sm-out-of-stock">Out of Stock</span>';
+    }
     return '';
   }
 
   function productCard(p) {
-    var oos = p.stock === 0;
+    var hasVariants = p.variants && p.variants.length > 0;
+    var oos = hasVariants
+      ? p.variants.every(function (v) { return v.status !== 'published' || v.stock === 0; })
+      : p.stock === 0;
     return '' +
       '<div class="col-lg-4 col-md-6 item-entry mb-4">' +
         '<a href="/product/' + p.id + '" class="product-item md-height bg-gray d-block' + (oos ? ' sm-product-oos' : '') + '">' +

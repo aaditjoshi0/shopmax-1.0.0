@@ -67,6 +67,36 @@ insert into public.categories (name, slug) values
   ('Accessories', 'accessories')
 on conflict (slug) do nothing;
 
+-- ---------- PRODUCT VARIANTS (per-size, per-color stock/pricing) -------------
+create table if not exists public.product_variants (
+  id              bigint generated always as identity primary key,
+  product_id      bigint not null references public.products(id) on delete cascade,
+  sku             text default '',
+  size            text default '',
+  color           text default '',
+  price           numeric(10,2) not null default 0,
+  compare_at_price numeric(10,2),
+  stock           integer not null default 0,
+  status          text not null default 'published',
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+create index if not exists product_variants_product_idx on public.product_variants(product_id);
+create unique index if not exists product_variants_sku_idx on public.product_variants(sku) where sku != '';
+create unique index if not exists product_variants_combo_idx on public.product_variants(product_id, size, color);
+
+-- ---------- PRODUCT IMAGES (multi-image gallery, color-specific) -------------
+create table if not exists public.product_images (
+  id              bigint generated always as identity primary key,
+  product_id      bigint not null references public.products(id) on delete cascade,
+  color           text default '',
+  url             text not null,
+  alt             text default '',
+  sort_order      integer not null default 0,
+  created_at      timestamptz not null default now()
+);
+create index if not exists product_images_product_idx on public.product_images(product_id, sort_order);
+
 -- ---------- CARTS (one per user or guest) -------------------------------------
 create table if not exists public.carts (
   id          uuid primary key default gen_random_uuid(),
@@ -140,20 +170,34 @@ create index if not exists listings_status_idx on public.listings(status);
 -- Public can read products and active listings.
 -- Everything else is owner-only.
 -- ============================================================================
-alter table public.profiles    enable row level security;
-alter table public.products    enable row level security;
-alter table public.categories  enable row level security;
-alter table public.carts       enable row level security;
-alter table public.cart_items  enable row level security;
-alter table public.orders      enable row level security;
-alter table public.designs     enable row level security;
-alter table public.listings    enable row level security;
+alter table public.profiles         enable row level security;
+alter table public.products         enable row level security;
+alter table public.product_variants enable row level security;
+alter table public.product_images   enable row level security;
+alter table public.categories       enable row level security;
+alter table public.carts            enable row level security;
+alter table public.cart_items       enable row level security;
+alter table public.orders           enable row level security;
+alter table public.designs          enable row level security;
+alter table public.listings         enable row level security;
 
 -- PRODUCTS: world-readable (admin filters by status in query); world-writeable (admin panel).
 drop policy if exists "products read"   on public.products;
 drop policy if exists "products write"  on public.products;
 create policy "products read"  on public.products for select using (true);
 create policy "products write" on public.products for all using (true) with check (true);
+
+-- PRODUCT VARIANTS: world-readable; admin can manage.
+drop policy if exists "product_variants read"  on public.product_variants;
+drop policy if exists "product_variants write" on public.product_variants;
+create policy "product_variants read"  on public.product_variants for select using (true);
+create policy "product_variants write" on public.product_variants for all using (true) with check (true);
+
+-- PRODUCT IMAGES: world-readable; admin can manage.
+drop policy if exists "product_images read"  on public.product_images;
+drop policy if exists "product_images write" on public.product_images;
+create policy "product_images read"  on public.product_images for select using (true);
+create policy "product_images write" on public.product_images for all using (true) with check (true);
 
 -- CATEGORIES: world-readable; admin can manage.
 drop policy if exists "categories read"  on public.categories;

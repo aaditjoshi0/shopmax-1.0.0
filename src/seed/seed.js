@@ -27,6 +27,53 @@ function seedIfEmpty(verbose) {
       if (verbose) console.log('[seed] local store already has ' + data.products.length + ' products — skipping.');
     }
 
+    // Seed variants from products with sizes/colors
+    if (data.variants.length === 0 && data.products.length > 0) {
+      var variantId = store.nextId('variant') || 0;
+      data.products.forEach(function (p) {
+        var sizes = p.sizes || [];
+        var colors = p.colors || [];
+        if (sizes.length > 0 || colors.length > 0) {
+          var combos = [];
+          if (sizes.length > 0 && colors.length > 0) {
+            sizes.forEach(function (s) {
+              colors.forEach(function (c) {
+                var colorName = typeof c === 'object' ? (c.name || '') : String(c);
+                combos.push({ size: s, color: colorName });
+              });
+            });
+          } else {
+            sizes.forEach(function (s) { combos.push({ size: s, color: '' }); });
+            colors.forEach(function (c) {
+              var colorName = typeof c === 'object' ? (c.name || '') : String(c);
+              combos.push({ size: '', color: colorName });
+            });
+          }
+          if (combos.length === 0) combos.push({ size: '', color: '' });
+          var stockPerVariant = Math.floor((p.stock || 100) / combos.length) || 1;
+          combos.forEach(function (combo) {
+            variantId++;
+            data.variants.push({
+              id: variantId,
+              product_id: p.id,
+              sku: p.sku ? p.sku + '-' + combo.size + '-' + combo.color : '',
+              size: combo.size,
+              color: combo.color,
+              price: p.price,
+              compare_at_price: p.compare_at_price || null,
+              stock: stockPerVariant,
+              status: 'published',
+              created_at: p.created_at,
+              updated_at: p.created_at
+            });
+          });
+        }
+      });
+      data.counters.variant = variantId;
+      store.persist();
+      if (verbose) console.log('[seed] ' + data.variants.length + ' variants generated from products.');
+    }
+
     // Seed admin user if no admin exists
     const hasAdmin = data.profiles.some(p => p.role === 'admin');
     if (!hasAdmin) {
@@ -63,7 +110,7 @@ function seedIfEmpty(verbose) {
   if (MODE === 'supabase') {
     (async () => {
       for (const p of products) {
-        const { error } = await supabase.from('products').upsert({
+        const { data: upserted, error } = await supabase.from('products').upsert({
           name: p.name,
           slug: p.slug,
           description: p.description,
@@ -77,10 +124,41 @@ function seedIfEmpty(verbose) {
           featured: p.featured,
           colors: p.colors || null,
           status: p.status || 'published'
-        }, { onConflict: 'slug' });
-        if (error) console.warn('[seed] error on ' + p.slug + ':', error.message);
+        }, { onConflict: 'slug' }).select('id, slug, sizes, colors, stock, price, compare_at_price, sku').single();
+        if (error) {
+          console.warn('[seed] error on ' + p.slug + ':', error.message);
+          return;
+        }
+        // Generate variants for products with sizes/colors
+        if (upserted && ((p.sizes && p.sizes.length > 0) || (p.colors && p.colors.length > 0))) {
+          const sizes = p.sizes || [];
+          const colors = p.colors || [];
+          const combos = [];
+          if (sizes.length > 0 && colors.length > 0) {
+            sizes.forEach(s => { colors.forEach(c => { combos.push({ size: s, color: typeof c === 'object' ? (c.name || '') : String(c) }); }); });
+          } else {
+            sizes.forEach(s => combos.push({ size: s, color: '' }));
+            colors.forEach(c => combos.push({ size: '', color: typeof c === 'object' ? (c.name || '') : String(c) }));
+          }
+          if (combos.length === 0) combos.push({ size: '', color: '' });
+          const stockPer = Math.floor((p.stock || 100) / combos.length) || 1;
+          for (const combo of combos) {
+            const sku = p.sku ? p.sku + '-' + combo.size + '-' + combo.color : '';
+            const { error: vErr } = await supabase.from('product_variants').upsert({
+              product_id: upserted.id,
+              sku,
+              size: combo.size,
+              color: combo.color,
+              price: p.price,
+              compare_at_price: p.compare_at_price || null,
+              stock: stockPer,
+              status: 'published'
+            }, { onConflict: 'product_id,size,color' });
+            if (vErr && vErr.code !== '23505') console.warn('[seed] variant error for ' + p.slug + ':', vErr.message);
+          }
+        }
       }
-      console.log('[seed] supabase upsert done for ' + products.length + ' products.');
+      console.log('[seed] supabase upsert done for ' + products.length + ' products + variants.');
     })();
     return;
   }

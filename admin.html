@@ -295,6 +295,48 @@
           </div>
         </div>
 
+        <!-- Variant Management -->
+        <div class="sm-admin-card mt-3" id="sm-variant-mgmt" style="display:none">
+          <h4>Variants</h4>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm">
+              <thead><tr><th>SKU</th><th>Size</th><th>Color</th><th>Price</th><th>Compare</th><th>Stock</th><th>Status</th><th style="width:100px">Actions</th></tr></thead>
+              <tbody id="sm-variant-tbody"><tr><td colspan="8" class="text-muted">Save the product first, then add variants.</td></tr></tbody>
+            </table>
+          </div>
+          <form id="sm-variant-form" class="form-inline mb-2">
+            <input type="hidden" id="vf-id" value="" />
+            <input type="text" class="form-control form-control-sm mr-2" id="vf-sku" placeholder="SKU" style="width:100px" />
+            <input type="text" class="form-control form-control-sm mr-2" id="vf-size" placeholder="Size" style="width:70px" />
+            <input type="text" class="form-control form-control-sm mr-2" id="vf-color" placeholder="Color" style="width:90px" />
+            <input type="number" step="0.01" class="form-control form-control-sm mr-2" id="vf-price" placeholder="Price" style="width:90px" />
+            <input type="number" step="0.01" class="form-control form-control-sm mr-2" id="vf-compare" placeholder="Compare" style="width:90px" />
+            <input type="number" class="form-control form-control-sm mr-2" id="vf-stock" placeholder="Stock" style="width:70px" />
+            <select class="form-control form-control-sm mr-2" id="vf-status" style="width:100px">
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="hidden">Hidden</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-success">Save Variant</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary ml-1" id="btn-vf-cancel" style="display:none">Cancel</button>
+          </form>
+        </div>
+
+        <!-- Image Management -->
+        <div class="sm-admin-card mt-3" id="sm-image-mgmt" style="display:none">
+          <h4>Images</h4>
+          <div class="row" id="sm-image-gallery"></div>
+          <form id="sm-image-form" class="form-inline mt-2">
+            <input type="hidden" id="if-id" value="" />
+            <input type="text" class="form-control form-control-sm mr-2" id="if-url" placeholder="Image URL *" style="flex:1" required />
+            <input type="text" class="form-control form-control-sm mr-2" id="if-color" placeholder="Color (optional)" style="width:120px" />
+            <input type="number" class="form-control form-control-sm mr-2" id="if-sort" placeholder="Order" style="width:70px" value="0" />
+            <input type="text" class="form-control form-control-sm mr-2" id="if-alt" placeholder="Alt text" style="width:120px" />
+            <button type="submit" class="btn btn-sm btn-success">Add Image</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary ml-1" id="btn-if-cancel" style="display:none">Cancel</button>
+          </form>
+        </div>
+
         <!-- ========== Category Management ========== -->
         <div class="sm-cat-mgmt" id="sm-cat-mgmt">
           <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
@@ -318,10 +360,36 @@
 
       </section>
 
-      <!-- Inventory (placeholder) -->
+      <!-- Inventory Dashboard -->
       <section id="sec-inventory" class="sm-admin-section">
-        <h2 class="sm-admin-section-title">Inventory</h2>
-        <div class="sm-admin-card"><p class="text-muted">Inventory management coming soon.</p></div>
+        <h2 class="sm-admin-section-title">Inventory Dashboard</h2>
+        <div class="row sm-admin-stats mb-4" id="sm-inventory-stats">
+          <div class="col-md-3 col-6 mb-4">
+            <div class="sm-stat-card"><div class="sm-stat-value" id="inv-total-stock">-</div><div class="sm-stat-label">Total Stock</div></div>
+          </div>
+          <div class="col-md-3 col-6 mb-4">
+            <div class="sm-stat-card"><div class="sm-stat-value text-warning" id="inv-low-stock">-</div><div class="sm-stat-label">Low Stock (&le;5)</div></div>
+          </div>
+          <div class="col-md-3 col-6 mb-4">
+            <div class="sm-stat-card"><div class="sm-stat-value text-danger" id="inv-out-of-stock">-</div><div class="sm-stat-label">Out of Stock</div></div>
+          </div>
+          <div class="col-md-3 col-6 mb-4">
+            <div class="sm-stat-card"><div class="sm-stat-value" id="inv-total-variants">-</div><div class="sm-stat-label">Total Variants</div></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="sm-admin-card">
+              <h3>All Variants</h3>
+              <div class="table-responsive">
+                <table class="table table-sm" id="sm-inventory-table">
+                  <thead><tr><th>Product</th><th>SKU</th><th>Size</th><th>Color</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                  <tbody id="sm-inventory-body"><tr><td colspan="7" class="text-muted">Loading...</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- Analytics (placeholder) -->
@@ -394,8 +462,11 @@
       var section = $('sec-' + this.getAttribute('data-section'));
       if (section) section.classList.add('active');
       $('sm-admin-sidebar').classList.remove('sm-admin-sidebar-open');
-      // Load products data when navigating to products section
-      if (this.getAttribute('data-section') === 'products') { loadProducts(); }
+      // Load section data when navigating
+      var sec = this.getAttribute('data-section');
+      if (sec === 'products') { loadProducts(); }
+      if (sec === 'orders') { loadOrders(); }
+      if (sec === 'dashboard') { loadDashboard(); }
     });
   });
 
@@ -514,6 +585,265 @@
       if (s.admin_email) $('set-admin-email').value = s.admin_email;
       if (s.admin_name) $('set-admin-name').value = s.admin_name;
     }).catch(function () {});
+  }
+
+  // ======================== Inventory ========================
+  function loadInventory() {
+    API('/api/admin/dashboard').then(function (d) {
+      var inv = d.inventoryStats || {};
+      $('inv-total-stock').textContent = inv.totalStock != null ? inv.totalStock : '-';
+      $('inv-low-stock').textContent = inv.lowStockCount != null ? inv.lowStockCount : '-';
+      $('inv-out-of-stock').textContent = inv.outOfStockCount != null ? inv.outOfStockCount : '-';
+      $('inv-total-variants').textContent = inv.totalVariants != null ? inv.totalVariants : '-';
+    }).catch(function () {
+      document.querySelectorAll('#sm-inventory-stats .sm-stat-value').forEach(function (el) { el.textContent = 'Error'; });
+    });
+
+    // Load all products with their variants for the inventory table
+    API('/api/products?admin=true').then(function (products) {
+      var tbody = $('sm-inventory-body');
+      if (!products || !products.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-muted">No products found.</td></tr>';
+        return;
+      }
+      var rows = [];
+      var pending = 0;
+      products.forEach(function (p) {
+        pending++;
+        API('/api/products/' + p.id + '/variants').then(function (variants) {
+          if (variants && variants.length) {
+            variants.forEach(function (v) {
+              rows.push({ product: p, variant: v });
+            });
+          } else {
+            // Show product-level stock as a pseudo-variant
+            rows.push({ product: p, variant: null });
+          }
+        }).catch(function () {
+          rows.push({ product: p, variant: null });
+        }).finally(function () {
+          pending--;
+          if (pending === 0) renderInventoryTable(tbody, rows);
+        });
+      });
+      // Fallback if no products triggered async callback
+      if (pending === 0) renderInventoryTable(tbody, rows);
+    }).catch(function () {
+      $('sm-inventory-body').innerHTML = '<tr><td colspan="7" class="text-danger">Failed to load inventory.</td></tr>';
+    });
+  }
+
+  function renderInventoryTable(tbody, rows) {
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-muted">No inventory data.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function (r) {
+      var p = r.product;
+      var v = r.variant;
+      var pName = h(p ? p.name : '-');
+      if (v) {
+        var stockClass = v.stock === 0 ? 'text-danger' : (v.stock <= 5 ? 'text-warning' : '');
+        return '<tr>' +
+          '<td>' + pName + '</td>' +
+          '<td>' + h(v.sku || '-') + '</td>' +
+          '<td>' + h(v.size || '-') + '</td>' +
+          '<td>' + h(v.color || '-') + '</td>' +
+          '<td>$' + Number(v.price || 0).toFixed(2) + '</td>' +
+          '<td class="' + stockClass + '">' + (v.stock != null ? v.stock : '-') + '</td>' +
+          '<td>' + statusBadge(v.status || 'published') + '</td>' +
+        '</tr>';
+      }
+      return '<tr>' +
+        '<td>' + pName + '</td>' +
+        '<td>' + h(p.sku || '-') + '</td>' +
+        '<td>-</td><td>-</td>' +
+        '<td>$' + Number(p.price || 0).toFixed(2) + '</td>' +
+        '<td>' + (p.stock != null ? p.stock : '-') + '</td>' +
+        '<td>' + statusBadge(p.status || 'published') + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  // ======================== Variant Management ========================
+  var currentVariantProductId = null;
+
+  function loadVariants(productId) {
+    currentVariantProductId = productId;
+    if (!productId) {
+      $('sm-variant-tbody').innerHTML = '<tr><td colspan="8" class="text-muted">Save the product first, then add variants.</td></tr>';
+      return;
+    }
+    API('/api/products/' + productId + '/variants').then(function (variants) {
+      var tbody = $('sm-variant-tbody');
+      if (!variants || !variants.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-muted">No variants yet. Add one below.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = variants.map(function (v) {
+        return '<tr>' +
+          '<td>' + h(v.sku || '') + '</td>' +
+          '<td>' + h(v.size || '') + '</td>' +
+          '<td>' + h(v.color || '') + '</td>' +
+          '<td>$' + Number(v.price || 0).toFixed(2) + '</td>' +
+          '<td>' + (v.compare_at_price ? '$' + Number(v.compare_at_price).toFixed(2) : '-') + '</td>' +
+          '<td>' + (v.stock != null ? v.stock : '0') + '</td>' +
+          '<td>' + statusBadge(v.status || 'published') + '</td>' +
+          '<td>' +
+            '<button class="btn btn-sm btn-outline-primary var-edit" data-id="' + v.id + '" data-sku="' + h(v.sku || '') + '" data-size="' + h(v.size || '') + '" data-color="' + h(v.color || '') + '" data-price="' + (v.price || 0) + '" data-compare="' + (v.compare_at_price || '') + '" data-stock="' + (v.stock || 0) + '" data-status="' + (v.status || 'published') + '">Edit</button> ' +
+            '<button class="btn btn-sm btn-outline-danger var-delete" data-id="' + v.id + '">Del</button>' +
+          '</td></tr>';
+      }).join('');
+    }).catch(function () {
+      $('sm-variant-tbody').innerHTML = '<tr><td colspan="8" class="text-danger">Failed to load variants.</td></tr>';
+    });
+  }
+
+  function resetVariantForm() {
+    $('vf-id').value = '';
+    $('vf-sku').value = '';
+    $('vf-size').value = '';
+    $('vf-color').value = '';
+    $('vf-price').value = '';
+    $('vf-compare').value = '';
+    $('vf-stock').value = '';
+    $('vf-status').value = 'published';
+    $('btn-vf-cancel').style.display = 'none';
+  }
+
+  function fillVariantForm(el) {
+    $('vf-id').value = el.getAttribute('data-id');
+    $('vf-sku').value = el.getAttribute('data-sku');
+    $('vf-size').value = el.getAttribute('data-size');
+    $('vf-color').value = el.getAttribute('data-color');
+    $('vf-price').value = el.getAttribute('data-price');
+    $('vf-compare').value = el.getAttribute('data-compare');
+    $('vf-stock').value = el.getAttribute('data-stock');
+    $('vf-status').value = el.getAttribute('data-status');
+    $('btn-vf-cancel').style.display = 'inline-block';
+  }
+
+  function saveVariant(e) {
+    e.preventDefault();
+    var productId = currentVariantProductId;
+    if (!productId) { alert('Save the product first.'); return; }
+
+    var vfId = $('vf-id').value;
+    var data = {
+      sku: $('vf-sku').value.trim(),
+      size: $('vf-size').value.trim(),
+      color: $('vf-color').value.trim(),
+      price: parseFloat($('vf-price').value) || 0,
+      compare_at_price: $('vf-compare').value ? parseFloat($('vf-compare').value) : null,
+      stock: parseInt($('vf-stock').value, 10) || 0,
+      status: $('vf-status').value
+    };
+
+    var url = vfId ? '/api/products/' + productId + '/variants/' + vfId : '/api/products/' + productId + '/variants';
+    var method = vfId ? 'PUT' : 'POST';
+
+    API(url, { method: method, body: JSON.stringify(data) }).then(function (res) {
+      if (res.error) { alert(res.error); return; }
+      resetVariantForm();
+      loadVariants(productId);
+    }).catch(function (err) {
+      alert('Failed to save variant: ' + (err.message || err));
+    });
+  }
+
+  function deleteVariant(productId, variantId) {
+    if (!confirm('Delete this variant?')) return;
+    API('/api/products/' + productId + '/variants/' + variantId, { method: 'DELETE' }).then(function (res) {
+      if (res.error) { alert(res.error); return; }
+      loadVariants(productId);
+    }).catch(function (err) {
+      alert('Failed to delete variant: ' + (err.message || err));
+    });
+  }
+
+  // ======================== Image Management ========================
+  var currentImageProductId = null;
+
+  function loadImages(productId) {
+    currentImageProductId = productId;
+    if (!productId) {
+      $('sm-image-gallery').innerHTML = '<p class="text-muted">Save the product first, then add images.</p>';
+      return;
+    }
+    API('/api/products/' + productId + '/images').then(function (images) {
+      var gallery = $('sm-image-gallery');
+      if (!images || !images.length) {
+        gallery.innerHTML = '<p class="text-muted">No images yet. Add one below.</p>';
+        return;
+      }
+      gallery.innerHTML = images.map(function (img) {
+        return '<div class="col-md-3 col-6 mb-2">' +
+          '<div class="card">' +
+            '<img src="' + h(img.url) + '" alt="' + h(img.alt || '') + '" class="card-img-top" style="height:120px;object-fit:cover">' +
+            '<div class="card-body p-1 text-center">' +
+              '<small class="text-muted">' + h(img.color || 'all') + ' | Order: ' + (img.sort_order || 0) + '</small><br>' +
+              '<button class="btn btn-sm btn-outline-primary img-edit" data-id="' + img.id + '" data-url="' + h(img.url) + '" data-color="' + h(img.color || '') + '" data-alt="' + h(img.alt || '') + '" data-sort="' + (img.sort_order || 0) + '">Edit</button> ' +
+              '<button class="btn btn-sm btn-outline-danger img-delete" data-id="' + img.id + '">Del</button>' +
+            '</div>' +
+          '</div></div>';
+      }).join('');
+    }).catch(function () {
+      $('sm-image-gallery').innerHTML = '<p class="text-danger">Failed to load images.</p>';
+    });
+  }
+
+  function resetImageForm() {
+    $('if-id').value = '';
+    $('if-url').value = '';
+    $('if-color').value = '';
+    $('if-sort').value = '0';
+    $('if-alt').value = '';
+    $('btn-if-cancel').style.display = 'none';
+  }
+
+  function fillImageForm(el) {
+    $('if-id').value = el.getAttribute('data-id');
+    $('if-url').value = el.getAttribute('data-url');
+    $('if-color').value = el.getAttribute('data-color');
+    $('if-sort').value = el.getAttribute('data-sort');
+    $('if-alt').value = el.getAttribute('data-alt');
+    $('btn-if-cancel').style.display = 'inline-block';
+  }
+
+  function saveImage(e) {
+    e.preventDefault();
+    var productId = currentImageProductId;
+    if (!productId) { alert('Save the product first.'); return; }
+
+    var ifId = $('if-id').value;
+    var data = {
+      url: $('if-url').value.trim(),
+      color: $('if-color').value.trim(),
+      sort_order: parseInt($('if-sort').value, 10) || 0,
+      alt: $('if-alt').value.trim()
+    };
+    if (!data.url) { alert('Image URL is required.'); return; }
+
+    var url = ifId ? '/api/products/' + productId + '/images/' + ifId : '/api/products/' + productId + '/images';
+    var method = ifId ? 'PUT' : 'POST';
+
+    API(url, { method: method, body: JSON.stringify(data) }).then(function (res) {
+      if (res.error) { alert(res.error); return; }
+      resetImageForm();
+      loadImages(productId);
+    }).catch(function (err) {
+      alert('Failed to save image: ' + (err.message || err));
+    });
+  }
+
+  function deleteImage(productId, imageId) {
+    if (!confirm('Delete this image?')) return;
+    API('/api/products/' + productId + '/images/' + imageId, { method: 'DELETE' }).then(function (res) {
+      if (res.error) { alert(res.error); return; }
+      loadImages(productId);
+    }).catch(function (err) {
+      alert('Failed to delete image: ' + (err.message || err));
+    });
   }
 
   // ======================== Categories ========================
@@ -654,6 +984,11 @@
       if ($('pf-category').querySelector('option[value="' + product.category + '"]')) {
         $('pf-category').value = product.category || '';
       }
+      // Show variant & image management
+      $('sm-variant-mgmt').style.display = 'block';
+      $('sm-image-mgmt').style.display = 'block';
+      loadVariants(product.id);
+      loadImages(product.id);
     } else {
       editingProductId = null;
       $('prod-form-title').textContent = 'Add Product';
@@ -663,6 +998,8 @@
       $('pf-featured').checked = false;
       $('pf-bestseller').checked = false;
       $('pf-newarrival').checked = false;
+      $('sm-variant-mgmt').style.display = 'none';
+      $('sm-image-mgmt').style.display = 'none';
     }
   }
 
@@ -670,6 +1007,8 @@
     $('sm-product-form').style.display = 'none';
     $('sm-cat-mgmt').classList.remove('active');
     $('sm-product-list').style.display = 'block';
+    $('sm-variant-mgmt').style.display = 'none';
+    $('sm-image-mgmt').style.display = 'none';
     editingProductId = null;
     loadProducts();
   }
@@ -910,6 +1249,43 @@
         toggleCategory(t.getAttribute('data-slug'), t.getAttribute('data-hidden') === '1');
       } else if (t.classList.contains('cat-delete')) {
         deleteCategory(t.getAttribute('data-slug'));
+      }
+    });
+
+    // Inventory section — load data on nav
+    document.querySelectorAll('.sm-admin-nav-link').forEach(function (l) {
+      l.addEventListener('click', function () {
+        if (l.getAttribute('data-section') === 'inventory') {
+          loadInventory();
+        }
+      });
+    });
+
+    // Variant form
+    $('sm-variant-form').addEventListener('submit', saveVariant);
+    $('btn-vf-cancel').addEventListener('click', resetVariantForm);
+
+    // Variant table actions (delegated)
+    $('sm-variant-tbody').addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.classList.contains('var-edit')) {
+        fillVariantForm(t);
+      } else if (t.classList.contains('var-delete')) {
+        deleteVariant(currentVariantProductId, parseInt(t.getAttribute('data-id'), 10));
+      }
+    });
+
+    // Image form
+    $('sm-image-form').addEventListener('submit', saveImage);
+    $('btn-if-cancel').addEventListener('click', resetImageForm);
+
+    // Image gallery actions (delegated)
+    $('sm-image-gallery').addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.classList.contains('img-edit')) {
+        fillImageForm(t);
+      } else if (t.classList.contains('img-delete')) {
+        deleteImage(currentImageProductId, parseInt(t.getAttribute('data-id'), 10));
       }
     });
   }

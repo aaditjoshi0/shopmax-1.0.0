@@ -9,13 +9,18 @@ require('dotenv').config();
 
 const URL = process.env.SUPABASE_URL || '';
 const KEY = process.env.SUPABASE_ANON_KEY || '';
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || '';
 
 const MODE = (URL && KEY && URL.startsWith('http')) ? 'supabase' : 'local';
 
 let supabase = null;
+let serviceClient = null;
 if (MODE === 'supabase') {
   const { createClient } = require('@supabase/supabase-js');
   supabase = createClient(URL, KEY);
+  if (SERVICE_KEY) {
+    serviceClient = createClient(URL, SERVICE_KEY);
+  }
 }
 
 function getAuthedClient(jwt) {
@@ -26,8 +31,12 @@ function getAuthedClient(jwt) {
   });
 }
 
+function getServiceClient() {
+  return serviceClient;
+}
+
 function isConfigured() {
   return MODE === 'supabase';
 }
 
-module.exports = { supabase, MODE, getAuthedClient, isConfigured };
+module.exports = { supabase, MODE, getAuthedClient, getServiceClient, isConfigured };

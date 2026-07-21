@@ -25,6 +25,7 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'alter table public.carts add column if not exists guest_id text;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.carts add column if not exists updated_at timestamptz not null default now();' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.cart_items add column if not exists color text default \'\';' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'alter table public.cart_items add column if not exists variant_id bigint;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop index if exists cart_items_cart_id_product_id_size_key;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'create unique index if not exists cart_items_unique_idx on public.cart_items (cart_id, coalesce(product_id, -1), coalesce(size, \'\'), coalesce(color, \'\'));' }).catch(() => {});
       // --- Proper RLS: auth-based policies (no permissive USING(true)) ---
@@ -61,6 +62,21 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists discount numeric default 0;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists delivery_charge numeric default 0;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists coupon_code text;' }).catch(() => {});
+      // --- Product variants + images tables ---
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.product_variants (id bigint generated always as identity primary key, product_id bigint not null references public.products(id) on delete cascade, sku text default '', size text default '', color text default '', price numeric(10,2) not null default 0, compare_at_price numeric(10,2), stock integer not null default 0, status text not null default 'published', created_at timestamptz not null default now(), updated_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists product_variants_product_idx on public.product_variants(product_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "create unique index if not exists product_variants_sku_idx on public.product_variants(sku) where sku != '';" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create unique index if not exists product_variants_combo_idx on public.product_variants(product_id, size, color);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.product_images (id bigint generated always as identity primary key, product_id bigint not null references public.products(id) on delete cascade, color text default '', url text not null, alt text default '', sort_order integer not null default 0, created_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists product_images_product_idx on public.product_images(product_id, sort_order);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "product_variants read" on public.product_variants;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "product_variants read" on public.product_variants for select using (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "product_variants write" on public.product_variants;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "product_variants write" on public.product_variants for all using (true) with check (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "product_images read" on public.product_images;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "product_images read" on public.product_images for select using (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "product_images write" on public.product_images;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "product_images write" on public.product_images for all using (true) with check (true);' }).catch(() => {});
     } catch (_) {}
   })();
 }
@@ -77,7 +93,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SESSION_SECRET));
 
 // --- Login guard: require auth for protected HTML pages ---
-const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html'];
+const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html', '/cart.html', '/checkout.html'];
 const PUBLIC_ROUTES = ['/product/'];   // product detail pages are public
 app.use((req, res, next) => {
   // Allow API routes, static assets (css/js/images/fonts), and public pages
@@ -128,6 +144,7 @@ app.use('/api/designs', require('./src/api/designs'));
 app.use('/api/marketplace', require('./src/api/marketplace'));
 app.use('/api/categories', require('./src/api/categories'));
 app.use('/api/admin', require('./src/api/admin'));
+app.use('/api', require('./src/api/variants')); // includes product variant + image routes
 
 // Health / mode check
 app.get('/api/health', (req, res) => {
@@ -170,6 +187,9 @@ app.listen(PORT, () => {
   console.log('  Mode  : ' + label);
   if (!isConfigured()) {
     console.log('  Hint  : add SUPABASE_URL + SUPABASE_ANON_KEY to .env to use cloud DB');
+  } else if (!process.env.SUPABASE_SERVICE_KEY) {
+    console.log('  WARN  : SUPABASE_SERVICE_KEY not set — admin APIs will only see own data.');
+    console.log('          Add it to .env from Supabase Dashboard -> Settings -> API -> service_role');
   }
   console.log('  ----------------------------------------\n');
 });

@@ -16,13 +16,15 @@ const DEFAULTS = {
   orders: [],         // { id, user_id, items, shipping, total, status, created_at }
   designs: [],        // { id, user_id, name, canvas_data, thumbnail_url, product_type, created_at }
   listings: [],       // { id, user_id, title, description, price, image_url, size, category, status, created_at }
+  variants: [],       // { id, product_id, sku, size, color, price, compare_at_price, stock, status }
+  images: [],         // { id, product_id, color, url, alt, sort_order }
   users: [],          // local-only auth: { id, email, password (hashed), full_name, mobile, birthdate }
   coupons: [
     { code: 'SHOPMAX10',  type: 'percent', value: 10,  min_cart: 0,   max_uses: 1000, used_count: 0, active: true },
     { code: 'SHOPMAX20',  type: 'percent', value: 20,  min_cart: 0,   max_uses: 500,  used_count: 0, active: true },
     { code: 'FIRSTORDER', type: 'fixed',   value: 100, min_cart: 200, max_uses: 1000, used_count: 0, active: true }
   ],
-  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1 }
+  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1, variant: 1000, image: 1000 }
 };
 
 function load() {

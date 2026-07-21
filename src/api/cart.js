@@ -76,14 +76,15 @@ function validationError(msg) {
 async function sbValidateProduct(b, requestedQty, sb) {
   if (!b.product_id) return null;
 
-  var { data: product, error: pErr } = await sb
+  var { data: product, error: pErr } = await supabase
     .from('products')
-    .select('id, name, price, stock, status, sizes, colors')
+    .select('*')
     .eq('id', b.product_id)
-    .single();
+    .maybeSingle();
 
-  if (pErr || !product) throw validationError('Product not found.');
-  if (product.status !== 'published') throw validationError('This product is not available for purchase.');
+  if (pErr) throw validationError('Product not found.');
+  if (!product) throw validationError('Product not found.');
+  if ((product.status || 'published') !== 'published') throw validationError('This product is not available for purchase.');
   if (product.stock < 1) throw validationError('This product is out of stock.');
   if (requestedQty && requestedQty > product.stock) throw validationError('Only ' + product.stock + ' available.');
 
@@ -93,7 +94,10 @@ async function sbValidateProduct(b, requestedQty, sb) {
 
   var colorName = b.color || '';
   if (colorName && product.colors && product.colors.length > 0) {
-    var validColor = product.colors.some(function (c) { return (c.name || '') === colorName; });
+    var validColor = product.colors.some(function (c) {
+      var name = typeof c === 'object' ? (c.name || '') : String(c || '');
+      return name === colorName;
+    });
     if (!validColor) throw validationError('Invalid color "' + colorName + '".');
   }
 
@@ -133,6 +137,7 @@ router.post('/items', getUser, async (req, res, next) => {
       var item = {
         id: store.uid(),
         product_id: b.product_id || null,
+        variant_id: b.variant_id || null,
         name: b.name,
         price: Number(b.price),
         image_url: b.image_url || null,
@@ -141,8 +146,29 @@ router.post('/items', getUser, async (req, res, next) => {
         quantity: quantity,
         meta: b.meta || null
       };
+
+      // Validate variant stock if variant_id is provided
+      if (item.variant_id) {
+        var variant = store.raw.variants.find(function (v) { return v.id === item.variant_id; });
+        if (!variant) return res.status(400).json({ error: 'Variant not found.' });
+        if (variant.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
+        if (variant.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
+        if (quantity > variant.stock) return res.status(400).json({ error: 'Only ' + variant.stock + ' of this variant available.' });
+        item.price = Number(b.price) || variant.price;
+        if (!item.size) item.size = variant.size || null;
+        if (!item.color) item.color = variant.color || '';
+      } else if (b.product_id) {
+        var product = store.raw.products.find(function (p) { return p.id === b.product_id; });
+        if (product) {
+          if ((product.status || 'published') !== 'published') return res.status(400).json({ error: 'This product is not available for purchase.' });
+          if (product.stock < 1) return res.status(400).json({ error: 'This product is out of stock.' });
+          if (quantity > product.stock) return res.status(400).json({ error: 'Only ' + product.stock + ' available.' });
+        }
+      }
+
       var cart = localFindCart(localOwnerKey(req, res));
       var match = cart.items.find(function (i) {
+        if (item.variant_id && i.variant_id === item.variant_id) return true;
         return (item.product_id && i.product_id === item.product_id && (i.size || null) === (item.size || null) && (i.color || '') === (item.color || '')) ||
           (item.meta && item.meta.design_id && i.meta && i.meta.design_id === item.meta.design_id);
       });
@@ -156,41 +182,65 @@ router.post('/items', getUser, async (req, res, next) => {
     var sb2 = req.supabase || supabase;
 
     if (req.user) {
-      var product = await sbValidateProduct(b, quantity, sb2);
+      // If variant_id provided, validate variant stock; otherwise validate product stock
+      if (b.variant_id) {
+        var { data: variant } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
+        if (!variant) return res.status(400).json({ error: 'Variant not found.' });
+        if (variant.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
+        if (variant.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
+        if (quantity > variant.stock) return res.status(400).json({ error: 'Only ' + variant.stock + ' of this variant available.' });
+      } else {
+        await sbValidateProduct(b, quantity, sb2);
+      }
+
       var cart2 = await sbGetOrCreateCart(req.user.id, sb2);
 
       var colorName = b.color || '';
-      var { data: existingRows } = await sb2
-        .from('cart_items')
-        .select('id, quantity')
-        .eq('cart_id', cart2.id)
-        .eq('product_id', b.product_id)
-        .eq('size', b.size || '')
-        .eq('color', colorName);
+      var queryMatch = sb2.from('cart_items').select('id, quantity').eq('product_id', b.product_id).eq('size', b.size || '').eq('color', colorName).eq('cart_id', cart2.id);
+      var { data: existingRows } = await queryMatch;
 
       var existingQty = existingRows && existingRows.length > 0 ? existingRows[0].quantity : 0;
       var totalQty = existingQty + quantity;
 
-      if (totalQty > product.stock) {
-        var available = Math.max(0, product.stock - existingQty);
-        if (available <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
-        return res.status(400).json({ error: 'Only ' + available + ' more available.' });
+      if (b.variant_id) {
+        var { data: v2 } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        if (totalQty > v2.stock) {
+          var avail = Math.max(0, v2.stock - existingQty);
+          if (avail <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
+          return res.status(400).json({ error: 'Only ' + avail + ' more available.' });
+        }
+      } else {
+        var product2 = await sbValidateProduct(b, quantity, sb2);
+        if (totalQty > product2.stock) {
+          var available = Math.max(0, product2.stock - existingQty);
+          if (available <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
+          return res.status(400).json({ error: 'Only ' + available + ' more available.' });
+        }
       }
 
       if (existingRows && existingRows.length > 0) {
-        await sb2.from('cart_items').update({ quantity: totalQty }).eq('id', existingRows[0].id);
+        var updFields = { quantity: totalQty };
+        if (b.variant_id) {
+          updFields.meta = existingRows[0].meta ? { ...existingRows[0].meta, variant_id: b.variant_id } : { variant_id: b.variant_id };
+        }
+        var { error: updErr } = await sb2.from('cart_items').update(updFields).eq('id', existingRows[0].id);
+        if (updErr) throw new Error('Failed to update cart item: ' + updErr.message);
       } else {
-        await sb2.from('cart_items').insert({
+        var cartMeta = b.meta ? { ...b.meta } : {};
+        if (b.variant_id) cartMeta.variant_id = b.variant_id;
+        var insertObj = {
           cart_id: cart2.id,
           product_id: b.product_id,
-          name: product.name,
+          name: b.name,
           price: Number(b.price),
           image_url: b.image_url || null,
           size: b.size || '',
           color: colorName,
           quantity: totalQty,
-          meta: b.meta || null
-        });
+          meta: cartMeta
+        };
+        var { error: insErr } = await sb2.from('cart_items').insert(insertObj);
+        if (insErr) throw new Error('Failed to add item to cart: ' + insErr.message);
       }
 
       await sbTouchCart(cart2.id, sb2);
@@ -199,12 +249,19 @@ router.post('/items', getUser, async (req, res, next) => {
     }
 
     // Guest in supabase mode — use localStore
-    if (b.product_id) {
+    if (b.variant_id) {
+      var { data: guestV } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
+      if (!guestV) return res.status(400).json({ error: 'Variant not found.' });
+      if (guestV.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
+      if (guestV.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
+      if (quantity > guestV.stock) return res.status(400).json({ error: 'Only ' + guestV.stock + ' of this variant available.' });
+    } else if (b.product_id) {
       await sbValidateProduct(b, quantity, sb2);
     }
     var gItem = {
       id: store.uid(),
       product_id: b.product_id || null,
+      variant_id: b.variant_id || null,
       name: b.name,
       price: Number(b.price),
       image_url: b.image_url || null,
@@ -215,11 +272,20 @@ router.post('/items', getUser, async (req, res, next) => {
     };
     var gCart = localFindCart(localOwnerKey(req, res));
     var gMatch = gCart.items.find(function (i) {
+      if (gItem.variant_id && i.variant_id === gItem.variant_id) return true;
       return (gItem.product_id && i.product_id === gItem.product_id && (i.size || null) === (gItem.size || null) && (i.color || '') === (gItem.color || '')) ||
         (gItem.meta && gItem.meta.design_id && i.meta && i.meta.design_id === gItem.meta.design_id);
     });
     if (gMatch) {
-      if (b.product_id) {
+      if (b.variant_id) {
+        var { data: guestV2 } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        var gTotal = gMatch.quantity + quantity;
+        if (gTotal > guestV2.stock) {
+          var gAvail = Math.max(0, guestV2.stock - gMatch.quantity);
+          if (gAvail <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
+          return res.status(400).json({ error: 'Only ' + gAvail + ' more available.' });
+        }
+      } else if (b.product_id) {
         await sbValidateProduct(b, gMatch.quantity + quantity, sb2);
       }
       gMatch.quantity += gItem.quantity;
@@ -366,6 +432,7 @@ router.post('/merge', getUser, async (req, res, next) => {
       for (var gi = 0; gi < sourceCart.items.length; gi++) {
         var gItem = sourceCart.items[gi];
         var match = userCart.items.find(function (i) {
+          if (gItem.variant_id && i.variant_id === gItem.variant_id) return true;
           return (gItem.product_id && i.product_id === gItem.product_id && (i.size || null) === (gItem.size || null) && (i.color || '') === (gItem.color || ''));
         });
         if (match) match.quantity += gItem.quantity;
@@ -392,19 +459,19 @@ router.post('/merge', getUser, async (req, res, next) => {
 
     for (var gi2 = 0; gi2 < sourceCart2.items.length; gi2++) {
       var gItem2 = sourceCart2.items[gi2];
-      var { data: existing } = await sb
-        .from('cart_items')
-        .select('id, quantity')
-        .eq('cart_id', userCart2.id)
-        .eq('product_id', gItem2.product_id)
-        .eq('size', gItem2.size || '')
-        .eq('color', gItem2.color || '')
-        .maybeSingle();
+      var query = sb.from('cart_items').select('id, quantity').eq('cart_id', userCart2.id);
+      if (gItem2.product_id) {
+        query = query.eq('product_id', gItem2.product_id).eq('size', gItem2.size || '').eq('color', gItem2.color || '');
+      }
+      var { data: existing } = await query.maybeSingle();
 
       if (existing) {
-        await sb.from('cart_items').update({ quantity: existing.quantity + gItem2.quantity }).eq('id', existing.id);
+        var { error: mUpdErr } = await sb.from('cart_items').update({ quantity: existing.quantity + gItem2.quantity }).eq('id', existing.id);
+        if (mUpdErr) throw new Error('Failed to update merged item: ' + mUpdErr.message);
       } else {
-        await sb.from('cart_items').insert({
+        var mergeMeta = gItem2.meta ? { ...gItem2.meta } : {};
+        if (gItem2.variant_id) mergeMeta.variant_id = gItem2.variant_id;
+        var mergeInsert = {
           cart_id: userCart2.id,
           product_id: gItem2.product_id,
           name: gItem2.name,
@@ -413,8 +480,10 @@ router.post('/merge', getUser, async (req, res, next) => {
           size: gItem2.size || '',
           color: gItem2.color || '',
           quantity: gItem2.quantity,
-          meta: gItem2.meta || null
-        });
+          meta: mergeMeta
+        };
+        var { error: mInsErr } = await sb.from('cart_items').insert(mergeInsert);
+        if (mInsErr) throw new Error('Failed to add merged item: ' + mInsErr.message);
       }
     }
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ShopMax &mdash; Cart</title>
+    <title>ShopMax &mdash; Shopping Bag</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
@@ -18,73 +18,111 @@
 <body>
 <div class="site-wrap">
     <div data-sm-navbar></div>
-    <div class="bg-light py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Cart</strong></div>
+    <div class="sm-cart-page">
+        <div class="sm-cart-container">
+            <div id="sm-cart-loading" class="text-center py-5 text-muted">Loading your bag...</div>
+            <div id="sm-cart-empty" style="display:none">
+                <h1 class="sm-cart-title">SHOPPING BAG</h1>
+                <p class="sm-cart-empty-msg">Your shopping bag is empty.</p>
+                <div class="d-flex flex-wrap" style="gap:12px;margin-top:16px;">
+                    <a href="shop.html" class="sm-cart-checkout-btn" style="display:inline-block;width:auto;padding:12px 32px;">CONTINUE SHOPPING</a>
+                    <a href="login.html" class="sm-cart-checkout-btn" id="sm-empty-signin" style="display:inline-block;width:auto;padding:12px 32px;background:#fff;color:#000;border:2px solid #000;">SIGN IN</a>
+                </div>
+                <div class="sm-cart-info-section">
+                    <div class="sm-cart-info-icon"><span class="icon-tag"></span></div>
+                    <div class="sm-cart-info-content">
+                        <div class="sm-cart-info-title">EXCLUSIVE OFFERS AVAILABLE</div>
+                        <div class="sm-cart-info-desc">Apply your coupon code at checkout to unlock exclusive discounts and offers.</div>
+                    </div>
+                </div>
+                <div class="sm-cart-info-section">
+                    <div class="sm-cart-info-icon"><span class="icon-credit-card"></span></div>
+                    <div class="sm-cart-info-content">
+                        <div class="sm-cart-info-title">PAYMENT OPTIONS</div>
+                        <div class="sm-cart-info-desc">We accept the following payment methods</div>
+                        <div class="sm-empty-payment-icons">
+                            <svg viewBox="0 0 50 30" width="44" height="26"><rect width="50" height="30" fill="#1a1f71" rx="3"/><text x="7" y="19" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="9">VISA</text></svg>
+                            <svg viewBox="0 0 50 30" width="44" height="26"><rect width="50" height="30" fill="#eb001b" rx="3"/><text x="5" y="19" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="7">Master</text><circle cx="25" cy="15" r="5" fill="#f79e1b"/></svg>
+                            <svg viewBox="0 0 50 30" width="44" height="26"><rect width="50" height="30" fill="#6c2bd9" rx="3"/><text x="8" y="18" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="11">UPI</text></svg>
+                            <svg viewBox="0 0 50 30" width="44" height="26"><rect width="50" height="30" fill="#2e7d32" rx="3"/><text x="2" y="11" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="5.5">CASH</text><text x="2" y="19" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="5.5">ON DEL</text></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="sm-cart-info-section">
+                    <div class="sm-cart-info-icon"><span class="icon-local_shipping"></span></div>
+                    <div class="sm-cart-info-content">
+                        <div class="sm-cart-info-title">FREE DELIVERY</div>
+                        <div class="sm-cart-info-desc">Free delivery on orders above &#x20B9;999.</div>
+                    </div>
+                </div>
+                <div class="sm-cart-info-section">
+                    <div class="sm-cart-info-icon"><span class="icon-replay"></span></div>
+                    <div class="sm-cart-info-content">
+                        <div class="sm-cart-info-title"><a href="return-policy.html" class="sm-cart-info-link">15 DAYS EASY RETURNS</a></div>
+                        <div class="sm-cart-info-desc">Return eligible products within 15 days.</div>
+                    </div>
+                </div>
+                <div class="sm-cart-info-section" style="border-bottom:none;">
+                    <div class="sm-cart-info-icon"><span class="icon-info"></span></div>
+                    <div class="sm-cart-info-content">
+                        <div class="sm-cart-info-title"><a href="delivery-policy.html" class="sm-cart-info-link">DELIVERY INFORMATION</a></div>
+                        <div class="sm-cart-info-desc">Track your order anytime after shipping.</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="site-section">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body p-0">
-                            <div id="sm-cart-loading" class="text-center py-5 text-muted">Loading cart...</div>
-                            <div id="sm-cart-empty" class="text-center py-5" style="display:none">
-                                <p class="lead mb-4">Your cart is empty.</p>
-                                <a href="shop.html" class="btn btn-primary btn-lg">Continue Shopping</a>
+            <div id="sm-cart-content" style="display:none">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h1 class="sm-cart-title mb-0">SHOPPING BAG</h1>
+                    <span class="text-muted" style="font-size:13px;font-weight:600;" id="sm-items-count">0 items</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-7 col-lg-8">
+                        <div class="d-flex justify-content-between align-items-center py-2 mb-1" style="border-bottom:1px solid #eee;">
+                            <label class="d-flex align-items-center mb-0" style="cursor:pointer;font-size:12px;font-weight:700;letter-spacing:0.04em;color:#333;">
+                                <input type="checkbox" id="sm-select-all" class="form-check-input" style="margin-top:0;margin-right:6px;">
+                                SELECT ALL
+                            </label>
+                            <div>
+                                <button class="btn btn-sm btn-link text-decoration-none p-0 ml-3" id="sm-remove-selected" style="font-size:12px;font-weight:600;color:#c0392b;border:0;background:none;cursor:pointer;">
+                                    <span class="icon-trash-o"></span> DELETE SELECTED
+                                </button>
+                                <button class="btn btn-sm btn-link text-decoration-none p-0 ml-3" id="sm-clear-cart" style="font-size:12px;font-weight:600;color:#888;border:0;background:none;cursor:pointer;">
+                                    CLEAR BAG
+                                </button>
                             </div>
-                            <div id="sm-cart-content" style="display:none">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th class="text-center" style="width:40px">
-                                                    <input type="checkbox" id="sm-select-all" class="form-check-input">
-                                                </th>
-                                                <th>&nbsp;</th>
-                                                <th>Product</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                                <th class="text-center" style="width:60px">
-                                                    <button class="btn btn-sm btn-danger" id="sm-remove-selected" title="Remove Selected">
-                                                        <span class="icon-trash-o"></span>
-                                                    </button>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="sm-cart-items"></tbody>
-                                    </table>
-                                </div>
-                                <div class="row p-4">
-                                    <div class="col-md-6 mb-3 mb-md-0">
-                                        <a href="shop.html" class="btn btn-outline-primary btn-sm">&larr; Continue Shopping</a>
-                                        <button class="btn btn-outline-danger btn-sm ml-2" id="sm-clear-cart">Clear Cart</button>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <div id="sm-cart-totals">
-                                            <div class="d-flex justify-content-between mb-1"><span>Subtotal:</span> <strong id="sm-total-subtotal">₹0.00</strong></div>
-                                            <div class="d-flex justify-content-between mb-1" id="sm-row-discount" style="display:none"><span class="text-success">Discount:</span> <strong class="text-success" id="sm-total-discount">-₹0.00</strong></div>
-                                            <div class="d-flex justify-content-between mb-1"><span>Delivery:</span> <strong id="sm-total-delivery">₹0.00</strong></div>
-                                            <hr class="my-1">
-                                            <div class="d-flex justify-content-between mb-3"><span class="h5 font-weight-bold">Total:</span> <strong class="h5 font-weight-bold" id="sm-total-final">₹0.00</strong></div>
-                                        </div>
-                                        <a href="checkout.html" class="btn btn-primary btn-lg py-2 btn-block">Proceed To Checkout</a>
-                                        <div class="mt-3">
-                                            <span class="small text-muted">We accept:</span>
-                                            <div id="sm-payment-icons" class="d-flex justify-content-end mt-1" style="gap:12px">
-                                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#1a1f71" rx="4"/><text x="7" y="19" fill="white" font-family="Arial" font-weight="bold" font-size="9">VISA</text></svg>
-                                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#eb001b" rx="4"/><text x="5" y="19" fill="white" font-family="Arial" font-weight="bold" font-size="7">Master</text><circle cx="25" cy="15" r="5" fill="#f79e1b"/></svg>
-                                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#6c2bd9" rx="4"/><text x="8" y="18" fill="white" font-family="Arial" font-weight="bold" font-size="12">UPI</text></svg>
-                                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#4caf50" rx="4"/><text x="2" y="13" fill="white" font-family="Arial" font-weight="bold" font-size="6.5">CASH ON</text><text x="5" y="22" fill="white" font-family="Arial" font-weight="bold" font-size="6.5">DELIVERY</text></svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div id="sm-cart-items"></div>
+                    </div>
+                    <div class="col-md-5 col-lg-4">
+                        <div class="sm-cart-summary">
+                            <h3 style="font-size:16px;font-weight:700;letter-spacing:0.05em;margin-bottom:0;padding-bottom:14px;border-bottom:1px solid #eee;">ORDER SUMMARY</h3>
+                            <div class="sm-summary-row">
+                                <span class="sm-summary-label">Subtotal</span>
+                                <span class="sm-summary-value" id="sm-total-subtotal">&#x20B9;0.00</span>
                             </div>
+                            <div class="sm-summary-row" id="sm-row-discount" style="display:none">
+                                <span class="sm-summary-label">Discount</span>
+                                <span class="sm-summary-value text-success" id="sm-total-discount">-&#x20B9;0.00</span>
+                            </div>
+                            <div class="sm-summary-row">
+                                <span class="sm-summary-label">Delivery</span>
+                                <span class="sm-summary-value" id="sm-total-delivery">&#x20B9;0.00</span>
+                            </div>
+                            <div class="sm-summary-row sm-summary-total">
+                                <span class="sm-summary-label" style="font-size:16px;">Total</span>
+                                <span class="sm-summary-value" style="font-size:18px;" id="sm-total-final">&#x20B9;0.00</span>
+                            </div>
+                            <a href="checkout.html" class="sm-cart-checkout-btn">PROCEED TO CHECKOUT</a>
+                            <div class="sm-payment-icons">
+                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#1a1f71" rx="4"/><text x="7" y="19" fill="white" font-family="Arial" font-weight="bold" font-size="9">VISA</text></svg>
+                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#eb001b" rx="4"/><text x="5" y="19" fill="white" font-family="Arial" font-weight="bold" font-size="7">Master</text><circle cx="25" cy="15" r="5" fill="#f79e1b"/></svg>
+                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#6c2bd9" rx="4"/><text x="8" y="18" fill="white" font-family="Arial" font-weight="bold" font-size="12">UPI</text></svg>
+                                <svg viewBox="0 0 50 30" width="50" height="30" style="border-radius:3px"><rect width="50" height="30" fill="#4caf50" rx="4"/><text x="2" y="13" fill="white" font-family="Arial" font-weight="bold" font-size="6.5">CASH ON</text><text x="5" y="22" fill="white" font-family="Arial" font-weight="bold" font-size="6.5">DELIVERY</text></svg>
+                            </div>
+                            <p class="sm-cart-note">
+                                Free delivery on orders above &#x20B9;1000.<br>
+                                <a href="return-policy.html">Return Policy</a> &amp; <a href="delivery-policy.html">Delivery Policy</a>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -117,9 +155,20 @@ document.addEventListener('DOMContentLoaded', function () {
   var selectAll = document.getElementById('sm-select-all');
   var removeSelectedBtn = document.getElementById('sm-remove-selected');
   var clearCartBtn = document.getElementById('sm-clear-cart');
+  var itemsCountEl = document.getElementById('sm-items-count');
+  var emptySignInEl = document.getElementById('sm-empty-signin');
 
   var allItems = [];
   var selectedIds = new Set();
+
+  function updateSignIn() {
+    if (emptySignInEl) {
+      if (SM.isLoggedIn()) emptySignInEl.style.display = 'none';
+      else emptySignInEl.style.display = '';
+    }
+  }
+  updateSignIn();
+  SM.refreshAuth().then(updateSignIn);
 
   function fmt(n) { return '\u20B9' + Number(n || 0).toFixed(2); }
 
@@ -127,6 +176,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (subtotal < 500) return 50;
     if (subtotal < 1000) return 30;
     return 0;
+  }
+
+  function showError(msg) {
+    if (SM.toast) SM.toast(msg, 'error');
   }
 
   function render() {
@@ -141,41 +194,51 @@ document.addEventListener('DOMContentLoaded', function () {
     emptyEl.style.display = 'none';
 
     var subtotal = allItems.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
+    var totalQty = allItems.reduce(function (s, i) { return s + Number(i.quantity); }, 0);
     var delivery = calcDelivery(subtotal);
     var finalTotal = subtotal + delivery;
 
+    itemsCountEl.textContent = totalQty + ' item' + (totalQty !== 1 ? 's' : '');
     totalSubtotalEl.textContent = fmt(subtotal);
-    if (delivery === 0) {
-      totalDeliveryEl.innerHTML = '<span class="text-success">FREE</span>';
-    } else {
-      totalDeliveryEl.textContent = fmt(delivery);
-    }
+    totalDeliveryEl.textContent = delivery === 0 ? 'FREE' : fmt(delivery);
+    totalDeliveryEl.style.color = delivery === 0 ? '#27ae60' : '';
     rowDiscountEl.style.display = 'none';
     totalFinalEl.textContent = fmt(finalTotal);
 
     var html = '';
-    allItems.forEach(function (item) {
+    for (var ri = 0; ri < allItems.length; ri++) {
+      var item = allItems[ri];
       var lineTotal = Number(item.price) * Number(item.quantity);
       var id = item.unique_id || item.id;
       var checked = selectedIds.has(id) ? 'checked' : '';
-      html += '<tr>' +
-        '<td class="text-center align-middle"><input type="checkbox" class="form-check-input sm-item-check" value="' + id + '" ' + checked + '></td>' +
-        '<td class="align-middle" style="width:80px"><img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="" style="width:70px;height:90px;object-fit:cover;border-radius:4px"></td>' +
-        '<td class="align-middle">' +
-          '<strong>' + SM.escapeHtml(item.name) + '</strong>' +
-          (item.size ? '<br><small class="text-muted">Size: ' + SM.escapeHtml(item.size) + '</small>' : '') +
-          (item.color ? '<br><small class="text-muted">Color: ' + SM.escapeHtml(item.color) + '</small>' : '') +
-        '</td>' +
-        '<td class="align-middle">' + fmt(item.price) + '</td>' +
-        '<td class="align-middle"><div class="input-group input-group-sm" style="max-width:110px">' +
-          '<div class="input-group-prepend"><button class="btn btn-outline-secondary sm-qty-minus" data-id="' + id + '" data-step="-1">-</button></div>' +
-          '<input type="text" class="form-control text-center sm-qty-input" value="' + item.quantity + '" readonly>' +
-          '<div class="input-group-append"><button class="btn btn-outline-secondary sm-qty-plus" data-id="' + id + '" data-step="1">+</button></div>' +
-        '</div></td>' +
-        '<td class="align-middle">' + fmt(lineTotal) + '</td>' +
-        '<td class="text-center align-middle"><button class="btn btn-sm btn-outline-danger sm-remove-one" data-id="' + id + '" title="Remove item"><span class="icon-close"></span></button></td>' +
-      '</tr>';
-    });
+      html += '<div class="sm-cart-item">' +
+        '<div style="position:absolute;top:20px;left:0;z-index:2;">' +
+          '<input type="checkbox" class="form-check-input sm-item-check" value="' + id + '" ' + checked + ' style="margin-top:0;">' +
+        '</div>' +
+        '<div class="sm-cart-item-img" style="margin-left:28px;">' +
+          '<img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="' + SM.escapeHtml(item.name) + '" loading="lazy">' +
+        '</div>' +
+        '<div class="sm-cart-item-info">' +
+          '<div class="sm-cart-item-name">' + SM.escapeHtml(item.name) + '</div>' +
+          '<div class="sm-cart-item-size">' +
+            (item.size ? 'Size: ' + SM.escapeHtml(item.size) : '') +
+            (item.size && item.color ? ' &middot; ' : '') +
+            (item.color ? 'Color: ' + SM.escapeHtml(item.color) : '') +
+            ((item.variant_id || (item.meta && item.meta.variant_id)) ? ' &middot; <span class="text-muted" style="font-size:11px;">Variant #' + (item.variant_id || item.meta.variant_id) + '</span>' : '') +
+          '</div>' +
+          '<div class="sm-cart-qty-row">' +
+            '<div class="sm-cart-item-qty">' +
+              '<button class="sm-qty-btn sm-qty-minus" data-id="' + id + '" data-step="-1">&minus;</button>' +
+              '<span class="sm-qty-value">' + item.quantity + '</span>' +
+              '<button class="sm-qty-btn sm-qty-plus" data-id="' + id + '" data-step="1">+</button>' +
+            '</div>' +
+            '<div class="sm-cart-item-price">' + fmt(item.price) + ' each</div>' +
+          '</div>' +
+          '<div class="sm-cart-item-total">' + fmt(lineTotal) + '</div>' +
+        '</div>' +
+        '<button class="sm-cart-item-remove sm-remove-one" data-id="' + id + '" title="Remove item">&times;</button>' +
+      '</div>';
+    }
     itemsEl.innerHTML = html;
   }
 
@@ -183,22 +246,38 @@ document.addEventListener('DOMContentLoaded', function () {
     SM.api('/api/cart').then(function (cart) {
       allItems = cart.items || [];
       selectedIds.clear();
+      if (selectAll) selectAll.checked = false;
       render();
-      SM.updateCartCount && SM.updateCartCount();
     }).catch(function () {
-      loadingEl.textContent = 'Failed to load cart.';
+      loadingEl.textContent = 'Failed to load your bag. Please try again.';
     });
   }
 
-  function removeItems(ids) {
-    Promise.all(ids.map(function (id) {
-      return SM.api('/api/cart/' + id, { method: 'DELETE' });
-    })).then(function () {
-      loadCart();
-    }).catch(function () { loadCart(); });
+  function refreshBadge() {
+    if (SM.refreshCartBadge) SM.refreshCartBadge();
   }
 
-  // Event delegation
+  function removeItems(ids) {
+    if (!ids || ids.length === 0) return;
+    var p = Promise.resolve();
+    for (var ri = 0; ri < ids.length; ri++) {
+      p = p.then(function (id) {
+        return function () { return SM.api('/api/cart/items/' + id, { method: 'DELETE' }).catch(function (e) { showError(e.message || 'Failed to remove item.'); }); };
+      }(ids[ri]));
+    }
+    p.then(function () { loadCart(); refreshBadge(); }).catch(function () { loadCart(); });
+  }
+
+  function clearCart() {
+    if (allItems.length === 0) return;
+    SM.api('/api/cart/clear', { method: 'POST' }).then(function () {
+      allItems = [];
+      selectedIds.clear();
+      render();
+      refreshBadge();
+    }).catch(function (e) { showError(e.message || 'Failed to clear cart.'); loadCart(); });
+  }
+
   itemsEl.addEventListener('click', function (e) {
     var target = e.target.closest('button');
     if (!target) return;
@@ -218,46 +297,52 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!item) return;
       var newQty = (Number(item.quantity) || 1) + step;
       if (newQty < 1) { removeItems([id]); return; }
-      if (newQty > 10) return;
-      SM.api('/api/cart/' + id, {
+      SM.api('/api/cart/items/' + id, {
         method: 'PATCH',
         body: JSON.stringify({ quantity: newQty })
-      }).then(function () { loadCart(); }).catch(function () { loadCart(); });
+      }).then(function () {
+        loadCart();
+        refreshBadge();
+      }).catch(function (e) {
+        showError(e.message || 'Failed to update quantity.');
+        loadCart();
+      });
     }
   });
 
-  // Checkbox delegation
   itemsEl.addEventListener('change', function (e) {
     if (e.target.classList.contains('sm-item-check')) {
-      var id = e.target.value;
-      if (e.target.checked) selectedIds.add(id);
-      else selectedIds.delete(id);
+      var cid = e.target.value;
+      if (e.target.checked) selectedIds.add(cid);
+      else selectedIds.delete(cid);
     }
   });
 
-  // Select all
-  selectAll.addEventListener('change', function () {
-    var checkboxes = itemsEl.querySelectorAll('.sm-item-check');
-    checkboxes.forEach(function (cb) {
-      cb.checked = selectAll.checked;
-      var id = cb.value;
-      if (selectAll.checked) selectedIds.add(id);
-      else selectedIds.delete(id);
+  if (selectAll) {
+    selectAll.addEventListener('change', function () {
+      var checkboxes = itemsEl.querySelectorAll('.sm-item-check');
+      checkboxes.forEach(function (cb) {
+        cb.checked = selectAll.checked;
+        var cid = cb.value;
+        if (selectAll.checked) selectedIds.add(cid);
+        else selectedIds.delete(cid);
+      });
     });
-  });
+  }
 
-  // Remove selected
-  removeSelectedBtn.addEventListener('click', function () {
-    if (selectedIds.size === 0) return;
-    removeItems(Array.from(selectedIds));
-  });
+  if (removeSelectedBtn) {
+    removeSelectedBtn.addEventListener('click', function () {
+      if (selectedIds.size === 0) { showError('Please select items to remove.'); return; }
+      removeItems(Array.from(selectedIds));
+    });
+  }
 
-  // Clear cart
-  clearCartBtn.addEventListener('click', function () {
-    if (allItems.length === 0) return;
-    var ids = allItems.map(function (i) { return i.unique_id || i.id; });
-    removeItems(ids);
-  });
+  if (clearCartBtn) {
+    clearCartBtn.addEventListener('click', function () {
+      if (allItems.length === 0) return;
+      clearCart();
+    });
+  }
 
   loadCart();
 });
