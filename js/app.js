@@ -27,7 +27,7 @@
   }
 
   function money(n) {
-    return '$' + Number(n || 0).toFixed(2);
+    return '\u20B9' + Number(n || 0).toFixed(2);
   }
 
   function qs(name, url) {
@@ -250,8 +250,9 @@
                 '</ul></div>' +
                 '<div class="col-md-6 col-lg-4"><ul class="list-unstyled">' +
                   '<li><a href="/cart.html">Cart</a></li>' +
-                  '<li><a href="/shop.html">Shop</a></li>' +
-                  '<li><a href="/about.html">About</a></li>' +
+                  '<li><a href="/return-policy.html">Return Policy</a></li>' +
+                  '<li><a href="/refund-policy.html">Refund Policy</a></li>' +
+                  '<li><a href="/delivery-policy.html">Delivery Policy</a></li>' +
                 '</ul></div>' +
               '</div>' +
             '</div>' +

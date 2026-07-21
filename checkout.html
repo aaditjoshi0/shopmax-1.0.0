@@ -1,387 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>ShopMax &mdash; Colorlib e-Commerce Template</title>
+<head>
+    <title>ShopMax &mdash; Checkout</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
     <link rel="stylesheet" href="fonts/icomoon/style.css">
-
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/magnific-popup.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/owl.carousel.min.css">
     <link rel="stylesheet" href="css/owl.theme.default.min.css">
-
-
     <link rel="stylesheet" href="css/aos.css">
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/custom.css">
-  </head>
-  <body>
-  
-  <div class="site-wrap">
-    
-
+</head>
+<body>
+<div class="site-wrap">
     <div data-sm-navbar></div>
-    
     <div class="bg-light py-3">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <a href="cart.html">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <a href="cart.html">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
+            </div>
         </div>
-      </div>
     </div>
-
     <div class="site-section">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-md-12">
-            <div class="border p-4 rounded" role="alert">
-              Returning customer? <a href="#">Click here</a> to login
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-5 mb-md-0">
-            <h2 class="h3 mb-3 text-black">Billing Details</h2>
-            <div class="p-3 p-lg-5 border">
-              <div class="form-group">
-                <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
-                <select id="c_country" class="form-control">
-                  <option value="1">Select a country</option>    
-                  <option value="2">bangladesh</option>    
-                  <option value="3">Algeria</option>    
-                  <option value="4">Afghanistan</option>    
-                  <option value="5">Ghana</option>    
-                  <option value="6">Albania</option>    
-                  <option value="7">Bahrain</option>    
-                  <option value="8">Colombia</option>    
-                  <option value="9">Dominican Republic</option>    
-                </select>
-              </div>
-              <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_fname" name="c_fname">
-                </div>
-                <div class="col-md-6">
-                  <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_lname" name="c_lname">
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <div class="col-md-12">
-                  <label for="c_companyname" class="text-black">Company Name </label>
-                  <input type="text" class="form-control" id="c_companyname" name="c_companyname">
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <div class="col-md-12">
-                  <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_address" name="c_address" placeholder="Street address">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
-              </div>
-
-              <div class="form-group row">
-                <div class="col-md-6">
-                  <label for="c_state_country" class="text-black">State / Country <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_state_country" name="c_state_country">
-                </div>
-                <div class="col-md-6">
-                  <label for="c_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
-                </div>
-              </div>
-
-              <div class="form-group row mb-5">
-                <div class="col-md-6">
-                  <label for="c_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_email_address" name="c_email_address">
-                </div>
-                <div class="col-md-6">
-                  <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="c_create_account" class="text-black" data-toggle="collapse" href="#create_an_account" role="button" aria-expanded="false" aria-controls="create_an_account"><input type="checkbox" value="1" id="c_create_account"> Create an account?</label>
-                <div class="collapse" id="create_an_account">
-                  <div class="py-2">
-                    <p class="mb-3">Create an account by entering the information below. If you are a returning customer please login at the top of the page.</p>
-                    <div class="form-group">
-                      <label for="c_account_password" class="text-black">Account Password</label>
-                      <input type="email" class="form-control" id="c_account_password" name="c_account_password" placeholder="">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="form-group">
-                <label for="c_ship_different_address" class="text-black" data-toggle="collapse" href="#ship_different_address" role="button" aria-expanded="false" aria-controls="ship_different_address"><input type="checkbox" value="1" id="c_ship_different_address"> Ship To A Different Address?</label>
-                <div class="collapse" id="ship_different_address">
-                  <div class="py-2">
-
-                    <div class="form-group">
-                      <label for="c_diff_country" class="text-black">Country <span class="text-danger">*</span></label>
-                      <select id="c_diff_country" class="form-control">
-                        <option value="1">Select a country</option>    
-                        <option value="2">bangladesh</option>    
-                        <option value="3">Algeria</option>    
-                        <option value="4">Afghanistan</option>    
-                        <option value="5">Ghana</option>    
-                        <option value="6">Albania</option>    
-                        <option value="7">Bahrain</option>    
-                        <option value="8">Colombia</option>    
-                        <option value="9">Dominican Republic</option>    
-                      </select>
-                    </div>
-
-
-                    <div class="form-group row">
-                      <div class="col-md-6">
-                        <label for="c_diff_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_fname" name="c_diff_fname">
-                      </div>
-                      <div class="col-md-6">
-                        <label for="c_diff_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_lname" name="c_diff_lname">
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <div class="col-md-12">
-                        <label for="c_diff_companyname" class="text-black">Company Name </label>
-                        <input type="text" class="form-control" id="c_diff_companyname" name="c_diff_companyname">
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <div class="col-md-12">
-                        <label for="c_diff_address" class="text-black">Address <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_address" name="c_diff_address" placeholder="Street address">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
-                    </div>
-
-                    <div class="form-group row">
-                      <div class="col-md-6">
-                        <label for="c_diff_state_country" class="text-black">State / Country <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_state_country" name="c_diff_state_country">
-                      </div>
-                      <div class="col-md-6">
-                        <label for="c_diff_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_postal_zip" name="c_diff_postal_zip">
-                      </div>
-                    </div>
-
-                    <div class="form-group row mb-5">
-                      <div class="col-md-6">
-                        <label for="c_diff_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_email_address" name="c_diff_email_address">
-                      </div>
-                      <div class="col-md-6">
-                        <label for="c_diff_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="c_diff_phone" name="c_diff_phone" placeholder="Phone Number">
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="c_order_notes" class="text-black">Order Notes</label>
-                <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control" placeholder="Write your notes here..."></textarea>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-6">
-
+        <div class="container">
             <div class="row mb-5">
-              <div class="col-md-12">
-                <h2 class="h3 mb-3 text-black">Coupon Code</h2>
-                <div class="p-3 p-lg-5 border">
-                  
-                  <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
-                  <div class="input-group w-75">
-                    <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary btn-sm px-4" type="button" id="button-addon2">Apply</button>
-                    </div>
-                  </div>
-
+                <div class="col-md-12">
+                    <div class="border p-4 rounded" role="alert">Returning customer? <a href="#">Click here</a> to login</div>
                 </div>
-              </div>
             </div>
-            
-            <div class="row mb-5">
-              <div class="col-md-12">
-                <h2 class="h3 mb-3 text-black">Your Order</h2>
-                <div class="p-3 p-lg-5 border">
-                  <div id="sm-order-loading" class="text-center py-4 text-muted">Loading your cart...</div>
-                  <table class="table site-block-order-table mb-5" id="sm-order-table" style="display:none">
-                    <thead>
-                      <th>Product</th>
-                      <th>Total</th>
-                    </thead>
-                    <tbody id="sm-order-items"></tbody>
-                  </table>
-
-                  <div class="border p-3 mb-3">
-                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
-                    <div class="collapse" id="collapsebank">
-                      <div class="py-2">
-                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won&rsquo;t be shipped until the funds have cleared in our account.</p>
-                      </div>
+            <div class="row">
+                <div class="col-md-6 mb-5 mb-md-0">
+                    <h2 class="h3 mb-3 text-black">Billing Details</h2>
+                    <div class="p-3 p-lg-5 border">
+                        <div class="form-group">
+                            <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
+                            <select id="c_country" class="form-control">
+                                <option value="India">India</option>
+                                <option value="bangladesh">Bangladesh</option>
+                                <option value="Algeria">Algeria</option>
+                                <option value="Afghanistan">Afghanistan</option>
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_fname" name="c_fname">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_lname" name="c_lname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="c_phone" class="text-black">Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="c_address" name="c_address" placeholder="Street address">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="c_city" class="text-black">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_city" name="c_city">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="c_state_country" class="text-black">State <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_state_country" name="c_state_country">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="c_postal_zip" class="text-black">Pin Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="c_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="c_email_address" name="c_email_address">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="c_order_notes" class="text-black">Order Notes</label>
+                            <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="3" class="form-control" placeholder="Write your notes here..."></textarea>
+                        </div>
                     </div>
-                  </div>
-
-                  <div class="form-group">
-                    <button class="btn btn-primary btn-lg btn-block" id="sm-place-order-btn" disabled>Place Order</button>
-                  </div>
-                  <div id="sm-order-error" class="alert alert-danger mt-3" style="display:none"></div>
                 </div>
-              </div>
+                <div class="col-md-6">
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+                            <div class="p-3 p-lg-5 border">
+                                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+                                <div class="input-group w-75">
+                                    <input type="text" class="form-control" id="c_code" placeholder="Coupon Code">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-sm px-4" type="button" id="sm-apply-coupon">Apply</button>
+                                    </div>
+                                </div>
+                                <div id="sm-coupon-msg" class="mt-2 small" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Your Order</h2>
+                            <div class="p-3 p-lg-5 border">
+                                <div id="sm-order-loading" class="text-center py-4 text-muted">Loading your cart...</div>
+                                <table class="table site-block-order-table mb-4" id="sm-order-table" style="display:none">
+                                    <thead><tr><th>Product</th><th>Total</th></tr></thead>
+                                    <tbody id="sm-order-items"></tbody>
+                                </table>
+                                <div class="border p-3 mb-3">
+                                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button">Direct Bank Transfer</a></h3>
+                                    <div class="collapse" id="collapsebank">
+                                        <div class="py-2"><p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-lg btn-block" id="sm-place-order-btn" disabled>Place Order</button>
+                                </div>
+                                <div id="sm-order-error" class="alert alert-danger mt-3" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-          </div>
         </div>
-        <!-- </form> -->
-      </div>
     </div>
-
     <div data-sm-footer></div>
-  </div>
+</div>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var SM = window.ShopMax;
+  var loadingEl = document.getElementById('sm-order-loading');
+  var tableEl = document.getElementById('sm-order-table');
+  var itemsEl = document.getElementById('sm-order-items');
+  var placeBtn = document.getElementById('sm-place-order-btn');
+  var errorEl = document.getElementById('sm-order-error');
+  var couponInput = document.getElementById('c_code');
+  var applyBtn = document.getElementById('sm-apply-coupon');
+  var couponMsg = document.getElementById('sm-coupon-msg');
 
-  <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/aos.js"></script>
+  var cartItems = [];
+  var cartSubtotal = 0;
+  var appliedCoupon = null;
+  var currentDiscount = 0;
+  var currentDelivery = 0;
 
-  <script src="js/main.js"></script>
-  <script src="js/app.js"></script>
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var SM = window.ShopMax;
-    var loadingEl = document.getElementById('sm-order-loading');
-    var tableEl = document.getElementById('sm-order-table');
-    var itemsEl = document.getElementById('sm-order-items');
-    var placeBtn = document.getElementById('sm-place-order-btn');
-    var errorEl = document.getElementById('sm-order-error');
+  function fmt(n) { return '\u20B9' + Number(n || 0).toFixed(2); }
 
-    function showError(msg) {
-      errorEl.textContent = msg;
-      errorEl.style.display = 'block';
-      placeBtn.disabled = false;
-      placeBtn.textContent = 'Place Order';
+  function calcDelivery(subtotal) {
+    if (subtotal < 500) return 50;
+    if (subtotal < 1000) return 30;
+    return 0;
+  }
+
+  function calcDiscount(subtotal, coupon) {
+    if (!coupon) return 0;
+    if (coupon.type === 'percent') return Math.round((subtotal * coupon.value) / 100);
+    if (coupon.type === 'fixed') return Math.min(coupon.value, subtotal);
+    return 0;
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+    placeBtn.disabled = false;
+    placeBtn.textContent = 'Place Order';
+  }
+
+  function renderOrder() {
+    if (cartItems.length === 0) {
+      loadingEl.textContent = 'Your cart is empty.';
+      tableEl.style.display = 'none';
+      return;
+    }
+    loadingEl.style.display = 'none';
+    tableEl.style.display = '';
+    placeBtn.disabled = false;
+
+    currentDelivery = calcDelivery(cartSubtotal);
+    currentDiscount = calcDiscount(cartSubtotal, appliedCoupon);
+    var finalTotal = Math.max(0, cartSubtotal - currentDiscount + currentDelivery);
+
+    var html = '';
+    cartItems.forEach(function (item) {
+      var lineTotal = Number(item.price) * Number(item.quantity);
+      html += '<tr><td>' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="" style="width:50px;height:60px;object-fit:cover;border-radius:4px">' +
+          '<div><strong>' + SM.escapeHtml(item.name) + '</strong>' +
+            (item.size ? '<br><small>Size: ' + SM.escapeHtml(item.size) + '</small>' : '') +
+            (item.color ? '<br><small>Color: ' + SM.escapeHtml(item.color) + '</small>' : '') +
+            '<br><small>Qty: ' + item.quantity + '</small></div></div></td>' +
+        '<td>' + fmt(lineTotal) + '</td></tr>';
+    });
+
+    html += '<tr><td class="text-black font-weight-bold">Subtotal</td><td class="text-black">' + fmt(cartSubtotal) + '</td></tr>';
+
+    if (currentDiscount > 0) {
+      html += '<tr><td class="text-success font-weight-bold">Discount' + (appliedCoupon ? ' (' + SM.escapeHtml(appliedCoupon.code) + ')' : '') + '</td><td class="text-success">-' + fmt(currentDiscount) + '</td></tr>';
     }
 
-    // Load cart
-    SM.api('/api/cart').then(function (cart) {
-      var items = cart.items || [];
-      if (items.length === 0) {
-        loadingEl.textContent = 'Your cart is empty.';
-        return;
-      }
+    html += '<tr><td class="text-black font-weight-bold">Delivery Charges</td><td class="text-black">' + (currentDelivery === 0 ? '<span class="text-success">FREE</span>' : fmt(currentDelivery)) + '</td></tr>';
+    html += '<tr><td class="text-black font-weight-bold"><strong>Total</strong></td><td class="text-black font-weight-bold"><strong>' + fmt(finalTotal) + '</strong></td></tr>';
 
-      loadingEl.style.display = 'none';
-      tableEl.style.display = '';
-      placeBtn.disabled = false;
+    itemsEl.innerHTML = html;
+  }
 
-      var subtotal = 0;
-      var html = '';
-      items.forEach(function (item) {
-        var lineTotal = Number(item.price) * Number(item.quantity);
-        subtotal += lineTotal;
-        var details = SM.escapeHtml(item.name);
-        if (item.size) details += ' - Size: ' + SM.escapeHtml(item.size);
-        if (item.color) details += ' - Color: ' + SM.escapeHtml(item.color);
-        html += '<tr>' +
-          '<td>' +
-            '<div style="display:flex;align-items:center;gap:10px">' +
-              '<img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="" style="width:50px;height:60px;object-fit:cover;border-radius:4px">' +
-              '<div>' +
-                '<strong>' + SM.escapeHtml(item.name) + '</strong>' +
-                (item.size ? '<br><small>Size: ' + SM.escapeHtml(item.size) + '</small>' : '') +
-                (item.color ? '<br><small>Color: ' + SM.escapeHtml(item.color) + '</small>' : '') +
-                '<br><small>Qty: ' + item.quantity + '</small>' +
-              '</div>' +
-            '</div>' +
-          '</td>' +
-          '<td>' + SM.money(lineTotal) + '</td>' +
-        '</tr>';
-      });
+  // Load cart
+  SM.api('/api/cart').then(function (cart) {
+    cartItems = cart.items || [];
+    cartSubtotal = cart.subtotal || 0;
+    if (cartItems.length === 0) { loadingEl.textContent = 'Your cart is empty.'; return; }
+    renderOrder();
+  }).catch(function () { loadingEl.textContent = 'Failed to load your cart.'; });
 
-      html += '<tr><td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td><td class="text-black">' + SM.money(subtotal) + '</td></tr>';
-      html += '<tr><td class="text-black font-weight-bold"><strong>Order Total</strong></td><td class="text-black font-weight-bold"><strong>' + SM.money(subtotal) + '</strong></td></tr>';
+  // Coupon apply
+  applyBtn.addEventListener('click', function () {
+    var code = couponInput.value.trim().toUpperCase();
+    if (!code) { couponMsg.textContent = 'Please enter a coupon code.'; couponMsg.style.color = '#dc3545'; couponMsg.style.display = 'block'; return; }
 
-      itemsEl.innerHTML = html;
+    // Client-side coupon definitions (server re-validates)
+    var coupons = {
+      'SHOPMAX10': { code: 'SHOPMAX10', type: 'percent', value: 10, min_cart: 0, label: '10% OFF' },
+      'SHOPMAX20': { code: 'SHOPMAX20', type: 'percent', value: 20, min_cart: 0, label: '20% OFF' },
+      'FIRSTORDER': { code: 'FIRSTORDER', type: 'fixed', value: 100, min_cart: 200, label: '\u20B9100 OFF' }
+    };
 
-      // Place Order handler
-      placeBtn.addEventListener('click', function () {
-        placeBtn.disabled = true;
-        placeBtn.textContent = 'Placing Order...';
-        errorEl.style.display = 'none';
-
-        var shipping = {
-          fname: (document.getElementById('c_fname').value || '').trim(),
-          lname: (document.getElementById('c_lname').value || '').trim(),
-          address: (document.getElementById('c_address').value || '').trim(),
-          state_country: (document.getElementById('c_state_country').value || '').trim(),
-          postal_zip: (document.getElementById('c_postal_zip').value || '').trim(),
-          email_address: (document.getElementById('c_email_address').value || '').trim(),
-          phone: (document.getElementById('c_phone').value || '').trim(),
-          country: document.getElementById('c_country').value,
-          company: (document.getElementById('c_companyname').value || '').trim(),
-          order_notes: (document.getElementById('c_order_notes').value || '').trim()
-        };
-
-        var missing = [];
-        if (!shipping.fname) missing.push('First Name');
-        if (!shipping.address) missing.push('Address');
-        if (!shipping.state_country) missing.push('State / Country');
-        if (!shipping.postal_zip) missing.push('Postal / Zip');
-        if (!shipping.email_address) missing.push('Email Address');
-        if (!shipping.phone) missing.push('Phone');
-
-        if (missing.length > 0) {
-          showError('Please fill in: ' + missing.join(', '));
-          return;
-        }
-
-        SM.api('/api/orders', {
-          method: 'POST',
-          body: JSON.stringify({ shipping: shipping })
-        }).then(function (res) {
-          var orderId = res.order && res.order.id;
-          window.location.href = 'thankyou.html?order_id=' + encodeURIComponent(orderId);
-        }).catch(function (err) {
-          showError(err.message || 'Failed to place order. Please try again.');
-        });
-      });
-    }).catch(function () {
-      loadingEl.textContent = 'Failed to load your cart. Please try again.';
-    });
+    var coupon = coupons[code];
+    if (!coupon) {
+      couponMsg.textContent = 'Invalid coupon code.';
+      couponMsg.style.color = '#dc3545';
+      couponMsg.style.display = 'block';
+      return;
+    }
+    if (cartSubtotal < coupon.min_cart) {
+      couponMsg.textContent = 'Minimum cart value is \u20B9' + coupon.min_cart + ' for this coupon.';
+      couponMsg.style.color = '#dc3545';
+      couponMsg.style.display = 'block';
+      return;
+    }
+    appliedCoupon = coupon;
+    couponMsg.textContent = 'Coupon applied! ' + coupon.label;
+    couponMsg.style.color = '#28a745';
+    couponMsg.style.display = 'block';
+    couponInput.disabled = true;
+    applyBtn.disabled = true;
+    renderOrder();
   });
-  </script>
-  </body>
+
+  // Place Order
+  placeBtn.addEventListener('click', function () {
+    placeBtn.disabled = true;
+    placeBtn.textContent = 'Placing Order...';
+    errorEl.style.display = 'none';
+
+    var shipping = {
+      fname: (document.getElementById('c_fname').value || '').trim(),
+      lname: (document.getElementById('c_lname').value || '').trim(),
+      phone: (document.getElementById('c_phone').value || '').trim(),
+      address: (document.getElementById('c_address').value || '').trim(),
+      city: (document.getElementById('c_city').value || '').trim(),
+      state_country: (document.getElementById('c_state_country').value || '').trim(),
+      postal_zip: (document.getElementById('c_postal_zip').value || '').trim(),
+      email_address: (document.getElementById('c_email_address').value || '').trim(),
+      country: document.getElementById('c_country').value,
+      order_notes: (document.getElementById('c_order_notes').value || '').trim()
+    };
+
+    var missing = [];
+    if (!shipping.fname) missing.push('First Name');
+    if (!shipping.phone) missing.push('Phone');
+    if (!shipping.address) missing.push('Address');
+    if (!shipping.city) missing.push('City');
+    if (!shipping.state_country) missing.push('State');
+    if (!shipping.postal_zip) missing.push('Pin Code');
+    if (!shipping.email_address) missing.push('Email');
+    if (missing.length > 0) { showError('Please fill in: ' + missing.join(', ')); return; }
+
+    var payload = { shipping: shipping };
+    if (appliedCoupon) payload.coupon_code = appliedCoupon.code;
+
+    SM.api('/api/orders', { method: 'POST', body: JSON.stringify(payload) })
+      .then(function (res) {
+        window.location.href = 'thankyou.html?order_id=' + encodeURIComponent(res.order.id);
+      }).catch(function (err) { showError(err.message || 'Failed to place order.'); });
+  });
+});
+</script>
+</body>
 </html>

@@ -18,8 +18,16 @@ if (MODE === 'supabase') {
   supabase = createClient(URL, KEY);
 }
 
+function getAuthedClient(jwt) {
+  if (MODE !== 'supabase' || !jwt) return supabase;
+  const { createClient } = require('@supabase/supabase-js');
+  return createClient(URL, KEY, {
+    global: { headers: { Authorization: 'Bearer ' + jwt } }
+  });
+}
+
 function isConfigured() {
   return MODE === 'supabase';
 }
 
-module.exports = { supabase, MODE, isConfigured };
+module.exports = { supabase, MODE, getAuthedClient, isConfigured };

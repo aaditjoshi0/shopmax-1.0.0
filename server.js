@@ -27,10 +27,40 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'alter table public.cart_items add column if not exists color text default \'\';' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop index if exists cart_items_cart_id_product_id_size_key;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'create unique index if not exists cart_items_unique_idx on public.cart_items (cart_id, coalesce(product_id, -1), coalesce(size, \'\'), coalesce(color, \'\'));' }).catch(() => {});
+      // --- Proper RLS: auth-based policies (no permissive USING(true)) ---
+      // Helper function: admin check (SECURITY DEFINER bypasses RLS on profiles)
+      await supabase.rpc('exec_sql', { sql: "create or replace function public.is_admin() returns boolean language sql stable security definer as $$ select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'); $$;" }).catch(() => {});
+      // carts: owner only
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "carts all" on public.carts;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop policy if exists "carts owner" on public.carts;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "carts owner" on public.carts for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
+      // cart_items: via cart ownership
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "cart_items all" on public.cart_items;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop policy if exists "cart_items owner" on public.cart_items;' }).catch(() => {});
-      await supabase.rpc('exec_sql', { sql: 'create policy "carts all" on public.carts for all using (true) with check (true);' }).catch(() => {});
-      await supabase.rpc('exec_sql', { sql: 'create policy "cart_items all" on public.cart_items for all using (true) with check (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "cart_items owner" on public.cart_items for all using (exists (select 1 from public.carts where id = cart_id and user_id = auth.uid())) with check (exists (select 1 from public.carts where id = cart_id and user_id = auth.uid()));' }).catch(() => {});
+      // orders: owner CRUD, admin SELECT
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "orders all" on public.orders;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "orders owner" on public.orders;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "orders admin" on public.orders;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "orders owner" on public.orders for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "orders admin" on public.orders for select using (public.is_admin());' }).catch(() => {});
+      // products: public read (guests and users need to browse / validate stock)
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "products public" on public.products;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "products public" on public.products for select using (true);' }).catch(() => {});
+      // profiles: owner CRUD, admin SELECT
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "profiles all" on public.profiles;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "profiles owner" on public.profiles;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "profiles admin" on public.profiles;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "profiles owner" on public.profiles for all using (auth.uid() = id) with check (auth.uid() = id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "profiles admin" on public.profiles for select using (public.is_admin());' }).catch(() => {});
+      // --- Coupons table + orders discount columns ---
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.coupons (code text primary key, type text not null default 'percent', value numeric not null default 0, min_cart numeric default 0, max_uses int default 0, used_count int default 0, active boolean default true, created_at timestamptz default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('SHOPMAX10', 'percent', 10, 0, 1000) on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('SHOPMAX20', 'percent', 20, 0, 500) on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('FIRSTORDER', 'fixed', 100, 200, 1000) on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists discount numeric default 0;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists delivery_charge numeric default 0;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists coupon_code text;' }).catch(() => {});
     } catch (_) {}
   })();
 }

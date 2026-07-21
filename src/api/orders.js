@@ -1,149 +1,205 @@
-// Orders API.
-//  POST /api/orders            -> create order from current cart { shipping }
-//  GET  /api/orders            -> list current user's orders
-//  GET  /api/orders/:id        -> single order (owner only)
-
-const express = require('express');
-const router = express.Router();
-const { supabase, MODE } = require('../../config/supabase');
-const store = require('../db/localStore');
-const { getUser, requireUser } = require('../middleware/auth');
-
-// ── Local-mode helper ──────────────────────────────────────────────────────
+var express = require('express');
+var router = express.Router();
+var { supabase, MODE } = require('../../config/supabase');
+var store = require('../db/localStore');
+var { getUser, requireUser } = require('../middleware/auth');
 
 function localFindCart(owner) {
-  return store.raw.carts.find(c => c.owner === owner) || { owner, items: [] };
+  return store.raw.carts.find(function (c) { return c.owner === owner; }) || { owner: owner, items: [] };
 }
 
 // ── POST /api/orders ───────────────────────────────────────────────────────
 
 router.post('/', getUser, requireUser, async (req, res, next) => {
   try {
-    const shipping = req.body.shipping || {};
+    var shipping = req.body.shipping || {};
+    var sb = req.supabase || supabase;
 
     if (MODE === 'local') {
-      const owner = 'user:' + req.user.id;
-      const cart = localFindCart(owner);
+      var owner = 'user:' + req.user.id;
+      var cart = localFindCart(owner);
       if (!cart.items || cart.items.length === 0) {
         return res.status(400).json({ error: 'Your cart is empty.' });
       }
-      const required = ['fname', 'address', 'state_country', 'postal_zip', 'email_address', 'phone'];
-      for (const f of required) {
-        if (!shipping[f] || !String(shipping[f]).trim()) {
-          return res.status(400).json({ error: 'Missing shipping field: ' + f });
+      var required = ['fname', 'address', 'state_country', 'postal_zip', 'email_address', 'phone'];
+      for (var f = 0; f < required.length; f++) {
+        if (!shipping[required[f]] || !String(shipping[required[f]]).trim()) {
+          return res.status(400).json({ error: 'Missing shipping field: ' + required[f] });
         }
       }
-      const subtotal = cart.items.reduce((s, i) => s + Number(i.price) * Number(i.quantity), 0);
-      const order = {
+      var subtotal = cart.items.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
+
+      var discount = 0;
+      var couponCode = (req.body.coupon_code || '').toString().trim().toUpperCase();
+      if (couponCode) {
+        var coupon = (store.raw.coupons || []).find(function (c) { return c.code === couponCode && c.active; });
+        if (!coupon) return res.status(400).json({ error: 'Invalid coupon code.' });
+        if (coupon.max_uses > 0 && coupon.used_count >= coupon.max_uses) return res.status(400).json({ error: 'Coupon usage limit reached.' });
+        if (subtotal < coupon.min_cart) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required.' });
+        if (coupon.type === 'percent') discount = Math.round((subtotal * coupon.value) / 100);
+        else if (coupon.type === 'fixed') discount = Math.min(coupon.value, subtotal);
+        coupon.used_count = (coupon.used_count || 0) + 1;
+      }
+
+      var deliveryCharge = 0;
+      if (subtotal < 500) deliveryCharge = 50;
+      else if (subtotal < 1000) deliveryCharge = 30;
+
+      var total = Math.max(0, subtotal - discount + deliveryCharge);
+      var order = {
         id: store.nextId('order'),
         user_id: req.user.id,
-        items: cart.items.map(i => ({ ...i })),
-        shipping,
+        items: cart.items.map(function (i) { return { ...i }; }),
+        shipping: shipping,
         subtotal: Number(subtotal.toFixed(2)),
-        total: Number(subtotal.toFixed(2)),
+        discount: Number(discount.toFixed(2)),
+        delivery_charge: Number(deliveryCharge.toFixed(2)),
+        coupon_code: couponCode || null,
+        total: Number(total.toFixed(2)),
         status: 'placed',
         created_at: new Date().toISOString()
       };
       store.raw.orders.push(order);
-      cart.items.forEach(i => {
+      cart.items.forEach(function (i) {
         if (i.product_id) {
-          const p = store.raw.products.find(p => p.id === i.product_id);
+          var p = store.raw.products.find(function (x) { return x.id === i.product_id; });
           if (p) p.stock = Math.max(0, p.stock - Number(i.quantity));
         }
       });
       cart.items = [];
       store.persist();
-      return res.json({ order });
+      return res.json({ order: order });
     }
 
     // ── Supabase mode ────────────────────────────────────────────────────
-    // Validate shipping fields
-    const required = ['fname', 'address', 'state_country', 'postal_zip', 'email_address', 'phone'];
-    for (const f of required) {
-      if (!shipping[f] || !String(shipping[f]).trim()) {
-        return res.status(400).json({ error: 'Missing shipping field: ' + f });
+    var requiredFields = ['fname', 'address', 'state_country', 'postal_zip', 'email_address', 'phone'];
+    for (var rf = 0; rf < requiredFields.length; rf++) {
+      if (!shipping[requiredFields[rf]] || !String(shipping[requiredFields[rf]]).trim()) {
+        return res.status(400).json({ error: 'Missing shipping field: ' + requiredFields[rf] });
       }
     }
 
-    // Get user's cart
-    const { data: cart } = await supabase
+    var { data: cartData } = await sb
       .from('carts')
       .select('id')
       .eq('user_id', req.user.id)
       .maybeSingle();
 
-    if (!cart) return res.status(400).json({ error: 'Your cart is empty.' });
+    if (!cartData) return res.status(400).json({ error: 'Your cart is empty.' });
 
-    const { data: items } = await supabase
+    var { data: items } = await sb
       .from('cart_items')
       .select('*')
-      .eq('cart_id', cart.id);
+      .eq('cart_id', cartData.id);
 
     if (!items || items.length === 0) return res.status(400).json({ error: 'Your cart is empty.' });
 
-    // Validate stock and decrement atomically
-    const errors = [];
-    for (const item of items) {
+    var errors = [];
+    for (var ei = 0; ei < items.length; ei++) {
+      var item = items[ei];
       if (!item.product_id) continue;
 
-      const { data: product } = await supabase
+      var { data: product } = await sb
         .from('products')
         .select('id, stock, status')
         .eq('id', item.product_id)
         .single();
 
       if (!product) {
-        errors.push(`${item.name} is no longer available.`);
+        errors.push(item.name + ' is no longer available.');
         continue;
       }
       if (product.status !== 'published') {
-        errors.push(`${item.name} is no longer available for purchase.`);
+        errors.push(item.name + ' is no longer available for purchase.');
         continue;
       }
       if (product.stock < item.quantity) {
-        errors.push(`Only ${product.stock} of "${item.name}" available (you requested ${item.quantity}).`);
+        errors.push('Only ' + product.stock + ' of "' + item.name + '" available (you requested ' + item.quantity + ').');
         continue;
       }
 
-      // Decrement stock
-      const { error: updateErr } = await supabase
+      var { error: updateErr } = await sb
         .from('products')
         .update({ stock: product.stock - item.quantity })
         .eq('id', item.product_id)
-        .eq('stock', product.stock); // Optimistic concurrency: only update if stock hasn't changed
+        .eq('stock', product.stock);
 
       if (updateErr) {
-        errors.push(`Could not reserve stock for "${item.name}".`);
+        errors.push('Could not reserve stock for "' + item.name + '".');
       }
     }
 
     if (errors.length > 0) return res.status(400).json({ error: errors.join(' ') });
 
-    // Create order snapshot
-    const subtotal = items.reduce((s, i) => s + Number(i.price) * Number(i.quantity), 0);
-    const orderInsert = {
+    var subtotal2 = items.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
+
+    // Coupon validation (public coupons table — anon client is fine)
+    var discount2 = 0;
+    var couponCode2 = (req.body.coupon_code || '').toString().trim().toUpperCase();
+    if (couponCode2) {
+      var { data: coupon } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', couponCode2)
+        .maybeSingle();
+
+      if (!coupon) return res.status(400).json({ error: 'Invalid coupon code.' });
+      if (!coupon.active) return res.status(400).json({ error: 'This coupon is no longer active.' });
+      if (coupon.max_uses > 0 && coupon.used_count >= coupon.max_uses) return res.status(400).json({ error: 'This coupon has reached its usage limit.' });
+      if (subtotal2 < coupon.min_cart) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required for this coupon.' });
+
+      if (coupon.type === 'percent') discount2 = Math.round((subtotal2 * coupon.value) / 100);
+      else if (coupon.type === 'fixed') discount2 = Math.min(coupon.value, subtotal2);
+
+      await supabase.from('coupons').update({ used_count: coupon.used_count + 1 }).eq('code', couponCode2).catch(function () {});
+    }
+
+    var deliveryCharge2 = 0;
+    if (subtotal2 < 500) deliveryCharge2 = 50;
+    else if (subtotal2 < 1000) deliveryCharge2 = 30;
+
+    var total2 = subtotal2 - discount2 + deliveryCharge2;
+    if (total2 < 0) total2 = 0;
+
+    // Build insert without coupon/delivery columns first (they may not exist yet)
+    var orderInsert = {
       user_id: req.user.id,
-      items: items.map(i => ({ ...i })),
-      shipping,
-      subtotal: Number(subtotal.toFixed(2)),
-      total: Number(subtotal.toFixed(2)),
+      items: items.map(function (i) { return { ...i }; }),
+      shipping: shipping,
+      subtotal: Number(subtotal2.toFixed(2)),
+      total: Number(total2.toFixed(2)),
       status: 'placed',
       created_at: new Date().toISOString()
     };
+    // These columns are optional — added by migration if exec_sql is available
+    if (discount2) orderInsert.discount = Number(discount2.toFixed(2));
+    if (deliveryCharge2) orderInsert.delivery_charge = Number(deliveryCharge2.toFixed(2));
+    if (couponCode2) orderInsert.coupon_code = couponCode2;
 
-    const { data: order, error: orderErr } = await supabase
+    var { data: order2, error: orderErr } = await sb
       .from('orders')
       .insert(orderInsert)
       .select()
       .single();
 
-    if (orderErr) throw new Error('Failed to create order: ' + orderErr.message);
+    // If the insert fails because optional columns don't exist, retry without them
+    if (orderErr && (orderErr.message || '').toLowerCase().indexOf('column') >= 0) {
+      delete orderInsert.discount;
+      delete orderInsert.delivery_charge;
+      delete orderInsert.coupon_code;
+      orderInsert.total = Number(subtotal2.toFixed(2));
+      var retry = await sb.from('orders').insert(orderInsert).select().single();
+      if (retry.error) throw new Error('Failed to create order: ' + retry.error.message);
+      order2 = retry.data;
+    } else if (orderErr) {
+      throw new Error('Failed to create order: ' + orderErr.message);
+    }
 
     // Clear cart
-    await supabase.from('cart_items').delete().eq('cart_id', cart.id);
-    await supabase.from('carts').update({ updated_at: new Date().toISOString() }).eq('id', cart.id);
+    await sb.from('cart_items').delete().eq('cart_id', cartData.id);
+    await sb.from('carts').update({ updated_at: new Date().toISOString() }).eq('id', cartData.id);
 
-    res.json({ order });
+    res.json({ order: order2 });
   } catch (e) { next(e); }
 });
 
@@ -151,21 +207,23 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
 
 router.get('/', getUser, requireUser, async (req, res, next) => {
   try {
+    var sb = req.supabase || supabase;
+
     if (MODE === 'local') {
-      const orders = store.raw.orders
-        .filter(o => o.user_id === req.user.id)
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      var orders = store.raw.orders
+        .filter(function (o) { return o.user_id === req.user.id; })
+        .sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
       return res.json(orders);
     }
 
-    const { data: orders, error } = await supabase
+    var { data: orders2, error } = await sb
       .from('orders')
       .select('*')
       .eq('user_id', req.user.id)
       .order('created_at', { ascending: false });
 
     if (error) return res.status(500).json({ error: error.message });
-    res.json(orders || []);
+    res.json(orders2 || []);
   } catch (e) { next(e); }
 });
 
@@ -173,26 +231,27 @@ router.get('/', getUser, requireUser, async (req, res, next) => {
 
 router.get('/:id', getUser, requireUser, async (req, res, next) => {
   try {
+    var sb = req.supabase || supabase;
+
     if (MODE === 'local') {
-      const order = store.raw.orders.find(o => o.id === Number(req.params.id));
-      // Admins can view any order; regular users can only view their own
+      var order = store.raw.orders.find(function (o) { return o.id === Number(req.params.id); });
       if (!order || (order.user_id !== req.user.id && req.user.role !== 'admin')) {
         return res.status(404).json({ error: 'Order not found' });
       }
       return res.json(order);
     }
 
-    let query = supabase.from('orders').select('*').eq('id', req.params.id);
+    var query = sb.from('orders').select('*').eq('id', req.params.id);
     // If not admin, restrict to own orders
     if (req.user.role !== 'admin') {
       query = query.eq('user_id', req.user.id);
     }
-    const { data: order, error } = await query.maybeSingle();
+    var { data: order2, error } = await query.maybeSingle();
 
     if (error) return res.status(500).json({ error: error.message });
-    if (!order) return res.status(404).json({ error: 'Order not found' });
+    if (!order2) return res.status(404).json({ error: 'Order not found' });
 
-    res.json(order);
+    res.json(order2);
   } catch (e) { next(e); }
 });
 

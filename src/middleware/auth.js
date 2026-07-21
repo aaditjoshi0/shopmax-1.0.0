@@ -1,10 +1,4 @@
-// Auth middleware.
-// Reads the signed "sm_session" cookie which holds a JSON token with { id, email, name, role }.
-// In Supabase mode this token represents a verified Supabase user (set on login).
-// In local mode it represents a row in the local users store.
-// Attaches req.user = { id, email, name, mobile, role } or null.
-
-const { MODE, supabase } = require('../../config/supabase');
+const { MODE, supabase, getAuthedClient } = require('../../config/supabase');
 const store = require('../db/localStore');
 
 function getUser(req, res, next) {
@@ -19,8 +13,12 @@ function getUser(req, res, next) {
         mobile: token.mobile,
         role: token.role || 'customer'
       };
+      if (MODE === 'supabase' && token.access_token) {
+        req.supabase = getAuthedClient(token.access_token);
+      }
     }
-  } catch (_) { /* invalid cookie -> treated as anonymous */ }
+  } catch (_) {}
+  if (!req.supabase) req.supabase = supabase;
   next();
 }
 
@@ -45,7 +43,6 @@ async function fetchUserRole(userId) {
 }
 
 function requireAdmin(req, res, next) {
-  // Check admin-specific cookie first (sm_admin_session)
   const adminToken = req.signedCookies && req.signedCookies.sm_admin_session;
   if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin') {
     req.user = {
@@ -55,9 +52,11 @@ function requireAdmin(req, res, next) {
       mobile: adminToken.mobile,
       role: adminToken.role || 'admin'
     };
+    if (MODE === 'supabase' && adminToken.access_token) {
+      req.supabase = getAuthedClient(adminToken.access_token);
+    }
     return next();
   }
-  // Fallback to the user-scoped session (for backward compatibility)
   if (!req.user) {
     return res.status(401).json({ error: 'You must be logged in.' });
   }
