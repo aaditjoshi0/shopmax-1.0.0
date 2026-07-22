@@ -15,6 +15,50 @@ function getUser(req, res, next) {
       };
       if (MODE === 'supabase' && token.access_token) {
         req.supabase = getAuthedClient(token.access_token);
+
+        // Verify the access token is still valid with a lightweight probe.
+        // If Supabase rejects it (JWT expired), attempt a silent refresh using
+        // the refresh_token stored in the same cookie.  On success the cookie
+        // is updated with fresh tokens and req.supabase is recreated.  On
+        // failure the session is cleared and the user is asked to re-login.
+        req.supabase.from('profiles').select('id').eq('id', token.id).limit(1)
+          .then(function (result) {
+            if (!result.error) return next(); // token valid — continue
+
+            // Token invalid/expired — attempt refresh
+            return supabase.auth.refreshSession({ refresh_token: token.refresh_token })
+              .then(function (_a) {
+                var error = _a.error;
+                var session = _a.data && _a.data.session;
+                if (error || !session) {
+                  res.clearCookie('sm_session');
+                  return res.status(401).json({ error: 'Session expired. Please login again.' });
+                }
+
+                var newPayload = {
+                  id: token.id,
+                  email: token.email,
+                  name: token.name,
+                  mobile: token.mobile,
+                  role: token.role || 'customer',
+                  access_token: session.access_token,
+                  refresh_token: session.refresh_token
+                };
+                res.cookie('sm_session', newPayload, {
+                  signed: true,
+                  httpOnly: true,
+                  maxAge: 7 * 24 * 60 * 60 * 1000,
+                  sameSite: 'lax'
+                });
+                req.supabase = getAuthedClient(session.access_token);
+                return next();
+              });
+          })
+          .catch(function () {
+            res.clearCookie('sm_session');
+            return res.status(401).json({ error: 'Session expired. Please login again.' });
+          });
+        return; // async path — do not call next() here
       }
     }
   } catch (_) {}

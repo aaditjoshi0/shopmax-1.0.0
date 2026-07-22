@@ -289,7 +289,35 @@ router.post('/admin-logout', function (req, res) {
 
 // ── Me ──────────────────────────────────────────────────────────────────────
 
-router.get('/me', getUser, function (req, res) {
+router.get('/me', getUser, async function (req, res) {
+  try {
+    if (req.user && MODE === 'supabase' && req.supabase) {
+      var { data: profile } = await req.supabase
+        .from('profiles').select('full_name, email, mobile, role')
+        .eq('id', req.user.id).maybeSingle();
+      if (profile) {
+        return res.json({ user: {
+          id: req.user.id,
+          name: profile.full_name || req.user.name,
+          email: profile.email || req.user.email,
+          mobile: profile.mobile || req.user.mobile,
+          role: profile.role || req.user.role
+        }});
+      }
+    }
+    if (req.user && MODE === 'local') {
+      var p = store.raw.profiles.find(function (x) { return x.id === req.user.id; });
+      if (p) {
+        return res.json({ user: {
+          id: req.user.id,
+          name: p.full_name || req.user.name,
+          email: p.email || req.user.email,
+          mobile: p.mobile || req.user.mobile,
+          role: p.role || req.user.role
+        }});
+      }
+    }
+  } catch (_) {}
   res.json({ user: req.user });
 });
 

@@ -124,6 +124,38 @@ router.get('/slugs/:slug', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// GET /api/products/:id/related — get related products (same category, exclude self)
+router.get('/:id/related', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const limit = Math.min(Number(req.query.limit) || 8, 20);
+
+    if (MODE === 'local') {
+      const product = store.raw.products.find(p => p.id === id);
+      if (!product) return res.json([]);
+      const related = store.raw.products
+        .filter(p => p.id !== id && (p.status || 'published') === 'published' && p.category === product.category)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, limit);
+      return res.json(related);
+    }
+
+    const { data: product } = await supabase.from('products').select('category').eq('id', id).maybeSingle();
+    if (!product) return res.json([]);
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', product.category)
+      .neq('id', id)
+      .eq('status', 'published')
+      .limit(limit);
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (e) { next(e); }
+});
+
 // GET /api/products/:id
 router.get('/:id', async (req, res, next) => {
   try {

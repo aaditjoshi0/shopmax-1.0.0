@@ -77,6 +77,20 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'create policy "product_images read" on public.product_images for select using (true);' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop policy if exists "product_images write" on public.product_images;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'create policy "product_images write" on public.product_images for all using (true) with check (true);' }).catch(() => {});
+      // --- Reviews table ---
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.reviews (id bigint generated always as identity primary key, product_id bigint not null references public.products(id) on delete cascade, user_id uuid not null references auth.users(id) on delete cascade, user_name text default '', rating integer not null default 5, title text default '', comment text default '', created_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create unique index if not exists reviews_product_user_idx on public.reviews (product_id, user_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists reviews_product_idx on public.reviews (product_id, created_at desc);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "reviews public read" on public.reviews;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "reviews public read" on public.reviews for select using (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "reviews owner write" on public.reviews;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "reviews owner write" on public.reviews for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
+      // --- Wishlists table ---
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.wishlists (id bigint generated always as identity primary key, user_id uuid not null references auth.users(id) on delete cascade, product_id bigint not null references public.products(id) on delete cascade, created_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create unique index if not exists wishlists_user_product_idx on public.wishlists (user_id, product_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists wishlists_user_idx on public.wishlists (user_id, created_at desc);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "wishlists owner" on public.wishlists;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "wishlists owner" on public.wishlists for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
     } catch (_) {}
   })();
 }
@@ -145,6 +159,8 @@ app.use('/api/marketplace', require('./src/api/marketplace'));
 app.use('/api/categories', require('./src/api/categories'));
 app.use('/api/admin', require('./src/api/admin'));
 app.use('/api', require('./src/api/variants')); // includes product variant + image routes
+app.use('/api/reviews', require('./src/api/reviews'));
+app.use('/api/wishlist', require('./src/api/wishlist'));
 
 // Health / mode check
 app.get('/api/health', (req, res) => {

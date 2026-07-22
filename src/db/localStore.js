@@ -18,6 +18,8 @@ const DEFAULTS = {
   listings: [],       // { id, user_id, title, description, price, image_url, size, category, status, created_at }
   variants: [],       // { id, product_id, sku, size, color, price, compare_at_price, stock, status }
   images: [],         // { id, product_id, color, url, alt, sort_order }
+  reviews: [],        // { id, product_id, user_id, user_name, rating, title, comment, created_at }
+  wishlists: [],      // { id, user_id, product_id, created_at }
   users: [],          // local-only auth: { id, email, password (hashed), full_name, mobile, birthdate }
   coupons: [
     { code: 'SHOPMAX10',  type: 'percent', value: 10,  min_cart: 0,   max_uses: 1000, used_count: 0, active: true },
