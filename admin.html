@@ -1291,12 +1291,14 @@
   }
 
   // ======================== Init ========================
-  window.ShopMax.refreshAuth().then(function (user) {
-    if (user) {
-      $('sm-admin-user').textContent = user.name || user.email;
+  API('/api/auth/admin-me').then(function (res) {
+    if (res && res.user) {
+      $('sm-admin-user').textContent = res.user.name || res.user.email;
     } else {
       window.location.href = '/admin-login.html';
     }
+  }).catch(function () {
+    window.location.href = '/admin-login.html';
   });
 
   loadDashboard();

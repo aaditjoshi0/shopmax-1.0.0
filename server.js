@@ -119,10 +119,8 @@ app.use((req, res, next) => {
   // Check session cookie
   const token = req.signedCookies && req.signedCookies.sm_session;
   if (token && typeof token === 'object' && token.id) return next();
-  // Not logged in — redirect to appropriate login page
-  if (req.path === '/admin.html' || req.path.startsWith('/admin/')) {
-    return res.redirect('/admin-login.html');
-  }
+  // Allow admin pages through — the admin guard below handles the admin check
+  if (req.path === '/admin.html' || req.path.startsWith('/admin/')) return next();
   return res.redirect('/login.html');
 });
 

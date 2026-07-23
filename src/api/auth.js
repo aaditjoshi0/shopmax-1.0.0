@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { supabase, MODE, getAuthedClient } = require('../../config/supabase');
 const store = require('../db/localStore');
-const { getUser, requireUser, fetchUserRole } = require('../middleware/auth');
+const { getUser, requireUser, requireAdmin, fetchUserRole } = require('../middleware/auth');
 
 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
 
@@ -318,6 +318,12 @@ router.get('/me', getUser, async function (req, res) {
       }
     }
   } catch (_) {}
+  res.json({ user: req.user });
+});
+
+// ── Admin Me ──────────────────────────────────────────────────────────────
+
+router.get('/admin-me', requireAdmin, function (req, res) {
   res.json({ user: req.user });
 });
 

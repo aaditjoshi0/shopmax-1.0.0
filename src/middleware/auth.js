@@ -23,11 +23,13 @@ function getUser(req, res, next) {
         // failure the session is cleared and the user is asked to re-login.
         req.supabase.from('profiles').select('id').eq('id', token.id).limit(1)
           .then(function (result) {
+            if (res.headersSent) return;
             if (!result.error) return next(); // token valid — continue
 
             // Token invalid/expired — attempt refresh
             return supabase.auth.refreshSession({ refresh_token: token.refresh_token })
               .then(function (_a) {
+                if (res.headersSent) return;
                 var error = _a.error;
                 var session = _a.data && _a.data.session;
                 if (error || !session) {
@@ -55,6 +57,7 @@ function getUser(req, res, next) {
               });
           })
           .catch(function () {
+            if (res.headersSent) return;
             res.clearCookie('sm_session');
             return res.status(401).json({ error: 'Session expired. Please login again.' });
           });
