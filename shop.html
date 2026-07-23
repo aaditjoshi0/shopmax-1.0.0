@@ -145,7 +145,7 @@
             : stock <= 5
               ? '<span class="sm-stock-label sm-low-stock">Only ' + stock + ' left</span>'
               : '') +
-          (p.rating ? SM.starHtml(p.rating) : '') +
+          (p.rating ? SM.ratingDisplayHtml(p.rating, p.rating_count) : '') +
         '</div>';
     }
 

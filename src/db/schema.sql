@@ -165,6 +165,28 @@ create table if not exists public.listings (
 );
 create index if not exists listings_status_idx on public.listings(status);
 
+-- ---------- RATINGS (one per user per product or listing) --------------------
+create table if not exists public.ratings (
+  id          bigint generated always as identity primary key,
+  target_type text not null default 'product',
+  target_id   bigint not null,
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  rating      integer not null check (rating >= 1 and rating <= 5),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+create unique index if not exists ratings_target_user_idx on public.ratings (target_type, target_id, user_id);
+create index if not exists ratings_target_idx on public.ratings (target_type, target_id);
+
+alter table public.ratings enable row level security;
+drop policy if exists "ratings public read" on public.ratings;
+create policy "ratings public read" on public.ratings for select using (true);
+drop policy if exists "ratings owner write" on public.ratings;
+create policy "ratings owner write" on public.ratings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Add rating_count to products
+alter table public.products add column if not exists rating_count integer not null default 0;
+
 -- ============================================================================
 -- ROW LEVEL SECURITY
 -- Public can read products and active listings.

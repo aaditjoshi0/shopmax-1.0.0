@@ -48,7 +48,10 @@ router.get('/', async (req, res, next) => {
       default:           items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
     // attach designer name
-    items = items.map(l => ({ ...l, designer_name: designerName(l.user_id) }));
+    items = items.map(function (l) {
+      l.rating_count = l.rating_count || 0;
+      return { ...l, designer_name: designerName(l.user_id) };
+    });
     res.json(items);
   } catch (e) { next(e); }
 });
@@ -59,6 +62,7 @@ router.get('/:id', async (req, res, next) => {
     const id = Number(req.params.id);
     const l = store.raw.listings.find(x => x.id === id);
     if (!l) return res.status(404).json({ error: 'Listing not found' });
+    l.rating_count = l.rating_count || 0;
     res.json({ ...l, designer_name: designerName(l.user_id) });
   } catch (e) { next(e); }
 });
@@ -82,6 +86,8 @@ router.post('/', getUser, requireUser, (req, res, next) => {
       category: category || (design_id ? 'design' : 'physical'),
       design_id: design_id || null,
       status: 'active',
+      rating: 0,
+      rating_count: 0,
       created_at: new Date().toISOString()
     };
     store.raw.listings.push(listing);

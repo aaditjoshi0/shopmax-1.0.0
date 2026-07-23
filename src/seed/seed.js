@@ -103,6 +103,39 @@ function seedIfEmpty(verbose) {
       if (verbose) console.log('[seed] admin user created (admin@shopmax.com / Admin@123456)');
     }
 
+    // Seed sample ratings for products
+    if ((data.ratings || []).length === 0 && data.products.length > 0 && data.users.length > 0) {
+      var sampleUserIds = data.users.filter(function (u) { return u.role !== 'admin'; }).map(function (u) { return u.id; });
+      if (sampleUserIds.length === 0) sampleUserIds = [data.users[0].id];
+      data.ratings = [];
+      data.products.forEach(function (p) {
+        var numRatings = Math.floor(Math.random() * 3) + 1;
+        var usedUsers = {};
+        for (var ri = 0; ri < numRatings; ri++) {
+          var ruid = sampleUserIds[Math.floor(Math.random() * sampleUserIds.length)];
+          if (usedUsers[ruid]) continue;
+          usedUsers[ruid] = true;
+          data.ratings.push({
+            id: data.ratings.length + 1,
+            target_type: 'product',
+            target_id: p.id,
+            user_id: ruid,
+            rating: Math.floor(Math.random() * 2) + 4,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+        }
+        var productRatings = data.ratings.filter(function (r) { return r.target_type === 'product' && r.target_id === p.id; });
+        var rc = productRatings.length;
+        p.rating_count = rc;
+        if (rc) {
+          p.rating = Math.round(productRatings.reduce(function (s, r) { return s + r.rating; }, 0) / rc * 10) / 10;
+        }
+      });
+      store.persist();
+      if (verbose) console.log('[seed] ' + data.ratings.length + ' sample ratings generated.');
+    }
+
     return;
   }
 

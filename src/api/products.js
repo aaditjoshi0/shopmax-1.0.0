@@ -48,6 +48,9 @@ function localList({ category, q, featured, sort, status, bestseller, new_arriva
     case 'rating':     items.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break;
     default:           items.sort((a, b) => a.id - b.id);
   }
+  items.forEach(function (p) {
+    p.rating_count = p.rating_count || 0;
+  });
   return items;
 }
 
@@ -75,6 +78,9 @@ async function supabaseList({ category, q, featured, sort, status, bestseller, n
   }
   const { data, error } = await query;
   if (error) throw error;
+  (data || []).forEach(function (p) {
+    p.rating_count = p.rating_count || 0;
+  });
   return data;
 }
 
@@ -168,6 +174,7 @@ router.get('/:id', async (req, res, next) => {
       const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : item.stock;
       const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : item.sizes;
       const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : item.colors;
+      item.rating_count = item.rating_count || 0;
       return res.json({ ...item, variants, images, stock, sizes, colors });
     }
     const { data, error } = await supabase.from('products').select('*').eq('id', id).maybeSingle();
@@ -180,6 +187,7 @@ router.get('/:id', async (req, res, next) => {
     const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : data.stock;
     const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : (data.sizes || []);
     const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : (data.colors || []);
+    data.rating_count = data.rating_count || 0;
     res.json({ ...data, variants, images, stock, sizes, colors });
   } catch (e) { next(e); }
 });
@@ -203,6 +211,7 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       stock: Number(b.stock) || 0,
       sizes: b.sizes || [],
       rating: Number(b.rating) || 0,
+      rating_count: 0,
       featured: !!b.featured,
       colors: b.colors || null,
       brand: b.brand || '',
@@ -255,7 +264,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     if (MODE === 'local') {
       const p = store.raw.products.find(p => p.id === id);
       if (!p) return res.status(404).json({ error: 'Product not found.' });
-      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
+      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
       fields.forEach(f => {
         if (b[f] !== undefined) p[f] = b[f];
       });
@@ -270,7 +279,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     }
 
     const updates = {};
-    const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
+    const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
     allowed.forEach(f => {
       if (b[f] !== undefined) updates[f] = b[f];
     });
@@ -365,6 +374,7 @@ router.post('/:id/duplicate', getUser, requireAdmin, async (req, res, next) => {
     dup.slug = uniqueSlug(toSlug(dup.name));
     dup.status = 'draft';
     dup.sku = dup.sku ? dup.sku + '-copy' : '';
+    dup.rating_count = 0;
     delete dup.created_at;
     dup.updated_at = new Date().toISOString();
 

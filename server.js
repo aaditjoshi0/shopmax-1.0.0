@@ -91,6 +91,16 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'create index if not exists wishlists_user_idx on public.wishlists (user_id, created_at desc);' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'drop policy if exists "wishlists owner" on public.wishlists;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'create policy "wishlists owner" on public.wishlists for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
+      // --- Add rating_count to products ---
+      await supabase.rpc('exec_sql', { sql: 'alter table public.products add column if not exists rating_count integer not null default 0;' }).catch(() => {});
+      // --- Ratings table ---
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.ratings (id bigint generated always as identity primary key, target_type text not null default 'product', target_id bigint not null, user_id uuid not null references auth.users(id) on delete cascade, rating integer not null check (rating >= 1 and rating <= 5), created_at timestamptz not null default now(), updated_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create unique index if not exists ratings_target_user_idx on public.ratings (target_type, target_id, user_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists ratings_target_idx on public.ratings (target_type, target_id);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "ratings public read" on public.ratings;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "ratings public read" on public.ratings for select using (true);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'drop policy if exists "ratings owner write" on public.ratings;' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create policy "ratings owner write" on public.ratings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
     } catch (_) {}
   })();
 }
@@ -158,6 +168,7 @@ app.use('/api/categories', require('./src/api/categories'));
 app.use('/api/admin', require('./src/api/admin'));
 app.use('/api', require('./src/api/variants')); // includes product variant + image routes
 app.use('/api/reviews', require('./src/api/reviews'));
+app.use('/api/ratings', require('./src/api/ratings'));
 app.use('/api/wishlist', require('./src/api/wishlist'));
 
 // Health / mode check

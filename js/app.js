@@ -37,9 +37,33 @@
 
   function starHtml(rating) {
     rating = Number(rating) || 0;
-    var html = '<div class="star-rating">';
+    var html = '<span class="star-rating">';
     for (var i = 1; i <= 5; i++) {
       html += '<span class="icon-star2 ' + (i <= Math.round(rating) ? 'text-warning' : 'text-muted') + '"></span>';
+    }
+    html += '</span>';
+    return html;
+  }
+
+  function ratingDisplayHtml(rating, count) {
+    rating = Number(rating) || 0;
+    count = Number(count) || 0;
+    var stars = '';
+    for (var i = 1; i <= 5; i++) {
+      stars += '<span class="icon-star2 ' + (i <= Math.round(rating) ? 'text-warning' : 'text-muted') + '"></span>';
+    }
+    return '<div class="sm-rating-display">' +
+      '<span class="sm-rating-stars">' + stars + '</span>' +
+      '<span class="sm-rating-text">' + rating.toFixed(1) + ' / 5</span>' +
+      '<span class="sm-rating-count">(' + count + ' Rating' + (count !== 1 ? 's' : '') + ')</span>' +
+    '</div>';
+  }
+
+  function ratingInputHtml(currentRating) {
+    currentRating = Number(currentRating) || 0;
+    var html = '<div class="sm-rating-input">';
+    for (var i = 1; i <= 5; i++) {
+      html += '<span class="sm-rating-star' + (i <= currentRating ? ' active' : '') + '" data-val="' + i + '">&#9733;</span>';
     }
     html += '</div>';
     return html;
@@ -79,7 +103,7 @@
         '<h2 class="item-title"><a href="/product/' + p.id + '">' + escapeHtml(p.name) + '</a></h2>' +
         priceHtml(p) +
         stockHtml(p) +
-        (p.rating ? starHtml(p.rating) : '') +
+        (p.rating ? ratingDisplayHtml(p.rating, p.rating_count) : '') +
       '</div>';
   }
 
@@ -217,7 +241,7 @@
         '</div>' +
         '<div class="container">' +
           '<div class="d-flex align-items-center justify-content-between">' +
-            '<div class="logo"><div class="site-logo"><a href="/index.html" class="js-logo-clone"><img src="images/logo.png" alt="ShopMax"></a></div></div>' +
+            '<div class="logo"><div class="site-logo"><a href="/index.html" class="js-logo-clone"><img src="/images/logo.png" alt="ShopMax"></a></div></div>' +
             '<div class="main-nav d-none d-lg-block">' +
               '<nav class="site-navigation text-right text-md-center" role="navigation">' +
                 '<ul class="site-menu js-clone-nav d-none d-lg-block">' + lis + '</ul>' +
@@ -245,7 +269,7 @@
         '<div class="container">' +
           '<div class="row">' +
             '<div class="col-md-6 col-lg-3 mb-4 mb-lg-0">' +
-              '<h3 class="footer-heading mb-4"><img src="images/logo.png" alt="ShopMax" style="height:45px;width:auto;"></h3>' +
+              '<h3 class="footer-heading mb-4"><img src="/images/logo.png" alt="ShopMax" style="height:55px;width:auto;"></h3>' +
               '<p>Design it, wear it, sell it. ShopMax is a store + community marketplace where anyone can customize clothing and sell their designs.</p>' +
             '</div>' +
             '<div class="col-lg-5 ml-auto mb-5 mb-lg-0">' +
@@ -289,6 +313,20 @@
 
     if (navHost) navHost.innerHTML = buildNavbar();
     if (footerHost) footerHost.innerHTML = buildFooter();
+
+    // Populate mobile menu (main.js runs before navbar exists, so clones fail)
+    var logoClone = document.querySelector('.js-logo-clone');
+    var mobileLogo = document.querySelector('.site-mobile-menu-logo');
+    if (logoClone && mobileLogo && !mobileLogo.querySelector('img')) {
+      mobileLogo.appendChild(logoClone.cloneNode(true));
+    }
+    var navClone = document.querySelector('.js-clone-nav');
+    var mobileBody = document.querySelector('.site-mobile-menu-body');
+    if (navClone && mobileBody && mobileBody.children.length === 0) {
+      var navWrap = navClone.cloneNode(true);
+      navWrap.className = 'site-nav-wrap';
+      mobileBody.appendChild(navWrap);
+    }
 
     initSearchPanel();
     bindNavEvents();
@@ -413,6 +451,8 @@
     qs: qs,
     escapeHtml: escapeHtml,
     starHtml: starHtml,
+    ratingDisplayHtml: ratingDisplayHtml,
+    ratingInputHtml: ratingInputHtml,
     priceHtml: priceHtml,
     productCard: productCard,
     toast: toast,

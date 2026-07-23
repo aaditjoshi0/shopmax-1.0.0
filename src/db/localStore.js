@@ -19,6 +19,7 @@ const DEFAULTS = {
   variants: [],       // { id, product_id, sku, size, color, price, compare_at_price, stock, status }
   images: [],         // { id, product_id, color, url, alt, sort_order }
   reviews: [],        // { id, product_id, user_id, user_name, rating, title, comment, created_at }
+  ratings: [],        // { id, target_type, target_id, user_id, rating, created_at, updated_at }
   wishlists: [],      // { id, user_id, product_id, created_at }
   users: [],          // local-only auth: { id, email, password (hashed), full_name, mobile, birthdate }
   coupons: [

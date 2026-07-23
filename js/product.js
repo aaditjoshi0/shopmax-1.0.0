@@ -9,6 +9,7 @@
   var currentProduct = null;
   var reviewData = null;
   var isWished = false;
+  var ratingData = null;
 
   function $(id) { return document.getElementById(id); }
 
@@ -30,6 +31,7 @@
       currentProduct = p;
       trackRecentlyViewed(p);
       render(p);
+      loadRatings(p.id);
       loadReviews(p.id);
       loadRelated(p);
       checkWishlist(p.id);
@@ -164,8 +166,9 @@
         brandHtml +
         '<h1 class="sm-pdp-name">' + SM.escapeHtml(p.name) + '</h1>' +
         '<div class="sm-pdp-rating-row">' +
-          '<div class="sm-pdp-stars">' + SM.starHtml(p.rating) + '</div>' +
-          '<span class="sm-pdp-rating-num">' + (p.rating || 0).toFixed(1) + '</span>' +
+          '<div id="sm-pdp-rating-default" style="display:none">' + SM.ratingDisplayHtml(p.rating, p.rating_count || 0) + '</div>' +
+          '<div id="sm-pdp-rating-loading">Loading ratings...</div>' +
+          '<div id="sm-pdp-rating-display"></div>' +
           '<a href="#sm-reviews-section" class="sm-pdp-review-count" id="sm-pdp-review-link"> Reviews</a>' +
         '</div>' +
         priceHtml +
@@ -573,6 +576,96 @@
         $('sm-reviews-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     }
+  }
+
+  function loadRatings(productId) {
+    SM.api('/api/ratings/product/' + productId).then(function (data) {
+      ratingData = data;
+      renderRatings(productId);
+    }).catch(function () {
+      var displayEl = $('sm-pdp-rating-display');
+      var loadingEl = $('sm-pdp-rating-loading');
+      var defaultEl = $('sm-pdp-rating-default');
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (defaultEl) defaultEl.style.display = 'none';
+      if (displayEl) displayEl.innerHTML = '<div class="sm-rating-error">Ratings are temporarily unavailable.</div>';
+    });
+  }
+
+  function renderRatings(productId) {
+    if (!ratingData) return;
+    var displayEl = $('sm-pdp-rating-display');
+    var loadingEl = $('sm-pdp-rating-loading');
+    var defaultEl = $('sm-pdp-rating-default');
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (defaultEl) defaultEl.style.display = 'none';
+    if (!displayEl) return;
+
+    var avg = ratingData.average || 0;
+    var count = ratingData.count || 0;
+    var userRating = ratingData.userRating || 0;
+
+    var html = '<div class="sm-pdp-rating-section">';
+
+    if (count === 0) {
+      html += '<div class="sm-rating-display"><span class="sm-rating-stars"><span class="icon-star2 text-muted"></span><span class="icon-star2 text-muted"></span><span class="icon-star2 text-muted"></span><span class="icon-star2 text-muted"></span><span class="icon-star2 text-muted"></span></span></div>';
+      html += '<div class="sm-no-ratings-text">No Ratings Yet</div>';
+      if (SM.isLoggedIn()) {
+        html += '<div class="sm-no-ratings-sub">Be the first to rate this product.</div>';
+        html += '<div class="sm-pdp-rate-this">' +
+          '<div class="sm-rating-interactive" id="sm-rating-interactive">' +
+            SM.ratingInputHtml(0) +
+          '</div>' +
+        '</div>';
+      } else {
+        html += '<div class="sm-no-ratings-sub">Please sign in to rate this product.</div>';
+      }
+    } else {
+      html += '<div class="sm-pdp-rating-summary">' + SM.ratingDisplayHtml(avg, count) + '</div>';
+      if (SM.isLoggedIn()) {
+        html += '<div class="sm-pdp-rate-this">' +
+          '<label class="sm-rate-label">Rate this Product:</label>' +
+          '<div class="sm-rating-interactive" id="sm-rating-interactive">' +
+            SM.ratingInputHtml(userRating) +
+          '</div>' +
+        '</div>';
+      } else {
+        html += '<div class="sm-pdp-rate-login"><a href="/login.html?next=' + encodeURIComponent(window.location.pathname) + '">Sign in</a> to rate this product.</div>';
+      }
+    }
+
+    html += '</div>';
+    displayEl.innerHTML = html;
+
+    if (SM.isLoggedIn()) {
+      bindRatingInput(productId);
+    }
+  }
+
+  function bindRatingInput(productId) {
+    var container = $('sm-rating-interactive');
+    if (!container) return;
+    container.addEventListener('click', function (e) {
+      var star = e.target.closest('.sm-rating-star');
+      if (!star) return;
+      var val = parseInt(star.getAttribute('data-val'), 10);
+      if (!val) return;
+      // highlight clicked star and all before it
+      container.querySelectorAll('.sm-rating-star').forEach(function (s) {
+        var v = parseInt(s.getAttribute('data-val'), 10);
+        s.classList.toggle('active', v <= val);
+      });
+      // submit rating
+      SM.api('/api/ratings', {
+        method: 'POST',
+        body: JSON.stringify({ target_type: 'product', target_id: productId, rating: val })
+      }).then(function (data) {
+        ratingData = data;
+        renderRatings(productId);
+      }).catch(function (err) {
+        SM.toast(err.message || 'Failed to save rating', 'error');
+      });
+    });
   }
 
   function loadReviews(productId) {
