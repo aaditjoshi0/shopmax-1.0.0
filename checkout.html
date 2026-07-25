@@ -192,7 +192,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tableEl.style.display = '';
     placeBtn.disabled = false;
 
-    currentDelivery = calcDelivery(cartSubtotal);
+    if (!appliedCoupon || !appliedCoupon.free_delivery) {
+      currentDelivery = calcDelivery(cartSubtotal);
+    }
     currentDiscount = calcDiscount(cartSubtotal, appliedCoupon);
     var finalTotal = Math.max(0, cartSubtotal - currentDiscount + currentDelivery);
 
@@ -229,38 +231,40 @@ document.addEventListener('DOMContentLoaded', function () {
     renderOrder();
   }).catch(function () { loadingEl.textContent = 'Failed to load your cart.'; });
 
-  // Coupon apply
+  // Coupon apply (backend-validated)
   applyBtn.addEventListener('click', function () {
     var code = couponInput.value.trim().toUpperCase();
     if (!code) { couponMsg.textContent = 'Please enter a coupon code.'; couponMsg.style.color = '#dc3545'; couponMsg.style.display = 'block'; return; }
 
-    // Client-side coupon definitions (server re-validates)
-    var coupons = {
-      'SHOPMAX10': { code: 'SHOPMAX10', type: 'percent', value: 10, min_cart: 0, label: '10% OFF' },
-      'SHOPMAX20': { code: 'SHOPMAX20', type: 'percent', value: 20, min_cart: 0, label: '20% OFF' },
-      'FIRSTORDER': { code: 'FIRSTORDER', type: 'fixed', value: 100, min_cart: 200, label: '\u20B9100 OFF' }
-    };
-
-    var coupon = coupons[code];
-    if (!coupon) {
-      couponMsg.textContent = 'Invalid coupon code.';
-      couponMsg.style.color = '#dc3545';
-      couponMsg.style.display = 'block';
-      return;
-    }
-    if (cartSubtotal < coupon.min_cart) {
-      couponMsg.textContent = 'Minimum cart value is \u20B9' + coupon.min_cart + ' for this coupon.';
-      couponMsg.style.color = '#dc3545';
-      couponMsg.style.display = 'block';
-      return;
-    }
-    appliedCoupon = coupon;
-    couponMsg.textContent = 'Coupon applied! ' + coupon.label;
-    couponMsg.style.color = '#28a745';
-    couponMsg.style.display = 'block';
-    couponInput.disabled = true;
     applyBtn.disabled = true;
-    renderOrder();
+    applyBtn.textContent = 'Validating...';
+    couponMsg.style.display = 'none';
+
+    SM.api('/api/cart/validate-coupon', { method: 'POST', body: JSON.stringify({ code: code, subtotal: cartSubtotal }) }).then(function (res) {
+      applyBtn.disabled = false;
+      applyBtn.textContent = 'Apply';
+      if (!res.valid) {
+        couponMsg.textContent = res.error || 'Invalid coupon code.';
+        couponMsg.style.color = '#dc3545';
+        couponMsg.style.display = 'block';
+        return;
+      }
+      appliedCoupon = res.coupon;
+      currentDiscount = res.discount;
+      currentDelivery = res.freeDelivery ? 0 : currentDelivery;
+      couponMsg.textContent = 'Coupon applied! ' + res.coupon.label;
+      couponMsg.style.color = '#28a745';
+      couponMsg.style.display = 'block';
+      couponInput.disabled = true;
+      applyBtn.disabled = true;
+      renderOrder();
+    }).catch(function () {
+      applyBtn.disabled = false;
+      applyBtn.textContent = 'Apply';
+      couponMsg.textContent = 'Failed to validate coupon. Please try again.';
+      couponMsg.style.color = '#dc3545';
+      couponMsg.style.display = 'block';
+    });
   });
 
   // Place Order

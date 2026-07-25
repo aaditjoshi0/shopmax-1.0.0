@@ -239,6 +239,26 @@
                       <label>Colors (JSON)</label>
                       <input type="text" class="form-control" id="pf-colors" placeholder='[{"name":"Red","hex":"#ff0000"}]' />
                     </div>
+                    <div class="form-group">
+                      <label>Material</label>
+                      <textarea class="form-control" id="pf-material" rows="2" placeholder="e.g. 100% Cotton"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Fabric</label>
+                      <textarea class="form-control" id="pf-fabric" rows="2" placeholder="e.g. Premium ringspun cotton"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Delivery Information</label>
+                      <textarea class="form-control" id="pf-delivery" rows="3" placeholder="e.g. Free delivery on orders over ₹1000, 3-7 business days"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Return Policy</label>
+                      <textarea class="form-control" id="pf-return" rows="3" placeholder="e.g. 30-day easy returns, items must be unworn"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Size Guide</label>
+                      <textarea class="form-control" id="pf-sizeguide" rows="3" placeholder="e.g. Measurements in inches: S=36 chest, M=40 chest..."></textarea>
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -296,43 +316,33 @@
           </div>
         </div>
 
-        <!-- Variant Management -->
+        <!-- ========== Color Variant Builder ========== -->
         <div class="sm-admin-card mt-3" id="sm-variant-mgmt" style="display:none">
-          <h4>Variants</h4>
-          <div class="table-responsive mb-3">
-            <table class="table table-sm">
-              <thead><tr><th>SKU</th><th>Size</th><th>Color</th><th>Price</th><th>Compare</th><th>Stock</th><th>Status</th><th style="width:100px">Actions</th></tr></thead>
-              <tbody id="sm-variant-tbody"><tr><td colspan="8" class="text-muted">Save the product first, then add variants.</td></tr></tbody>
-            </table>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 style="margin:0">Color Variant Builder</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="btn-add-color-variant" disabled>+ Add Color</button>
           </div>
-          <form id="sm-variant-form" class="form-inline mb-2">
-            <input type="hidden" id="vf-id" value="" />
-            <input type="text" class="form-control form-control-sm mr-2" id="vf-sku" placeholder="SKU" style="width:100px" />
-            <input type="text" class="form-control form-control-sm mr-2" id="vf-size" placeholder="Size" style="width:70px" />
-            <input type="text" class="form-control form-control-sm mr-2" id="vf-color" placeholder="Color" style="width:90px" />
-            <input type="number" step="0.01" class="form-control form-control-sm mr-2" id="vf-price" placeholder="Price" style="width:90px" />
-            <input type="number" step="0.01" class="form-control form-control-sm mr-2" id="vf-compare" placeholder="Compare" style="width:90px" />
-            <input type="number" class="form-control form-control-sm mr-2" id="vf-stock" placeholder="Stock" style="width:70px" />
-            <select class="form-control form-control-sm mr-2" id="vf-status" style="width:100px">
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-              <option value="hidden">Hidden</option>
-            </select>
-            <button type="submit" class="btn btn-sm btn-success">Save Variant</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary ml-1" id="btn-vf-cancel" style="display:none">Cancel</button>
-          </form>
+          <div id="sm-color-variants-container"></div>
+          <div class="mt-3">
+            <button type="button" class="btn btn-primary" id="btn-save-all-variants" disabled>Save All Variants</button>
+            <span class="text-muted ml-2" id="sm-variant-status-text">Save the product first, then add color variants.</span>
+          </div>
         </div>
 
-        <!-- Image Management -->
+        <!-- Image Management (with upload support) -->
         <div class="sm-admin-card mt-3" id="sm-image-mgmt" style="display:none">
-          <h4>Images</h4>
+          <h4>Additional Images</h4>
           <div class="row" id="sm-image-gallery"></div>
           <form id="sm-image-form" class="form-inline mt-2">
             <input type="hidden" id="if-id" value="" />
-            <input type="text" class="form-control form-control-sm mr-2" id="if-url" placeholder="Image URL *" style="flex:1" required />
-            <input type="text" class="form-control form-control-sm mr-2" id="if-color" placeholder="Color (optional)" style="width:120px" />
-            <input type="number" class="form-control form-control-sm mr-2" id="if-sort" placeholder="Order" style="width:70px" value="0" />
-            <input type="text" class="form-control form-control-sm mr-2" id="if-alt" placeholder="Alt text" style="width:120px" />
+            <input type="text" class="form-control form-control-sm mr-2" id="if-url" placeholder="Image URL" style="flex:1" />
+            <div class="custom-file mr-2" style="width:auto">
+              <input type="file" class="custom-file-input" id="if-file-upload" accept="image/*" style="width:140px" />
+              <label class="custom-file-label" for="if-file-upload" style="width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Or upload file</label>
+            </div>
+            <input type="text" class="form-control form-control-sm mr-2" id="if-color" placeholder="Color" style="width:100px" />
+            <input type="number" class="form-control form-control-sm mr-2" id="if-sort" placeholder="Order" style="width:60px" value="0" />
+            <input type="text" class="form-control form-control-sm mr-2" id="if-alt" placeholder="Alt text" style="width:100px" />
             <button type="submit" class="btn btn-sm btn-success">Add Image</button>
             <button type="button" class="btn btn-sm btn-outline-secondary ml-1" id="btn-if-cancel" style="display:none">Cancel</button>
           </form>
@@ -445,10 +455,79 @@
         </div>
       </section>
 
-      <!-- Coupons (placeholder) -->
+      <!-- Coupons -->
       <section id="sec-coupons" class="sm-admin-section">
-        <h2 class="sm-admin-section-title">Coupons</h2>
-        <div class="sm-admin-card"><p class="text-muted">Coupon management coming soon.</p></div>
+        <div class="d-flex justify-content-between align-items-center mb-3" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 class="sm-admin-section-title" style="margin:0">Coupon Management</h2>
+          <div>
+            <button class="btn btn-outline-primary btn-sm mr-2" id="adm-coupon-analytics-btn" onclick="loadCouponAnalytics()">Analytics</button>
+            <button class="btn btn-primary btn-sm" id="adm-coupon-add-btn" onclick="showCouponForm()">+ Create Coupon</button>
+          </div>
+        </div>
+
+        <!-- Analytics Summary (hidden by default) -->
+        <div class="row sm-admin-stats mb-3" id="adm-coupon-analytics" style="display:none">
+          <div class="col-md-3"><div class="sm-admin-card text-center"><h5>Total Coupons</h5><h3 id="adm-coupon-analytics-total">0</h3></div></div>
+          <div class="col-md-3"><div class="sm-admin-card text-center"><h5>Active</h5><h3 id="adm-coupon-analytics-active">0</h3></div></div>
+          <div class="col-md-3"><div class="sm-admin-card text-center"><h5>Times Used</h5><h3 id="adm-coupon-analytics-usage">0</h3></div></div>
+          <div class="col-md-3"><div class="sm-admin-card text-center"><h5>Total Discount Given</h5><h3 id="adm-coupon-analytics-discount">\u20B90</h3></div></div>
+        </div>
+        <div class="row mb-3" id="adm-coupon-analytics-table-row" style="display:none">
+          <div class="col-md-12">
+            <div class="sm-admin-card">
+              <h5>Top Coupons by Usage</h5>
+              <table class="table table-sm table-bordered mt-2"><thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Times Used</th><th>Discount Given</th><th>Status</th></tr></thead><tbody id="adm-coupon-analytics-tbody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coupon List -->
+        <div class="sm-admin-card" style="overflow-x:auto">
+          <div id="adm-coupon-loading">Loading coupons...</div>
+          <table class="table table-bordered table-hover mt-2" id="adm-coupon-table" style="display:none;font-size:0.9rem">
+            <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Min Cart</th><th>Max Discount</th><th>Max Uses</th><th>Per User</th><th>Start</th><th>End</th><th>Free Del</th><th>1st Order</th><th>Used</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody id="adm-coupon-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Coupon Form Modal -->
+        <div class="modal fade" id="adm-coupon-modal" tabindex="-1">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header"><h5 class="modal-title" id="adm-coupon-modal-title">Create Coupon</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+              <div class="modal-body">
+                <form id="adm-coupon-form">
+                  <input type="hidden" id="adm-coupon-form-editing">
+                  <div class="row">
+                    <div class="col-md-4 form-group"><label>Code *</label><input type="text" class="form-control" id="adm-cp-code" required></div>
+                    <div class="col-md-4 form-group"><label>Type</label><select class="form-control" id="adm-cp-type"><option value="percent">Percent (%)</option><option value="fixed">Fixed (\u20B9)</option><option value="free_delivery">Free Delivery</option></select></div>
+                    <div class="col-md-4 form-group" id="adm-cp-value-group"><label>Value *</label><input type="number" class="form-control" id="adm-cp-value" step="0.01" min="0" required></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 form-group"><label>Min Cart (\u20B9)</label><input type="number" class="form-control" id="adm-cp-min-cart" step="0.01" min="0" value="0"></div>
+                    <div class="col-md-4 form-group" id="adm-cp-max-discount-group"><label>Max Discount (\u20B9, 0 = no limit)</label><input type="number" class="form-control" id="adm-cp-max-discount" step="0.01" min="0" value="0"></div>
+                    <div class="col-md-4 form-group"><label>Max Uses (0 = unlimited)</label><input type="number" class="form-control" id="adm-cp-max-uses" min="0" value="0"></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 form-group"><label>Per User Limit (0 = unlimited)</label><input type="number" class="form-control" id="adm-cp-per-user" min="0" value="0"></div>
+                    <div class="col-md-4 form-group"><label>Start Date</label><input type="datetime-local" class="form-control" id="adm-cp-start-date"></div>
+                    <div class="col-md-4 form-group"><label>End Date</label><input type="datetime-local" class="form-control" id="adm-cp-end-date"></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 form-group"><div class="form-check mt-4"><input type="checkbox" class="form-check-input" id="adm-cp-free-delivery"><label class="form-check-label">Free Delivery</label></div></div>
+                    <div class="col-md-4 form-group"><div class="form-check mt-4"><input type="checkbox" class="form-check-input" id="adm-cp-first-order"><label class="form-check-label">First Order Only</label></div></div>
+                    <div class="col-md-4 form-group"><div class="form-check mt-4"><input type="checkbox" class="form-check-input" id="adm-cp-active" checked><label class="form-check-label">Active</label></div></div>
+                  </div>
+                  <div class="form-group"><label>Description</label><textarea class="form-control" id="adm-cp-description" rows="2"></textarea></div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="adm-coupon-form-save" onclick="saveCoupon()">Save Coupon</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- Settings -->
@@ -515,6 +594,7 @@
       if (sec === 'orders') { loadOrders(); }
       if (sec === 'dashboard') { loadDashboard(); }
       if (sec === 'ratings') { loadAdminRatings(); }
+      if (sec === 'coupons') { loadCoupons(); $('adm-coupon-analytics').style.display = 'none'; $('adm-coupon-analytics-table-row').style.display = 'none'; }
     });
   });
 
@@ -744,100 +824,334 @@
     }).join('');
   }
 
-  // ======================== Variant Management ========================
+  // ======================== Color Variant Builder ========================
   var currentVariantProductId = null;
+  var colorVariants = [];
 
-  function loadVariants(productId) {
+  function loadColorVariants(productId) {
     currentVariantProductId = productId;
     if (!productId) {
-      $('sm-variant-tbody').innerHTML = '<tr><td colspan="8" class="text-muted">Save the product first, then add variants.</td></tr>';
+      $('sm-color-variants-container').innerHTML = '';
+      $('sm-variant-status-text').textContent = 'Save the product first, then add color variants.';
+      $('btn-save-all-variants').disabled = true;
+      $('btn-add-color-variant').disabled = true;
       return;
     }
-    API('/api/products/' + productId + '/variants').then(function (variants) {
-      var tbody = $('sm-variant-tbody');
-      if (!variants || !variants.length) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-muted">No variants yet. Add one below.</td></tr>';
-        return;
+    $('sm-variant-status-text').textContent = 'Loading...';
+    $('btn-save-all-variants').disabled = true;
+    $('btn-add-color-variant').disabled = false;
+
+    Promise.all([
+      API('/api/products/' + productId + '/variants'),
+      API('/api/products/' + productId + '/images')
+    ]).then(function (results) {
+      var variants = results[0] || [];
+      var images = results[1] || [];
+      colorVariants = [];
+
+      // Group variants by color — handle JSON-encoded hex
+      function parseColor(raw) {
+        if (typeof raw !== 'string' || raw.charAt(0) !== '{') return { name: raw || '', hex: '#cccccc' };
+        try { var p = JSON.parse(raw); return { name: p.n || p.name || '', hex: p.h || p.hex || '#cccccc' }; } catch (e) { return { name: raw, hex: '#cccccc' }; }
       }
-      tbody.innerHTML = variants.map(function (v) {
-        return '<tr>' +
-          '<td>' + h(v.sku || '') + '</td>' +
-          '<td>' + h(v.size || '') + '</td>' +
-          '<td>' + h(v.color || '') + '</td>' +
-          '<td>₹' + Number(v.price || 0).toFixed(2) + '</td>' +
-          '<td>' + (v.compare_at_price ? '\u20B9' + Number(v.compare_at_price).toFixed(2) : '-') + '</td>' +
-          '<td>' + (v.stock != null ? v.stock : '0') + '</td>' +
-          '<td>' + statusBadge(v.status || 'published') + '</td>' +
-          '<td>' +
-            '<button class="btn btn-sm btn-outline-primary var-edit" data-id="' + v.id + '" data-sku="' + h(v.sku || '') + '" data-size="' + h(v.size || '') + '" data-color="' + h(v.color || '') + '" data-price="' + (v.price || 0) + '" data-compare="' + (v.compare_at_price || '') + '" data-stock="' + (v.stock || 0) + '" data-status="' + (v.status || 'published') + '">Edit</button> ' +
-            '<button class="btn btn-sm btn-outline-danger var-delete" data-id="' + v.id + '">Del</button>' +
-          '</td></tr>';
-      }).join('');
+      var colorMap = {};
+      variants.forEach(function (v) {
+        if (!v.color) return;
+        var pc = parseColor(v.color);
+        if (!colorMap[pc.name]) {
+          colorMap[pc.name] = { name: pc.name, hex: pc.hex, price: v.price, compare_at_price: v.compare_at_price, sizes: [], images: [] };
+        }
+        if (v.size) colorMap[pc.name].sizes.push({ name: v.size, stock: v.stock, variantId: v.id });
+      });
+
+      // Attach images to colors — parse color to match colorMap keys
+      images.forEach(function (img) {
+        var rawColor = img.color || '';
+        var key = rawColor.charAt(0) === '{' ? (parseColor(rawColor).name || '__no_color__') : (rawColor || '__no_color__');
+        if (colorMap[key]) colorMap[key].images.push({ id: img.id, url: img.url });
+        else {
+          // create a generic color entry for unattached images
+          if (!colorMap['__other__']) colorMap['__other__'] = { name: 'Other', hex: '#cccccc', price: 0, compare_at_price: null, sizes: [], images: [] };
+          colorMap['__other__'].images.push({ id: img.id, url: img.url });
+        }
+      });
+
+      Object.keys(colorMap).forEach(function (k) { colorVariants.push(colorMap[k]); });
+      renderColorVariantBuilder();
+      $('sm-variant-status-text').textContent = colorVariants.length + ' color variant(s) loaded. Add or edit below.';
     }).catch(function () {
-      $('sm-variant-tbody').innerHTML = '<tr><td colspan="8" class="text-danger">Failed to load variants.</td></tr>';
+      $('sm-variant-status-text').textContent = 'Failed to load variants.';
     });
   }
 
-  function resetVariantForm() {
-    $('vf-id').value = '';
-    $('vf-sku').value = '';
-    $('vf-size').value = '';
-    $('vf-color').value = '';
-    $('vf-price').value = '';
-    $('vf-compare').value = '';
-    $('vf-stock').value = '';
-    $('vf-status').value = 'published';
-    $('btn-vf-cancel').style.display = 'none';
+  function renderColorVariantBuilder() {
+    var container = $('sm-color-variants-container');
+    if (!colorVariants.length) {
+      container.innerHTML = '<div class="text-muted text-center py-4">No color variants yet. Click "+ Add Color" to begin.</div>';
+      return;
+    }
+    container.innerHTML = colorVariants.map(function (cv, ci) {
+      var sizeRows = (cv.sizes || []).map(function (s, si) {
+        return '<div class="sm-cv-size-row">' +
+          '<input type="text" class="form-control form-control-sm sm-cv-size-name" value="' + h(s.name) + '" placeholder="Size" style="width:70px" data-ci="' + ci + '" data-si="' + si + '">' +
+          '<input type="number" class="form-control form-control-sm sm-cv-size-stock" value="' + (s.stock || 0) + '" placeholder="Stock" min="0" style="width:80px" data-ci="' + ci + '" data-si="' + si + '">' +
+          '<button type="button" class="btn btn-sm btn-outline-danger sm-cv-size-remove" data-ci="' + ci + '" data-si="' + si + '" title="Remove size">&times;</button>' +
+        '</div>';
+      }).join('');
+
+      var imgThumbs = (cv.images || []).map(function (img, ii) {
+        return '<div class="sm-cv-img-thumb" style="position:relative;display:inline-block;margin:2px">' +
+          '<img src="' + h(img.url) + '" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:4px">' +
+          '<button type="button" class="btn btn-sm btn-danger sm-cv-img-remove" data-ci="' + ci + '" data-ii="' + ii + '" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;font-size:10px;line-height:1;padding:0;border-radius:50%">&times;</button>' +
+        '</div>';
+      }).join('');
+
+      return '<div class="sm-color-variant-card card mb-3">' +
+        '<div class="card-header d-flex justify-content-between align-items-center">' +
+          '<div class="d-flex align-items-center">' +
+            '<div class="sm-cv-color-preview" style="width:24px;height:24px;border-radius:50%;background:' + h(cv.hex || '#ccc') + ';border:1px solid #ddd;margin-right:8px"></div>' +
+            '<input type="text" class="form-control form-control-sm sm-cv-color-name" value="' + h(cv.name) + '" placeholder="Color name" style="width:140px" data-ci="' + ci + '">' +
+            '<input type="color" class="form-control form-control-sm sm-cv-color-hex" value="' + h(cv.hex || '#cccccc') + '" style="width:50px;height:31px;padding:2px;margin-left:4px" data-ci="' + ci + '" title="Pick color">' +
+          '</div>' +
+          '<button type="button" class="btn btn-sm btn-outline-danger sm-cv-remove" data-ci="' + ci + '" title="Remove this color">&times; Remove</button>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="row">' +
+            '<div class="col-md-4">' +
+              '<div class="form-group mb-2">' +
+                '<label class="small text-muted">Price (₹)</label>' +
+                '<input type="number" step="0.01" class="form-control form-control-sm sm-cv-price" value="' + (cv.price || 0) + '" placeholder="Price" data-ci="' + ci + '">' +
+              '</div>' +
+              '<div class="form-group mb-2">' +
+                '<label class="small text-muted">Compare-at Price (₹)</label>' +
+                '<input type="number" step="0.01" class="form-control form-control-sm sm-cv-compare" value="' + (cv.compare_at_price || '') + '" placeholder="Compare price" data-ci="' + ci + '">' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-md-4">' +
+              '<label class="small text-muted">Sizes (per-size stock)</label>' +
+              '<div class="sm-cv-sizes" data-ci="' + ci + '">' + sizeRows + '</div>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary mt-1 sm-cv-size-add" data-ci="' + ci + '">+ Add Size</button>' +
+            '</div>' +
+            '<div class="col-md-4">' +
+              '<label class="small text-muted">Images</label>' +
+              '<div class="sm-cv-images" data-ci="' + ci + '">' + (imgThumbs || '<span class="text-muted small">No images</span>') + '</div>' +
+              '<input type="file" class="form-control-file form-control-sm mt-1 sm-cv-image-upload" accept="image/*" data-ci="' + ci + '" style="font-size:12px">' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    $('btn-save-all-variants').disabled = false;
   }
 
-  function fillVariantForm(el) {
-    $('vf-id').value = el.getAttribute('data-id');
-    $('vf-sku').value = el.getAttribute('data-sku');
-    $('vf-size').value = el.getAttribute('data-size');
-    $('vf-color').value = el.getAttribute('data-color');
-    $('vf-price').value = el.getAttribute('data-price');
-    $('vf-compare').value = el.getAttribute('data-compare');
-    $('vf-stock').value = el.getAttribute('data-stock');
-    $('vf-status').value = el.getAttribute('data-status');
-    $('btn-vf-cancel').style.display = 'inline-block';
+  function addColorVariant() {
+    colorVariants.push({
+      name: 'New Color',
+      hex: '#cccccc',
+      price: 0,
+      compare_at_price: null,
+      sizes: [{ name: 'S', stock: 0 }],
+      images: []
+    });
+    renderColorVariantBuilder();
   }
 
-  function saveVariant(e) {
-    e.preventDefault();
+  function removeColorVariant(ci) {
+    if (!confirm('Remove this color and all its variants?')) return;
+    colorVariants.splice(ci, 1);
+    renderColorVariantBuilder();
+  }
+
+  function addSizeToColor(ci) {
+    colorVariants[ci].sizes.push({ name: '', stock: 0 });
+    renderColorVariantBuilder();
+  }
+
+  function removeSizeFromColor(ci, si) {
+    colorVariants[ci].sizes.splice(si, 1);
+    renderColorVariantBuilder();
+  }
+
+  function removeImageFromColor(ci, ii) {
+    if (!confirm('Remove this image?')) return;
+    colorVariants[ci].images.splice(ii, 1);
+    renderColorVariantBuilder();
+  }
+
+  function handleColorVariantInput(e) {
+    var t = e.target;
+    var ci = parseInt(t.getAttribute('data-ci'), 10);
+    if (isNaN(ci) || !colorVariants[ci]) return;
+    var cv = colorVariants[ci];
+
+    if (t.classList.contains('sm-cv-color-name')) { cv.name = t.value; }
+    else if (t.classList.contains('sm-cv-color-hex')) { cv.hex = t.value; }
+    else if (t.classList.contains('sm-cv-price')) { cv.price = parseFloat(t.value) || 0; }
+    else if (t.classList.contains('sm-cv-compare')) { cv.compare_at_price = t.value ? parseFloat(t.value) : null; }
+    else if (t.classList.contains('sm-cv-size-name')) {
+      var si = parseInt(t.getAttribute('data-si'), 10);
+      if (!isNaN(si) && cv.sizes[si]) cv.sizes[si].name = t.value;
+    }
+    else if (t.classList.contains('sm-cv-size-stock')) {
+      var si2 = parseInt(t.getAttribute('data-si'), 10);
+      if (!isNaN(si2) && cv.sizes[si2]) cv.sizes[si2].stock = parseInt(t.value, 10) || 0;
+    }
+  }
+
+  function saveAllColorVariants() {
     var productId = currentVariantProductId;
     if (!productId) { alert('Save the product first.'); return; }
 
-    var vfId = $('vf-id').value;
-    var data = {
-      sku: $('vf-sku').value.trim(),
-      size: $('vf-size').value.trim(),
-      color: $('vf-color').value.trim(),
-      price: parseFloat($('vf-price').value) || 0,
-      compare_at_price: $('vf-compare').value ? parseFloat($('vf-compare').value) : null,
-      stock: parseInt($('vf-stock').value, 10) || 0,
-      status: $('vf-status').value
-    };
+    var btn = $('btn-save-all-variants');
+    var statusText = $('sm-variant-status-text');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    statusText.textContent = 'Saving all color variants...';
 
-    var url = vfId ? '/api/products/' + productId + '/variants/' + vfId : '/api/products/' + productId + '/variants';
-    var method = vfId ? 'PUT' : 'POST';
+    // Step 1: Collect desired variant data from DOM
+    var desired = [];
+    document.querySelectorAll('.sm-color-variant-card').forEach(function (card) {
+      var colorName = (card.querySelector('.sm-cv-color-name') || {}).value || '';
+      var colorHex = (card.querySelector('.sm-cv-color-hex') || {}).value || '#cccccc';
+      var price = parseFloat((card.querySelector('.sm-cv-price') || {}).value) || 0;
+      var compare = (card.querySelector('.sm-cv-compare') || {}).value;
+      compare = compare ? parseFloat(compare) : null;
 
-    API(url, { method: method, body: JSON.stringify(data) }).then(function (res) {
-      if (res.error) { alert(res.error); return; }
-      resetVariantForm();
-      loadVariants(productId);
+      card.querySelectorAll('.sm-cv-size-row').forEach(function (row) {
+        var sizeName = (row.querySelector('.sm-cv-size-name') || {}).value || '';
+        var stock = parseInt((row.querySelector('.sm-cv-size-stock') || {}).value, 10) || 0;
+        if (colorName && sizeName) {
+          desired.push({
+            key: colorName + '|' + sizeName,
+            sku: productId + '-' + colorName.replace(/\s+/g, '') + '-' + sizeName,
+            size: sizeName,
+            color: JSON.stringify({ n: colorName, h: colorHex }),
+            price: price,
+            compare_at_price: compare,
+            stock: stock,
+            status: 'published'
+          });
+        }
+      });
+    });
+
+    // Step 2: Fetch existing variants from server
+    API('/api/products/' + productId + '/variants').then(function (existing) {
+      var existingArr = existing || [];
+      var existingMap = {};
+      existingArr.forEach(function (v) {
+        if (v.color && v.size) {
+          var vcolor = v.color;
+          if (vcolor.charAt(0) === '{') { try { vcolor = JSON.parse(vcolor).n || JSON.parse(vcolor).name || vcolor; } catch (e) {} }
+          existingMap[vcolor + '|' + v.size] = v;
+        }
+      });
+
+      var promises = [];
+
+      // Step 3: Delete variants not in the desired set
+      Object.keys(existingMap).forEach(function (key) {
+        if (!desired.find(function (d) { return d.key === key; })) {
+          promises.push(
+            API('/api/products/' + productId + '/variants/' + existingMap[key].id, { method: 'DELETE' })
+              .catch(function () { /* ignore delete failures */ })
+          );
+        }
+      });
+
+      // Step 4: Create new variants / update existing
+      desired.forEach(function (d) {
+        var existingId = existingMap[d.key] ? existingMap[d.key].id : null;
+        if (existingId) {
+          promises.push(
+            API('/api/products/' + productId + '/variants/' + existingId, {
+              method: 'PUT',
+              body: JSON.stringify({
+                sku: d.sku,
+                size: d.size,
+                color: d.color,
+                price: d.price,
+                compare_at_price: d.compare_at_price,
+                stock: d.stock,
+                status: d.status
+              })
+            }).catch(function (err) {
+              console.warn('Update warning for ' + d.color + ' ' + d.size + ':', err.message || err);
+            })
+          );
+        } else {
+          promises.push(
+            API('/api/products/' + productId + '/variants', {
+              method: 'POST',
+              body: JSON.stringify({
+                sku: d.sku,
+                size: d.size,
+                color: d.color,
+                price: d.price,
+                compare_at_price: d.compare_at_price,
+                stock: d.stock,
+                status: d.status
+              })
+            }).catch(function (err) {
+              console.warn('Create warning for ' + d.color + ' ' + d.size + ':', err.message || err);
+            })
+          );
+        }
+      });
+
+      // Step 5: Handle temp images — upload and create product_images records
+      colorVariants.forEach(function (cv, ci) {
+        var colorName = cv.name || '';
+        (cv.images || []).forEach(function (img, ii) {
+          if (img._temp) {
+            // Upload the base64 image to server
+            var formData = new FormData();
+            // Convert base64 to blob
+            var byteString = atob(img.url.split(',')[1]);
+            var mimeString = img.url.split(',')[0].split(':')[1].split(';')[0];
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+            var blob = new Blob([ab], { type: mimeString });
+            formData.append('image', blob, colorName.replace(/\s+/g, '-') + '-' + ii + '.jpg');
+            formData.append('product_id', productId);
+            formData.append('color', colorName);
+            formData.append('sort_order', ii);
+            formData.append('alt', colorName + ' color');
+
+            promises.push(
+              API('/api/admin/upload-image', { method: 'POST', body: formData })
+                .catch(function (err) {
+                  console.warn('Image upload warning:', err.message || err);
+                })
+            );
+          }
+        });
+      });
+
+      return Promise.all(promises);
+    }).then(function () {
+      statusText.textContent = 'All color variants saved!';
+      btn.textContent = 'Save All Variants';
+      btn.disabled = false;
+      loadColorVariants(productId);
     }).catch(function (err) {
-      alert('Failed to save variant: ' + (err.message || err));
+      statusText.textContent = 'Error saving variants: ' + (err.message || err);
+      btn.textContent = 'Save All Variants';
+      btn.disabled = false;
     });
   }
 
-  function deleteVariant(productId, variantId) {
-    if (!confirm('Delete this variant?')) return;
-    API('/api/products/' + productId + '/variants/' + variantId, { method: 'DELETE' }).then(function (res) {
-      if (res.error) { alert(res.error); return; }
-      loadVariants(productId);
-    }).catch(function (err) {
-      alert('Failed to delete variant: ' + (err.message || err));
-    });
+  function handleFileUploadForColor(ci, file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var dataUrl = e.target.result;
+      // Store as base64 image URL for now; actual upload to server happens on save
+      colorVariants[ci].images.push({ url: dataUrl, _temp: true });
+      renderColorVariantBuilder();
+    };
+    reader.readAsDataURL(file);
   }
 
   // ======================== Image Management ========================
@@ -877,6 +1191,7 @@
     $('if-color').value = '';
     $('if-sort').value = '0';
     $('if-alt').value = '';
+    $('if-file-upload').value = '';
     $('btn-if-cancel').style.display = 'none';
   }
 
@@ -895,13 +1210,35 @@
     if (!productId) { alert('Save the product first.'); return; }
 
     var ifId = $('if-id').value;
+    var fileInput = $('if-file-upload');
+    var file = fileInput && fileInput.files && fileInput.files[0];
+
+    if (file) {
+      // Upload file
+      var formData = new FormData();
+      formData.append('image', file);
+      formData.append('color', $('if-color').value.trim());
+      formData.append('sort_order', parseInt($('if-sort').value, 10) || 0);
+      formData.append('alt', $('if-alt').value.trim());
+      formData.append('product_id', productId);
+
+      API('/api/admin/upload-image', { method: 'POST', body: formData }).then(function (res) {
+        if (res.error) { alert(res.error); return; }
+        resetImageForm();
+        loadImages(productId);
+      }).catch(function (err) {
+        alert('Failed to upload image: ' + (err.message || err));
+      });
+      return;
+    }
+
     var data = {
       url: $('if-url').value.trim(),
       color: $('if-color').value.trim(),
       sort_order: parseInt($('if-sort').value, 10) || 0,
       alt: $('if-alt').value.trim()
     };
-    if (!data.url) { alert('Image URL is required.'); return; }
+    if (!data.url) { alert('Image URL or file is required.'); return; }
 
     var url = ifId ? '/api/products/' + productId + '/images/' + ifId : '/api/products/' + productId + '/images';
     var method = ifId ? 'PUT' : 'POST';
@@ -1057,16 +1394,21 @@
       $('pf-status').value = product.status || 'draft';
       $('pf-image').value = product.image_url || '';
       $('pf-sizes').value = (product.sizes || []).join(', ');
+      $('pf-material').value = product.material || '';
+      $('pf-fabric').value = product.fabric || '';
+      $('pf-delivery').value = product.delivery_info || '';
+      $('pf-return').value = product.return_policy || '';
+      $('pf-sizeguide').value = product.size_guide || '';
       $('pf-featured').checked = !!product.featured;
       $('pf-bestseller').checked = !!product.bestseller;
       $('pf-newarrival').checked = !!product.new_arrival;
       if ($('pf-category').querySelector('option[value="' + product.category + '"]')) {
         $('pf-category').value = product.category || '';
       }
-      // Show variant & image management
+      // Show Color Variant Builder & Image Management
       $('sm-variant-mgmt').style.display = 'block';
       $('sm-image-mgmt').style.display = 'block';
-      loadVariants(product.id);
+      loadColorVariants(product.id);
       loadImages(product.id);
     } else {
       editingProductId = null;
@@ -1115,7 +1457,12 @@
       image_url: $('pf-image').value.trim(),
       featured: $('pf-featured').checked,
       bestseller: $('pf-bestseller').checked,
-      new_arrival: $('pf-newarrival').checked
+      new_arrival: $('pf-newarrival').checked,
+      material: $('pf-material').value.trim(),
+      fabric: $('pf-fabric').value.trim(),
+      delivery_info: $('pf-delivery').value.trim(),
+      return_policy: $('pf-return').value.trim(),
+      size_guide: $('pf-sizeguide').value.trim()
     };
   }
 
@@ -1133,7 +1480,20 @@
 
     API(url, { method: method, body: JSON.stringify(data) }).then(function (res) {
       if (res.error) { alert(res.error); return; }
-      hideProductForm();
+      // Keep the form open and show variant/image sections for the saved product
+      var savedProduct = res.product || res;
+      if (!editingProductId) {
+        // New product created — set up the edit state
+        editingProductId = savedProduct.id;
+        $('prod-form-title').textContent = 'Edit Product';
+        $('btn-save-product').textContent = 'Update Product';
+        $('pf-id').value = savedProduct.id;
+      }
+      $('sm-variant-mgmt').style.display = 'block';
+      $('sm-image-mgmt').style.display = 'block';
+      loadColorVariants(editingProductId);
+      loadImages(editingProductId);
+      window.ShopMax.toast('Product saved successfully!');
     }).catch(function (err) {
       alert('Failed to save product: ' + (err.message || err));
     }).finally(function () {
@@ -1340,23 +1700,43 @@
       });
     });
 
-    // Variant form
-    $('sm-variant-form').addEventListener('submit', saveVariant);
-    $('btn-vf-cancel').addEventListener('click', resetVariantForm);
+    // Color Variant Builder
+    $('btn-add-color-variant').addEventListener('click', addColorVariant);
+    $('btn-save-all-variants').addEventListener('click', saveAllColorVariants);
 
-    // Variant table actions (delegated)
-    $('sm-variant-tbody').addEventListener('click', function (e) {
+    // Color variant builder delegated events
+    $('sm-color-variants-container').addEventListener('click', function (e) {
       var t = e.target;
-      if (t.classList.contains('var-edit')) {
-        fillVariantForm(t);
-      } else if (t.classList.contains('var-delete')) {
-        deleteVariant(currentVariantProductId, parseInt(t.getAttribute('data-id'), 10));
+      if (t.classList.contains('sm-cv-remove')) {
+        removeColorVariant(parseInt(t.getAttribute('data-ci'), 10));
+      } else if (t.classList.contains('sm-cv-size-add')) {
+        addSizeToColor(parseInt(t.getAttribute('data-ci'), 10));
+      } else if (t.classList.contains('sm-cv-size-remove')) {
+        removeSizeFromColor(parseInt(t.getAttribute('data-ci'), 10), parseInt(t.getAttribute('data-si'), 10));
+      } else if (t.classList.contains('sm-cv-img-remove')) {
+        removeImageFromColor(parseInt(t.getAttribute('data-ci'), 10), parseInt(t.getAttribute('data-ii'), 10));
+      }
+    });
+
+    // Color variant builder input handling
+    $('sm-color-variants-container').addEventListener('input', handleColorVariantInput);
+
+    // Color variant builder image upload
+    $('sm-color-variants-container').addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.classList.contains('sm-cv-image-upload') && t.files && t.files[0]) {
+        handleFileUploadForColor(parseInt(t.getAttribute('data-ci'), 10), t.files[0]);
       }
     });
 
     // Image form
     $('sm-image-form').addEventListener('submit', saveImage);
     $('btn-if-cancel').addEventListener('click', resetImageForm);
+    // Update file input label
+    $('if-file-upload').addEventListener('change', function () {
+      var label = this.nextElementSibling;
+      if (label) label.textContent = this.files && this.files[0] ? this.files[0].name : 'Or upload file';
+    });
 
     // Image gallery actions (delegated)
     $('sm-image-gallery').addEventListener('click', function (e) {
@@ -1368,6 +1748,179 @@
       }
     });
   }
+
+  // ======================== Coupon Management ========================
+
+  window.loadCoupons = function () {
+    $('adm-coupon-loading').textContent = 'Loading coupons...';
+    $('adm-coupon-loading').style.display = 'block';
+    $('adm-coupon-table').style.display = 'none';
+    API('/api/admin/coupons').then(function (coupons) {
+      $('adm-coupon-loading').style.display = 'none';
+      $('adm-coupon-table').style.display = '';
+      var tbody = $('adm-coupon-tbody');
+      if (!coupons || coupons.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="14" class="text-center text-muted">No coupons yet. Click "+ Create Coupon" to add one.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = coupons.map(function (c) {
+        var dt = function (v) { return v ? new Date(v).toLocaleDateString() : '-'; };
+        return '<tr>' +
+          '<td><strong>' + h(c.code) + '</strong></td>' +
+          '<td>' + h(c.type) + '</td>' +
+          '<td>' + (c.type === 'percent' ? c.value + '%' : '\u20B9' + Number(c.value).toFixed(2)) + '</td>' +
+          '<td>\u20B9' + Number(c.min_cart || 0).toFixed(2) + '</td>' +
+          '<td>' + (c.max_discount ? '\u20B9' + Number(c.max_discount).toFixed(2) : '-') + '</td>' +
+          '<td>' + (c.max_uses || '-') + '</td>' +
+          '<td>' + (c.per_user_limit || '-') + '</td>' +
+          '<td>' + dt(c.start_date) + '</td>' +
+          '<td>' + dt(c.end_date) + '</td>' +
+          '<td>' + (c.free_delivery ? '&#10003;' : '-') + '</td>' +
+          '<td>' + (c.first_order_only ? '&#10003;' : '-') + '</td>' +
+          '<td>' + (c.used_count || 0) + '</td>' +
+          '<td>' + (c.active ? '<span class="text-success font-weight-bold">Active</span>' : '<span class="text-danger font-weight-bold">Inactive</span>') + '</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="btn btn-sm btn-outline-primary mr-1" onclick="showCouponForm(\'' + c.code + '\')">Edit</button>' +
+            '<button class="btn btn-sm ' + (c.active ? 'btn-outline-warning' : 'btn-outline-success') + ' mr-1" onclick="toggleCouponStatus(\'' + c.code + '\', ' + (!c.active) + ')">' + (c.active ? 'Disable' : 'Enable') + '</button>' +
+            '<button class="btn btn-sm btn-outline-danger" onclick="deleteCoupon(\'' + c.code + '\')">Delete</button>' +
+          '</td></tr>';
+      }).join('');
+    }).catch(function (err) {
+      $('adm-coupon-loading').textContent = 'Failed to load coupons: ' + (err.message || 'Unknown error');
+    });
+  };
+
+  window.showCouponForm = function (code) {
+    var modal = $('#adm-coupon-modal');
+    var title = $('adm-coupon-modal-title');
+    var saveBtn = $('adm-coupon-form-save');
+    var form = $('adm-coupon-form');
+    form.reset();
+    $('adm-coupon-form-editing').value = '';
+    if (code) {
+      title.textContent = 'Edit Coupon';
+      saveBtn.textContent = 'Update Coupon';
+      API('/api/admin/coupons').then(function (coupons) {
+        var c = coupons.find(function (x) { return x.code === code; });
+        if (!c) { alert('Coupon not found.'); return; }
+        $('adm-cp-code').value = c.code;
+        $('adm-cp-code').readOnly = true;
+        $('adm-cp-type').value = c.type || 'percent';
+        toggleCouponFields();
+        $('adm-cp-value').value = c.value || 0;
+        $('adm-cp-min-cart').value = c.min_cart || 0;
+        $('adm-cp-max-discount').value = c.max_discount || 0;
+        $('adm-cp-max-uses').value = c.max_uses || 0;
+        $('adm-cp-per-user').value = c.per_user_limit || 0;
+        $('adm-cp-start-date').value = c.start_date ? c.start_date.slice(0,16) : '';
+        $('adm-cp-end-date').value = c.end_date ? c.end_date.slice(0,16) : '';
+        $('adm-cp-free-delivery').checked = !!c.free_delivery;
+        $('adm-cp-first-order').checked = !!c.first_order_only;
+        $('adm-cp-active').checked = c.active !== false;
+        $('adm-cp-description').value = c.description || '';
+        $('adm-coupon-form-editing').value = c.code;
+        jQuery('#adm-coupon-modal').modal({ show: true });
+      }).catch(function () { alert('Failed to load coupon details.'); });
+      return;
+    }
+    title.textContent = 'Create Coupon';
+    saveBtn.textContent = 'Save Coupon';
+    $('adm-cp-code').readOnly = false;
+    $('adm-cp-active').checked = true;
+    $('adm-cp-type').value = 'percent';
+    toggleCouponFields();
+    jQuery('#adm-coupon-modal').modal({ show: true });
+  };
+
+  window.toggleCouponFields = function () {
+    var isFreeDel = $('adm-cp-type').value === 'free_delivery';
+    $('adm-cp-value-group').style.display = isFreeDel ? 'none' : '';
+    $('adm-cp-max-discount-group').style.display = isFreeDel ? 'none' : '';
+    if (isFreeDel) { $('adm-cp-value').removeAttribute('required'); }
+    else { $('adm-cp-value').setAttribute('required', ''); }
+  };
+
+  window.saveCoupon = function () {
+    var code = $('adm-cp-code').value.trim().toUpperCase();
+    if (!code) { alert('Coupon code is required.'); return; }
+    var editing = $('adm-coupon-form-editing').value;
+    var payload = {
+      code: code,
+      type: $('adm-cp-type').value,
+      value: parseFloat($('adm-cp-value').value) || 0,
+      min_cart: parseFloat($('adm-cp-min-cart').value) || 0,
+      max_discount: parseFloat($('adm-cp-max-discount').value) || 0,
+      max_uses: parseInt($('adm-cp-max-uses').value, 10) || 0,
+      per_user_limit: parseInt($('adm-cp-per-user').value, 10) || 0,
+      start_date: $('adm-cp-start-date').value ? new Date($('adm-cp-start-date').value).toISOString() : null,
+      end_date: $('adm-cp-end-date').value ? new Date($('adm-cp-end-date').value).toISOString() : null,
+      free_delivery: $('adm-cp-free-delivery').checked,
+      first_order_only: $('adm-cp-first-order').checked,
+      active: $('adm-cp-active').checked,
+      description: $('adm-cp-description').value.trim()
+    };
+    if ($('adm-cp-type').value !== 'free_delivery' && !payload.value) { alert('Coupon value is required.'); return; }
+    if (payload.type === 'free_delivery') { payload.value = 0; payload.max_discount = 0; }
+
+    var url = editing ? '/api/admin/coupons/' + encodeURIComponent(editing) : '/api/admin/coupons';
+    var method = editing ? 'PUT' : 'POST';
+    var saveBtn = $('adm-coupon-form-save');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    API(url, { method: method, body: JSON.stringify(payload) }).then(function () {
+      jQuery('#adm-coupon-modal').modal('hide');
+      loadCoupons();
+    }).catch(function (err) {
+      alert('Failed to save coupon: ' + (err.message || 'Unknown error'));
+    }).finally(function () {
+      saveBtn.disabled = false;
+      saveBtn.textContent = editing ? 'Update Coupon' : 'Save Coupon';
+    });
+  };
+
+  window.toggleCouponStatus = function (code, active) {
+    if (!confirm((active ? 'Enable' : 'Disable') + ' coupon "' + code + '"?')) return;
+    API('/api/admin/coupons/' + encodeURIComponent(code) + '/status', { method: 'PATCH', body: JSON.stringify({ active: active }) }).then(function () {
+      loadCoupons();
+    }).catch(function () { alert('Failed to update coupon status.'); });
+  };
+
+  window.deleteCoupon = function (code) {
+    if (!confirm('Delete coupon "' + code + '" permanently?')) return;
+    API('/api/admin/coupons/' + encodeURIComponent(code), { method: 'DELETE' }).then(function () {
+      loadCoupons();
+    }).catch(function () { alert('Failed to delete coupon.'); });
+  };
+
+  window.loadCouponAnalytics = function () {
+    var row = $('adm-coupon-analytics-table-row');
+    var analyticsDiv = $('adm-coupon-analytics');
+    if (analyticsDiv.style.display !== 'none') {
+      analyticsDiv.style.display = 'none';
+      row.style.display = 'none';
+      return;
+    }
+    analyticsDiv.style.display = '';
+    API('/api/admin/coupons/analytics').then(function (d) {
+      if (!d) return;
+      $('adm-coupon-analytics-total').textContent = d.totalCoupons || 0;
+      $('adm-coupon-analytics-active').textContent = d.activeCoupons || 0;
+      $('adm-coupon-analytics-usage').textContent = d.totalUsage || 0;
+      $('adm-coupon-analytics-discount').textContent = '\u20B9' + Number(d.totalDiscount || 0).toFixed(2);
+      var tbody = $('adm-coupon-analytics-tbody');
+      if (d.topCoupons && d.topCoupons.length > 0) {
+        row.style.display = '';
+        tbody.innerHTML = d.topCoupons.map(function (c) {
+          return '<tr><td><strong>' + h(c.code) + '</strong></td><td>' + h(c.type) + '</td><td>' + (c.type === 'percent' ? c.value + '%' : '\u20B9' + Number(c.value).toFixed(2)) + '</td><td>' + (c.used_count || 0) + '</td><td>\u20B9' + Number(c.discount_given || 0).toFixed(2) + '</td><td>' + (c.active ? 'Active' : 'Inactive') + '</td></tr>';
+        }).join('');
+      } else {
+        row.style.display = 'none';
+      }
+    }).catch(function () { alert('Failed to load coupon analytics.'); });
+  };
+
+  // Coupon type toggle
+  $('adm-cp-type').addEventListener('change', toggleCouponFields);
 
   // ======================== Init ========================
   API('/api/auth/admin-me').then(function (res) {
@@ -1384,6 +1937,7 @@
   loadUsers();
   loadOrders();
   loadSettings();
+  loadCoupons();
   bindEvents();
 })();
 </script>

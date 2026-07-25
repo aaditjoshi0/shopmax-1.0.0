@@ -15,7 +15,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { supabase, MODE } = require('../../config/supabase');
+const { supabase, MODE, getServiceClient } = require('../../config/supabase');
 const store = require('../db/localStore');
 const { getUser, requireAdmin } = require('../middleware/auth');
 
@@ -73,12 +73,14 @@ router.post('/products/:productId/variants', getUser, requireAdmin, async (req, 
       return res.json({ variant });
     }
 
-    const { data, error } = await supabase.from('product_variants').insert(variant).select().single();
+    const client = getServiceClient() || req.supabase || supabase;
+    const { data, error } = await client.from('product_variants').insert(variant).select();
     if (error) {
       if (error.code === '23505') return res.status(409).json({ error: 'A variant with that size + color or SKU already exists.' });
       throw error;
     }
-    res.json({ variant: data });
+    const v = data && data.length > 0 ? data[0] : null;
+    res.json({ variant: v });
   } catch (e) { next(e); }
 });
 
@@ -104,10 +106,11 @@ router.put('/products/:productId/variants/:id', getUser, requireAdmin, async (re
       if (b[f] !== undefined) updates[f] = b[f];
     });
     updates.updated_at = new Date().toISOString();
-    const { data, error } = await supabase.from('product_variants').update(updates).eq('id', vid).eq('product_id', pid).select().single();
+    const client = getServiceClient() || req.supabase || supabase;
+    const { data, error } = await client.from('product_variants').update(updates).eq('id', vid).eq('product_id', pid).select();
     if (error) throw error;
-    if (!data) return res.status(404).json({ error: 'Variant not found.' });
-    res.json({ variant: data });
+    if (!data || data.length === 0) return res.status(404).json({ error: 'Variant not found.' });
+    res.json({ variant: data[0] });
   } catch (e) { next(e); }
 });
 
@@ -150,10 +153,11 @@ router.patch('/products/:productId/variants/:id/status', getUser, requireAdmin, 
       return res.json({ variant: v });
     }
 
-    const { data, error } = await supabase.from('product_variants').update({ status, updated_at: new Date().toISOString() }).eq('id', vid).eq('product_id', pid).select().single();
+    const client = getServiceClient() || req.supabase || supabase;
+    const { data, error } = await client.from('product_variants').update({ status, updated_at: new Date().toISOString() }).eq('id', vid).eq('product_id', pid).select();
     if (error) throw error;
-    if (!data) return res.status(404).json({ error: 'Variant not found.' });
-    res.json({ variant: data });
+    if (!data || data.length === 0) return res.status(404).json({ error: 'Variant not found.' });
+    res.json({ variant: data[0] });
   } catch (e) { next(e); }
 });
 
@@ -197,9 +201,11 @@ router.post('/products/:productId/images', getUser, requireAdmin, async (req, re
       return res.json({ image: img });
     }
 
-    const { data, error } = await supabase.from('product_images').insert(img).select().single();
+    const client = getServiceClient() || req.supabase || supabase;
+    const { data, error } = await client.from('product_images').insert(img).select();
     if (error) throw error;
-    res.json({ image: data });
+    const imgRes = data && data.length > 0 ? data[0] : null;
+    res.json({ image: imgRes });
   } catch (e) { next(e); }
 });
 
@@ -220,10 +226,11 @@ router.put('/products/:productId/images/:id', getUser, requireAdmin, async (req,
 
     const updates = {};
     ['color','url','alt','sort_order'].forEach(f => { if (b[f] !== undefined) updates[f] = b[f]; });
-    const { data, error } = await supabase.from('product_images').update(updates).eq('id', iid).eq('product_id', pid).select().single();
+    const client = getServiceClient() || req.supabase || supabase;
+    const { data, error } = await client.from('product_images').update(updates).eq('id', iid).eq('product_id', pid).select();
     if (error) throw error;
-    if (!data) return res.status(404).json({ error: 'Image not found.' });
-    res.json({ image: data });
+    if (!data || data.length === 0) return res.status(404).json({ error: 'Image not found.' });
+    res.json({ image: data[0] });
   } catch (e) { next(e); }
 });
 

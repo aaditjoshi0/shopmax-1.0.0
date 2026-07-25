@@ -30,20 +30,36 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
       var subtotal = cart.items.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
 
       var discount = 0;
+      var freeDelivery = false;
       var couponCode = (req.body.coupon_code || '').toString().trim().toUpperCase();
       if (couponCode) {
-        var coupon = (store.raw.coupons || []).find(function (c) { return c.code === couponCode && c.active; });
+        var coupon = (store.raw.coupons || []).find(function (c) { return c.code === couponCode; });
         if (!coupon) return res.status(400).json({ error: 'Invalid coupon code.' });
-        if (coupon.max_uses > 0 && coupon.used_count >= coupon.max_uses) return res.status(400).json({ error: 'Coupon usage limit reached.' });
-        if (subtotal < coupon.min_cart) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required.' });
+        if (!coupon.active) return res.status(400).json({ error: 'This coupon is no longer active.' });
+        if (coupon.max_uses > 0 && (coupon.used_count || 0) >= coupon.max_uses) return res.status(400).json({ error: 'This coupon has reached its usage limit.' });
+        if (subtotal < (coupon.min_cart || 0)) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required for this coupon.' });
+        if (coupon.start_date && new Date(coupon.start_date) > new Date()) return res.status(400).json({ error: 'This coupon is not yet active.' });
+        if (coupon.end_date && new Date(coupon.end_date) < new Date()) return res.status(400).json({ error: 'This coupon has expired.' });
+        if (coupon.first_order_only) {
+          var priorOrders = (store.raw.orders || []).filter(function (o) { return o.user_id === req.user.id && o.status !== 'cancelled'; });
+          if (priorOrders.length > 0) return res.status(400).json({ error: 'This coupon is for first-time orders only.' });
+        }
+        if (coupon.per_user_limit > 0) {
+          var userUsage = (store.raw.coupon_usage || []).filter(function (u) { return u.coupon_code === couponCode && u.user_id === req.user.id; });
+          if (userUsage.length >= coupon.per_user_limit) return res.status(400).json({ error: 'You have reached the usage limit for this coupon.' });
+        }
         if (coupon.type === 'percent') discount = Math.round((subtotal * coupon.value) / 100);
         else if (coupon.type === 'fixed') discount = Math.min(coupon.value, subtotal);
+        if (coupon.max_discount > 0) discount = Math.min(discount, coupon.max_discount);
+        freeDelivery = !!coupon.free_delivery;
         coupon.used_count = (coupon.used_count || 0) + 1;
       }
 
       var deliveryCharge = 0;
-      if (subtotal < 500) deliveryCharge = 50;
-      else if (subtotal < 1000) deliveryCharge = 30;
+      if (!freeDelivery) {
+        if (subtotal < 500) deliveryCharge = 50;
+        else if (subtotal < 1000) deliveryCharge = 30;
+      }
 
       var total = Math.max(0, subtotal - discount + deliveryCharge);
       var order = {
@@ -60,6 +76,18 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
         created_at: new Date().toISOString()
       };
       store.raw.orders.push(order);
+      // Record coupon usage
+      if (couponCode && discount > 0) {
+        if (!store.raw.coupon_usage) store.raw.coupon_usage = [];
+        store.raw.coupon_usage.push({
+          id: store.nextId('coupon_usage'),
+          coupon_code: couponCode,
+          user_id: req.user.id,
+          order_id: order.id,
+          discount_amount: discount,
+          created_at: new Date().toISOString()
+        });
+      }
       cart.items.forEach(function (i) {
         var vid = i.variant_id || (i.meta && i.meta.variant_id);
         if (vid) {
@@ -169,30 +197,41 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
 
     var subtotal2 = items.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
 
-    // Coupon validation (public coupons table — anon client is fine)
+    // Coupon validation (local store — universal fallback for coupon operations)
     var discount2 = 0;
+    var freeDelivery2 = false;
     var couponCode2 = (req.body.coupon_code || '').toString().trim().toUpperCase();
     if (couponCode2) {
-      var { data: coupon } = await supabase
-        .from('coupons')
-        .select('*')
-        .eq('code', couponCode2)
-        .maybeSingle();
-
+      var coupon = (store.raw.coupons || []).find(function (c) { return c.code === couponCode2; });
       if (!coupon) return res.status(400).json({ error: 'Invalid coupon code.' });
       if (!coupon.active) return res.status(400).json({ error: 'This coupon is no longer active.' });
-      if (coupon.max_uses > 0 && coupon.used_count >= coupon.max_uses) return res.status(400).json({ error: 'This coupon has reached its usage limit.' });
-      if (subtotal2 < coupon.min_cart) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required for this coupon.' });
+      if (coupon.max_uses > 0 && (coupon.used_count || 0) >= coupon.max_uses) return res.status(400).json({ error: 'This coupon has reached its usage limit.' });
+      if (subtotal2 < (coupon.min_cart || 0)) return res.status(400).json({ error: 'Minimum cart value of \u20B9' + coupon.min_cart + ' required for this coupon.' });
+      if (coupon.start_date && new Date(coupon.start_date) > new Date()) return res.status(400).json({ error: 'This coupon is not yet active.' });
+      if (coupon.end_date && new Date(coupon.end_date) < new Date()) return res.status(400).json({ error: 'This coupon has expired.' });
+      if (coupon.first_order_only) {
+        var priorOrders = (store.raw.orders || []).filter(function (o) { return o.user_id === req.user.id && o.status !== 'cancelled'; });
+        if (priorOrders.length > 0) return res.status(400).json({ error: 'This coupon is for first-time orders only.' });
+      }
+      if (coupon.per_user_limit > 0) {
+        var userUsage = (store.raw.coupon_usage || []).filter(function (u) { return u.coupon_code === couponCode2 && u.user_id === req.user.id; });
+        if (userUsage.length >= coupon.per_user_limit) return res.status(400).json({ error: 'You have reached the usage limit for this coupon.' });
+      }
 
       if (coupon.type === 'percent') discount2 = Math.round((subtotal2 * coupon.value) / 100);
       else if (coupon.type === 'fixed') discount2 = Math.min(coupon.value, subtotal2);
+      if (coupon.max_discount > 0) discount2 = Math.min(discount2, coupon.max_discount);
+      freeDelivery2 = !!coupon.free_delivery;
 
-      await supabase.from('coupons').update({ used_count: coupon.used_count + 1 }).eq('code', couponCode2).catch(function () {});
+      coupon.used_count = (coupon.used_count || 0) + 1;
+      store.persist();
     }
 
     var deliveryCharge2 = 0;
-    if (subtotal2 < 500) deliveryCharge2 = 50;
-    else if (subtotal2 < 1000) deliveryCharge2 = 30;
+    if (!freeDelivery2) {
+      if (subtotal2 < 500) deliveryCharge2 = 50;
+      else if (subtotal2 < 1000) deliveryCharge2 = 30;
+    }
 
     var total2 = subtotal2 - discount2 + deliveryCharge2;
     if (total2 < 0) total2 = 0;
@@ -229,6 +268,20 @@ router.post('/', getUser, requireUser, async (req, res, next) => {
       order2 = retry.data;
     } else if (orderErr) {
       throw new Error('Failed to create order: ' + orderErr.message);
+    }
+
+    // Record coupon usage (local store)
+    if (couponCode2 && discount2 > 0) {
+      if (!store.raw.coupon_usage) store.raw.coupon_usage = [];
+      store.raw.coupon_usage.push({
+        id: store.nextId('coupon_usage'),
+        coupon_code: couponCode2,
+        user_id: req.user.id,
+        order_id: order2.id,
+        discount_amount: discount2,
+        created_at: new Date().toISOString()
+      });
+      store.persist();
     }
 
     // Clear cart

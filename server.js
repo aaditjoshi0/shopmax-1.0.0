@@ -9,7 +9,7 @@ const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 
-const { supabase, MODE, isConfigured } = require('./config/supabase');
+const { supabase, MODE, isConfigured, getServiceClient } = require('./config/supabase');
 
 // --- Local/Supabase store seeding on first boot (so the site has products immediately) ---
 try {
@@ -56,9 +56,27 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'create policy "profiles admin" on public.profiles for select using (public.is_admin());' }).catch(() => {});
       // --- Coupons table + orders discount columns ---
       await supabase.rpc('exec_sql', { sql: "create table if not exists public.coupons (code text primary key, type text not null default 'percent', value numeric not null default 0, min_cart numeric default 0, max_uses int default 0, used_count int default 0, active boolean default true, created_at timestamptz default now());" }).catch(() => {});
-      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('SHOPMAX10', 'percent', 10, 0, 1000) on conflict (code) do nothing;" }).catch(() => {});
-      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('SHOPMAX20', 'percent', 20, 0, 500) on conflict (code) do nothing;" }).catch(() => {});
-      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses) values ('FIRSTORDER', 'fixed', 100, 200, 1000) on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists max_discount numeric default 0;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists start_date timestamptz;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists end_date timestamptz;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists per_user_limit int default 0;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists applicable_categories text[];" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists applicable_products bigint[];" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists free_delivery boolean default false;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists first_order_only boolean default false;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists description text default '';" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "alter table public.coupons add column if not exists updated_at timestamptz default now();" }).catch(() => {});
+      // Coupon usage tracking table
+      await supabase.rpc('exec_sql', { sql: "create table if not exists public.coupon_usage (id bigint generated always as identity primary key, coupon_code text not null references public.coupons(code) on delete cascade, user_id uuid not null references auth.users(id) on delete cascade, order_id bigint, discount_amount numeric not null default 0, created_at timestamptz not null default now());" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists coupon_usage_code_idx on public.coupon_usage(coupon_code);' }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: 'create index if not exists coupon_usage_user_idx on public.coupon_usage(user_id);' }).catch(() => {});
+      // Enhanced seed coupons
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses, description) values ('SHOPMAX10', 'percent', 10, 0, 1000, '10% off on all orders') on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses, description) values ('SHOPMAX20', 'percent', 20, 0, 500, '20% off on all orders') on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses, description, first_order_only) values ('FIRSTORDER', 'fixed', 100, 200, 1000, 'Rs.100 off on your first order', true) on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_discount, max_uses, description) values ('FESTIVE50', 'percent', 50, 500, 200, 200, '50% off up to Rs.200 on orders above Rs.500') on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, free_delivery, max_uses, description) values ('FREEDEL', 'fixed', 0, 0, true, 500, 'Free delivery on your order') on conflict (code) do nothing;" }).catch(() => {});
+      await supabase.rpc('exec_sql', { sql: "insert into public.coupons (code, type, value, min_cart, max_uses, description) values ('FLAT200', 'fixed', 200, 999, 300, 'Rs.200 off on orders above Rs.999') on conflict (code) do nothing;" }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists discount numeric default 0;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists delivery_charge numeric default 0;' }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'alter table public.orders add column if not exists coupon_code text;' }).catch(() => {});
@@ -93,6 +111,27 @@ if (MODE === 'supabase' && supabase) {
       await supabase.rpc('exec_sql', { sql: 'create policy "wishlists owner" on public.wishlists for all using (auth.uid() = user_id) with check (auth.uid() = user_id);' }).catch(() => {});
       // --- Add rating_count to products ---
       await supabase.rpc('exec_sql', { sql: 'alter table public.products add column if not exists rating_count integer not null default 0;' }).catch(() => {});
+      // --- Product metadata columns ---
+      // Try adding columns; if exec_sql isn't available, warn the user
+      try {
+        const colCheck = await supabase.from('products').select('material').limit(1);
+        if (colCheck.error && (colCheck.error.code === 'PGRST204' || colCheck.error.code === '42703')) {
+          // Column doesn't exist — try to add via exec_sql (works if function was created via Dashboard)
+          await supabase.rpc('exec_sql', { sql: "alter table public.products add column if not exists material text default '';" });
+          await supabase.rpc('exec_sql', { sql: "alter table public.products add column if not exists fabric text default '';" });
+          await supabase.rpc('exec_sql', { sql: "alter table public.products add column if not exists delivery_info text default '';" });
+          await supabase.rpc('exec_sql', { sql: "alter table public.products add column if not exists return_policy text default '';" });
+          await supabase.rpc('exec_sql', { sql: "alter table public.products add column if not exists size_guide text default '';" });
+          console.log('[boot] Product metadata columns added successfully.');
+        }
+      } catch (_) {
+        console.warn('[boot] Could not auto-add product metadata columns. If you want to store material/fabric/delivery/return/size_guide data, run these SQL commands in your Supabase Dashboard SQL Editor:\n' +
+          '  ALTER TABLE public.products ADD COLUMN IF NOT EXISTS material text DEFAULT \'\';\n' +
+          '  ALTER TABLE public.products ADD COLUMN IF NOT EXISTS fabric text DEFAULT \'\';\n' +
+          '  ALTER TABLE public.products ADD COLUMN IF NOT EXISTS delivery_info text DEFAULT \'\';\n' +
+          '  ALTER TABLE public.products ADD COLUMN IF NOT EXISTS return_policy text DEFAULT \'\';\n' +
+          '  ALTER TABLE public.products ADD COLUMN IF NOT EXISTS size_guide text DEFAULT \'\';');
+      }
       // --- Ratings table ---
       await supabase.rpc('exec_sql', { sql: "create table if not exists public.ratings (id bigint generated always as identity primary key, target_type text not null default 'product', target_id bigint not null, user_id uuid not null references auth.users(id) on delete cascade, rating integer not null check (rating >= 1 and rating <= 5), created_at timestamptz not null default now(), updated_at timestamptz not null default now());" }).catch(() => {});
       await supabase.rpc('exec_sql', { sql: 'create unique index if not exists ratings_target_user_idx on public.ratings (target_type, target_id, user_id);' }).catch(() => {});
@@ -170,6 +209,7 @@ app.use('/api', require('./src/api/variants')); // includes product variant + im
 app.use('/api/reviews', require('./src/api/reviews'));
 app.use('/api/ratings', require('./src/api/ratings'));
 app.use('/api/wishlist', require('./src/api/wishlist'));
+app.use('/api', require('./src/api/coupons')); // coupon CRUD + validation
 
 // Health / mode check
 app.get('/api/health', (req, res) => {
@@ -183,6 +223,53 @@ app.post('/api/admin/seed', (req, res) => {
     res.json({ ok: true, message: 'Seed triggered.' });
   } catch (e) {
     res.status(500).json({ error: e.message });
+  }
+});
+
+// --- Image upload (admin) ---
+const multer = require('multer');
+const crypto = require('crypto');
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, 'images'),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname) || '.jpg';
+    const name = crypto.randomBytes(12).toString('hex') + ext;
+    cb(null, name);
+  }
+});
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
+
+app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No image file provided.' });
+    const productId = Number(req.body.product_id);
+    if (!productId) return res.status(400).json({ error: 'Product ID is required.' });
+    const url = '/images/' + req.file.filename;
+    const imgData = {
+      product_id: productId,
+      color: req.body.color || '',
+      url,
+      alt: req.body.alt || '',
+      sort_order: parseInt(req.body.sort_order, 10) || 0
+    };
+
+    if (MODE === 'local') {
+      const store = require('./src/db/localStore');
+      imgData.id = store.nextId('image');
+      imgData.created_at = new Date().toISOString();
+      store.raw.images.push(imgData);
+      store.persist();
+      return res.json({ image: imgData });
+    }
+
+    // Supabase — use service client (bypasses RLS for admin writes)
+    const client = getServiceClient() || supabase;
+    const { data, error } = await client.from('product_images').insert(imgData).select();
+    if (error) throw error;
+    if (!data || data.length === 0) return res.status(500).json({ error: 'Failed to save image record' });
+    res.json({ image: data[0] });
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Upload failed' });
   }
 });
 

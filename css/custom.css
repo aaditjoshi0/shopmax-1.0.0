@@ -2113,3 +2113,40 @@
   color: #f5a623;
   white-space: nowrap;
 }
+
+/* ── Color Variant Builder ── */
+.sm-color-variant-card .card-header {
+  background: #f8f9fa;
+  padding: 10px 16px;
+}
+.sm-color-variant-card .card-body {
+  padding: 16px;
+}
+.sm-cv-size-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.sm-cv-size-row input {
+  font-size: 13px;
+}
+.sm-cv-size-row .btn {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sm-cv-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 30px;
+}
+.sm-cv-img-thumb img {
+  border: 1px solid #ddd;
+}

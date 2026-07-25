@@ -23,11 +23,15 @@ const DEFAULTS = {
   wishlists: [],      // { id, user_id, product_id, created_at }
   users: [],          // local-only auth: { id, email, password (hashed), full_name, mobile, birthdate }
   coupons: [
-    { code: 'SHOPMAX10',  type: 'percent', value: 10,  min_cart: 0,   max_uses: 1000, used_count: 0, active: true },
-    { code: 'SHOPMAX20',  type: 'percent', value: 20,  min_cart: 0,   max_uses: 500,  used_count: 0, active: true },
-    { code: 'FIRSTORDER', type: 'fixed',   value: 100, min_cart: 200, max_uses: 1000, used_count: 0, active: true }
+    { code: 'SHOPMAX10',  type: 'percent', value: 10,  min_cart: 0,   max_uses: 1000, used_count: 0, active: true, max_discount: 0, per_user_limit: 0, free_delivery: false, first_order_only: false, description: '10% off on all orders', start_date: null, end_date: null, created_at: null, updated_at: null },
+    { code: 'SHOPMAX20',  type: 'percent', value: 20,  min_cart: 0,   max_uses: 500,  used_count: 0, active: true, max_discount: 0, per_user_limit: 0, free_delivery: false, first_order_only: false, description: '20% off on all orders', start_date: null, end_date: null, created_at: null, updated_at: null },
+    { code: 'FIRSTORDER', type: 'fixed',   value: 100, min_cart: 200, max_uses: 1000, used_count: 0, active: true, max_discount: 0, per_user_limit: 1, free_delivery: false, first_order_only: true, description: 'Rs.100 off on your first order', start_date: null, end_date: null, created_at: null, updated_at: null },
+    { code: 'FESTIVE50',  type: 'percent', value: 50,  min_cart: 500, max_uses: 200,  used_count: 0, active: true, max_discount: 200, per_user_limit: 1, free_delivery: false, first_order_only: false, description: '50% off up to Rs.200 on orders above Rs.500', start_date: null, end_date: null, created_at: null, updated_at: null },
+    { code: 'FREEDEL',    type: 'fixed',   value: 0,   min_cart: 0,   max_uses: 500,  used_count: 0, active: true, max_discount: 0, per_user_limit: 0, free_delivery: true, first_order_only: false, description: 'Free delivery on your order', start_date: null, end_date: null, created_at: null, updated_at: null },
+    { code: 'FLAT200',    type: 'fixed',   value: 200, min_cart: 999, max_uses: 300,  used_count: 0, active: true, max_discount: 0, per_user_limit: 0, free_delivery: false, first_order_only: false, description: 'Rs.200 off on orders above Rs.999', start_date: null, end_date: null, created_at: null, updated_at: null }
   ],
-  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1, variant: 1000, image: 1000 }
+  coupon_usage: [], // { id, coupon_code, user_id, order_id, discount_amount, created_at }
+  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1, variant: 1000, image: 1000, coupon_usage: 0 }
 };
 
 function load() {

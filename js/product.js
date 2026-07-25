@@ -10,6 +10,7 @@
   var reviewData = null;
   var isWished = false;
   var ratingData = null;
+  var _allColors = [];
 
   function $(id) { return document.getElementById(id); }
 
@@ -71,10 +72,9 @@
       p.variants.forEach(function (v) {
         if (v.status !== 'published') return;
         if (v.size && sizes.indexOf(v.size) === -1) sizes.push(v.size);
-        if (v.color && colors.indexOf(v.color) === -1) { colors.push(v.color); }
       });
       if (sizes.length === 0) sizes = p.sizes || ['One Size'];
-      if (colors.length === 0) colors = p.colors ? p.colors.map(function (c) { return typeof c === 'object' ? c.name : c; }) : ['Default'];
+      colors = (p.colors && p.colors.length) ? p.colors : ['Default'];
     } else {
       colorObjects = (p.colors && p.colors.length) ? p.colors : [{ name: 'Default', hex: '#cccccc', image_url: p.image_url }];
       colors = colorObjects;
@@ -84,9 +84,7 @@
     selectedSize = sizes[0] || 'One Size';
     selectedColor = colors[0] || 'Default';
     selectedVariant = hasVariants ? findVariant(p.variants, selectedSize, colorDisplay(selectedColor)) : null;
-    var _allColors = colors;
-
-    function colorDisplay(c) { return typeof c === 'object' ? c.name : String(c); }
+    _allColors = colors;
 
     var filteredImages = [];
     if (hasImages) {
@@ -240,41 +238,35 @@
   function renderTabs(p) {
     var desc = p.description || '';
     var details = p.details || '';
-    var material = p.material || p.fabric || '';
 
-    var deliveryHtml =
-      '<div class="sm-tab-delivery">' +
-        '<h4>Delivery</h4>' +
-        '<ul>' +
-          '<li>Free standard delivery on orders over \u20B91000</li>' +
-          '<li>Standard delivery: 3-7 business days (\u20B950 flat)</li>' +
-          '<li>Express delivery: 1-3 business days (\u20B9150 flat)</li>' +
-          '<li>Cash on delivery available for orders under \u20B95000</li>' +
-        '</ul>' +
-        '<h4>Returns & Exchanges</h4>' +
-        '<ul>' +
-          '<li>Easy 30-day return policy</li>' +
-          '<li>Free returns for defective items</li>' +
-          '<li>Items must be unworn with original tags attached</li>' +
-          '<li>Refund processed within 5-7 business days</li>' +
-          '<li>Exchange available for different size/color</li>' +
-        '</ul>' +
-      '</div>';
+    var material = p.material || '';
+    var fabric = p.fabric || '';
+    var materialContent = material || fabric
+      ? '<p>' + (material ? SM.escapeHtml(material) : '') + (material && fabric ? '<br>' : '') + (fabric ? SM.escapeHtml(fabric) : '') + '</p>'
+      : '<p>Material information not available.</p>';
+
+    var deliveryInfo = p.delivery_info || '';
+    var deliveryContent = deliveryInfo
+      ? '<div class="sm-tab-delivery"><p>' + SM.escapeHtml(deliveryInfo) + '</p></div>'
+      : '<div class="sm-tab-delivery">' +
+        '<h4>Delivery</h4><ul><li>Free standard delivery on orders over \u20B91000</li><li>Standard delivery: 3-7 business days (\u20B950 flat)</li><li>Express delivery: 1-3 business days (\u20B9150 flat)</li><li>Cash on delivery available for orders under \u20B95000</li></ul>' +
+        '</div>';
+
+    var returnPolicy = p.return_policy || '';
+    var returnContent = returnPolicy
+      ? '<div class="sm-tab-return"><p>' + SM.escapeHtml(returnPolicy) + '</p></div>'
+      : '<div class="sm-tab-return"><h4>Returns & Exchanges</h4><ul><li>Easy 30-day return policy</li><li>Free returns for defective items</li><li>Items must be unworn with original tags attached</li><li>Refund processed within 5-7 business days</li><li>Exchange available for different size/color</li></ul></div>';
+
+    var sizeGuide = p.size_guide || '';
+    var sizeGuideContent = sizeGuide
+      ? '<div class="sm-tab-sizeguide"><p>' + SM.escapeHtml(sizeGuide) + '</p></div>'
+      : buildSizeGuideHtml(p);
 
     var tabs = [
       { id: 'tab-desc', label: 'Description', content: '<div class="sm-tab-desc">' + (desc ? '<p>' + SM.escapeHtml(desc) + '</p>' : '<p>No description available.</p>') + (details ? '<p>' + SM.escapeHtml(details) + '</p>' : '') + '</div>' },
-      { id: 'tab-material', label: 'Material & Care', content: '<div class="sm-tab-material">' +
-        (material ? '<p>' + SM.escapeHtml(material) + '</p>' : '<p>Material information not available.</p>') +
-        '<h4>Care Instructions</h4>' +
-        '<ul>' +
-          '<li>Machine wash cold with like colors</li>' +
-          '<li>Tumble dry low</li>' +
-          '<li>Do not bleach</li>' +
-          '<li>Iron on low heat if needed</li>' +
-          '<li>Do not dry clean</li>' +
-        '</ul></div>' },
-      { id: 'tab-delivery', label: 'Delivery & Returns', content: deliveryHtml },
-      { id: 'tab-sizeguide', label: 'Size Guide', content: buildSizeGuideHtml(p) }
+      { id: 'tab-material', label: 'Material & Care', content: '<div class="sm-tab-material">' + materialContent + '<h4>Care Instructions</h4><ul><li>Machine wash cold with like colors</li><li>Tumble dry low</li><li>Do not bleach</li><li>Iron on low heat if needed</li><li>Do not dry clean</li></ul></div>' },
+      { id: 'tab-delivery', label: 'Delivery & Returns', content: deliveryContent + returnContent },
+      { id: 'tab-sizeguide', label: 'Size Guide', content: sizeGuideContent }
     ];
 
     var tabBtns = tabs.map(function (t, i) {
@@ -440,24 +432,46 @@
           selectedColor = _allColors[idx];
         }
         var cname = colorDisplay(selectedColor);
+        // Update selected color text
         var nameEl = $('sm-pdp-color-name');
         if (nameEl) nameEl.textContent = cname;
 
+        // Update images — filter by color, fall back to all images if none match
         if (hasImages) {
           var filtered = p.images.filter(function (img) { return !img.color || img.color === '' || img.color === cname; });
-          if (filtered.length > 0) {
-            var mainImg = $('sm-pdp-main-img');
-            if (mainImg) mainImg.src = filtered[0].url;
-            var tw = $('sm-pdp-thumbs');
-            if (tw && filtered.length > 1) {
+          if (filtered.length === 0) filtered = p.images;
+          var mainImg = $('sm-pdp-main-img');
+          if (mainImg && filtered.length > 0) mainImg.src = filtered[0].url;
+          var tw = $('sm-pdp-thumbs');
+          if (tw) {
+            if (filtered.length > 1) {
               tw.innerHTML = filtered.map(function (img, i2) {
                 return '<button type="button" class="sm-pdp-thumb' + (i2 === 0 ? ' active' : '') + '" data-url="' + SM.escapeHtml(img.url) + '"><img src="' + SM.escapeHtml(img.url) + '" alt=""></button>';
               }).join('');
+            } else {
+              tw.innerHTML = '';
             }
           }
         }
 
         if (hasVariants) {
+          // Find available sizes for this color
+          var availSizes = [];
+          p.variants.forEach(function (v) {
+            if (v.status === 'published' && v.color === cname && v.size && availSizes.indexOf(v.size) === -1) {
+              availSizes.push(v.size);
+            }
+          });
+          // Reset selected size if current one isn't available for this color
+          if (availSizes.length > 0 && availSizes.indexOf(selectedSize) === -1) {
+            selectedSize = availSizes[0];
+            var sizeRow = $('sm-pdp-sizes');
+            if (sizeRow) {
+              sizeRow.querySelectorAll('.sm-pdp-size').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-size') === selectedSize);
+              });
+            }
+          }
           selectedVariant = findVariant(p.variants, selectedSize, cname);
           updateVariantUI(p);
         }

@@ -17,7 +17,10 @@
   function api(path, opts) {
     opts = opts || {};
     opts.credentials = 'same-origin';
-    opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    // Don't set Content-Type for FormData (browser sets it with boundary)
+    if (!(opts.body instanceof FormData)) {
+      opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    }
     return fetch(API + path, opts).then(function (r) {
       return r.json().then(function (body) {
         if (!r.ok) throw Object.assign(new Error(body.error || ('HTTP ' + r.status)), { body: body, status: r.status });

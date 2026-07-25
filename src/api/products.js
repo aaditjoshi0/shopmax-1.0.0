@@ -166,27 +166,41 @@ router.get('/:id/related', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const id = Number(req.params.id);
+    function parseColor(raw) {
+      if (typeof raw !== 'string' || raw.charAt(0) !== '{') return { name: raw || '', hex: '#cccccc' };
+      try { const p = JSON.parse(raw); return { name: p.n || p.name || '', hex: p.h || p.hex || '#cccccc' }; } catch (e) { return { name: raw, hex: '#cccccc' }; }
+    }
+    function normVariants(variants) {
+      return variants.map(function (v) {
+        if (v.color && v.color.charAt(0) === '{') { const pc = parseColor(v.color); v.color = pc.name; v.colorHex = pc.hex; }
+        return v;
+      });
+    }
+
     if (MODE === 'local') {
       const item = store.raw.products.find(p => p.id === id);
       if (!item) return res.status(404).json({ error: 'Product not found' });
-      const variants = store.raw.variants.filter(v => v.product_id === id);
+      var variants = normVariants(store.raw.variants.filter(v => v.product_id === id));
       const images = store.raw.images.filter(img => img.product_id === id).sort((a, b) => a.sort_order - b.sort_order);
       const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : item.stock;
       const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : item.sizes;
-      const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : item.colors;
+      const colorSet = {}, colors = [];
+      variants.forEach(function (v) { if (v.color && !colorSet[v.color]) { colorSet[v.color] = true; colors.push({ name: v.color, hex: v.colorHex || '#cccccc' }); } });
+      if (!variants.length && item.colors) { item.colors.forEach(function (c) { colors.push(typeof c === 'object' ? c : { name: c, hex: '#cccccc' }); }); }
       item.rating_count = item.rating_count || 0;
       return res.json({ ...item, variants, images, stock, sizes, colors });
     }
     const { data, error } = await supabase.from('products').select('*').eq('id', id).maybeSingle();
     if (error) throw error;
     if (!data) return res.status(404).json({ error: 'Product not found' });
-    const [variants, images] = await Promise.all([
-      supabase.from('product_variants').select('*').eq('product_id', id).then(r => r.data || []),
-      supabase.from('product_images').select('*').eq('product_id', id).order('sort_order', { ascending: true }).then(r => r.data || [])
-    ]);
+    var variantsRes = await supabase.from('product_variants').select('*').eq('product_id', id);
+    var variants = normVariants(variantsRes.data || []);
+    const images = (await supabase.from('product_images').select('*').eq('product_id', id).order('sort_order', { ascending: true })).data || [];
     const stock = variants.length ? variants.reduce((s, v) => s + (v.stock || 0), 0) : data.stock;
     const sizes = variants.length ? [...new Set(variants.filter(v => v.size).map(v => v.size))] : (data.sizes || []);
-    const colors = variants.length ? [...new Set(variants.filter(v => v.color).map(v => v.color))] : (data.colors || []);
+    const colorSet = {}, colors = [];
+    variants.forEach(function (v) { if (v.color && !colorSet[v.color]) { colorSet[v.color] = true; colors.push({ name: v.color, hex: v.colorHex || '#cccccc' }); } });
+    if (!variants.length && data.colors) { data.colors.forEach(function (c) { colors.push(typeof c === 'object' ? c : { name: c, hex: '#cccccc' }); }); }
     data.rating_count = data.rating_count || 0;
     res.json({ ...data, variants, images, stock, sizes, colors });
   } catch (e) { next(e); }
@@ -221,7 +235,12 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       gender: b.gender || 'unisex',
       bestseller: !!b.bestseller,
       new_arrival: !!b.new_arrival,
-      discount_price: b.discount_price != null ? Number(b.discount_price) : null
+      discount_price: b.discount_price != null ? Number(b.discount_price) : null,
+      material: b.material || '',
+      fabric: b.fabric || '',
+      delivery_info: b.delivery_info || '',
+      return_policy: b.return_policy || '',
+      size_guide: b.size_guide || ''
     };
 
     if (MODE === 'local') {
@@ -240,13 +259,22 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       return res.json({ product });
     }
 
-    // Supabase
-    const { data, error } = await supabase.from('products').insert({
+    // Supabase — try with all fields first; retry without extra columns if schema doesn't have them
+    const insertPayload = {
       ...product,
       created_by: req.user.id,
       created_at: now,
       updated_at: now
-    }).select().single();
+    };
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide'];
+    let { data, error } = await supabase.from('products').insert(insertPayload).select().single();
+    if (error && (error.code === 'PGRST204' || error.code === '42703')) {
+      // Columns don't exist in schema — retry without them
+      EXTRA_COLS.forEach(function (k) { delete insertPayload[k]; });
+      const retry = await supabase.from('products').insert(insertPayload).select().single();
+      data = retry.data;
+      error = retry.error;
+    }
     if (error) {
       if (error.code === '23505') return res.status(409).json({ error: 'A product with that SKU or slug already exists.' });
       throw error;
@@ -264,7 +292,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     if (MODE === 'local') {
       const p = store.raw.products.find(p => p.id === id);
       if (!p) return res.status(404).json({ error: 'Product not found.' });
-      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
+      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price','material','fabric','delivery_info','return_policy','size_guide'];
       fields.forEach(f => {
         if (b[f] !== undefined) p[f] = b[f];
       });
@@ -279,7 +307,8 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     }
 
     const updates = {};
-    const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'];
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide'];
+    const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'].concat(EXTRA_COLS);
     allowed.forEach(f => {
       if (b[f] !== undefined) updates[f] = b[f];
     });
@@ -288,7 +317,14 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     }
     updates.updated_at = new Date().toISOString();
 
-    const { data, error } = await supabase.from('products').update(updates).eq('id', id).select().single();
+    let { data, error } = await supabase.from('products').update(updates).eq('id', id).select().single();
+    if (error && (error.code === 'PGRST204' || error.code === '42703')) {
+      // Columns don't exist in schema — retry without them
+      EXTRA_COLS.forEach(function (k) { delete updates[k]; });
+      const retry = await supabase.from('products').update(updates).eq('id', id).select().single();
+      data = retry.data;
+      error = retry.error;
+    }
     if (error) {
       if (error.code === '23505') return res.status(409).json({ error: 'A product with that SKU or slug already exists.' });
       throw error;
