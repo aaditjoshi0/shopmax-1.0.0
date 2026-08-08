@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Order Details &mdash; ShopMax</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/aos.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+
+<div class="site-wrap">
+  <div data-sm-navbar></div>
+
+  <!-- Breadcrumb -->
+  <div class="bg-light py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-0"><a href="/index.html">Home</a> <span class="mx-2 mb-0">/</span> <a href="/orders.html">My Orders</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Order Details</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-section">
+    <div class="container">
+
+      <!-- Loading -->
+      <div id="sm-order-loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>
+        <p class="mt-2 text-muted">Loading order details...</p>
+      </div>
+
+      <!-- Main Content (hidden until loaded) -->
+      <div id="sm-order-content" class="d-none">
+
+        <!-- Order Header -->
+        <div class="sm-order-detail-header mb-4 pb-3 border-bottom">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h3 class="mb-1" style="font-weight:700;color:#1f1f1f;">Order # <span id="od-order-id"></span></h3>
+              <p class="text-muted mb-0">Placed on <strong id="od-order-date"></strong></p>
+            </div>
+            <div class="col-md-4 text-md-right">
+              <span class="sm-status-badge" id="od-status-badge" style="font-size:14px;padding:8px 20px;"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Left Column: Items + Timeline -->
+          <div class="col-lg-8">
+
+            <!-- Order Items -->
+            <div class="sm-detail-section mb-4">
+              <h4 class="section-title mb-3" style="font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Items</h4>
+              <div id="od-items-list"></div>
+            </div>
+
+            <!-- Tracking Timeline (full) -->
+            <div class="sm-detail-section mb-4" id="od-timeline-section">
+              <h4 class="section-title mb-3" style="font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Track Order</h4>
+              <div class="tracking-timeline full" id="od-timeline"></div>
+            </div>
+
+            <!-- Delivery Information -->
+            <div class="sm-detail-section mb-4">
+              <h4 class="section-title mb-3" style="font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Delivery Information</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <h6 class="text-uppercase text-muted small mb-2" style="font-size:11px;letter-spacing:0.05em;">Shipping Address</h6>
+                    <p class="mb-0" id="od-shipping-address"></p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <h6 class="text-uppercase text-muted small mb-2" style="font-size:11px;letter-spacing:0.05em;">Tracking Details</h6>
+                    <div id="od-tracking-info"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <h6 class="text-uppercase text-muted small mb-2" style="font-size:11px;letter-spacing:0.05em;">Estimated Delivery</h6>
+                    <p class="mb-0" id="od-estimated-delivery"></p>
+                    <p class="mb-0 mt-1" id="od-delivery-countdown" style="font-size:13px;font-weight:600;"></p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <h6 class="text-uppercase text-muted small mb-2" style="font-size:11px;letter-spacing:0.05em;">Actual Delivery</h6>
+                    <p class="mb-0" id="od-actual-delivery"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reviews for this order's products -->
+            <div class="sm-detail-section mb-4" id="od-reviews-section">
+              <h4 class="section-title mb-3" style="font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Your Reviews</h4>
+              <div id="od-reviews-list"></div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Summary + Actions -->
+          <div class="col-lg-4">
+
+            <!-- Price Summary -->
+            <div class="card sm-summary-card mb-4" style="border:none;box-shadow:0 2px 12px rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;">
+              <div class="card-header py-3" style="background:#fafafa;border-bottom:1px solid #eee;">
+                <h6 class="mb-0 text-uppercase" style="font-size:12px;letter-spacing:0.05em;font-weight:700;">Price Details</h6>
+              </div>
+              <div class="card-body py-3">
+                <div class="price-row"><span class="text-muted">Total MRP</span><span id="od-subtotal"></span></div>
+                <div class="price-row discount-row" id="od-discount-row" style="display:none;"><span class="text-muted">Discount</span><span class="text-success" id="od-discount"></span></div>
+                <div class="price-row"><span class="text-muted">Delivery Charge</span><span id="od-delivery"></span></div>
+                <div class="price-row grand-total"><span>Total Amount</span><strong id="od-total"></strong></div>
+              </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="card sm-summary-card mb-4" style="border:none;box-shadow:0 2px 12px rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;">
+              <div class="card-header py-3" style="background:#fafafa;border-bottom:1px solid #eee;">
+                <h6 class="mb-0 text-uppercase" style="font-size:12px;letter-spacing:0.05em;font-weight:700;">Payment Information</h6>
+              </div>
+              <div class="card-body py-3">
+                <div class="price-row"><span class="text-muted">Payment Method</span><span id="od-payment-method"></span></div>
+                <div class="price-row"><span class="text-muted">Payment Status</span><span id="od-payment-status"></span></div>
+                <div class="price-row" id="od-pay-txn-row" style="display:none"><span class="text-muted">Transaction ID</span><span id="od-pay-txn"></span></div>
+                <div class="price-row" id="od-pay-upi-row" style="display:none"><span class="text-muted">UPI ID</span><span id="od-pay-upi"></span></div>
+                <div class="price-row" id="od-pay-card-row" style="display:none"><span class="text-muted">Card</span><span id="od-pay-card"></span></div>
+                <div class="price-row" id="od-pay-wallet-row" style="display:none"><span class="text-muted">Wallet</span><span id="od-pay-wallet"></span></div>
+                <div class="price-row"><span class="text-muted">Coupon Applied</span><span id="od-coupon"></span></div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card sm-summary-card mb-4" style="border:none;box-shadow:0 2px 12px rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;">
+              <div class="card-header py-3" style="background:#fafafa;border-bottom:1px solid #eee;">
+                <h6 class="mb-0 text-uppercase" style="font-size:12px;letter-spacing:0.05em;font-weight:700;">Actions</h6>
+              </div>
+              <div class="card-body py-3">
+                <div class="d-grid gap-2" id="od-actions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Not found -->
+      <div id="sm-order-not-found" class="text-center py-5 d-none">
+        <span class="icon-error_outline display-3 text-muted"></span>
+        <h4 class="mt-3 text-muted">Order Not Found</h4>
+        <p class="text-muted">We could not find the order you are looking for.</p>
+        <a href="/orders.html" class="btn btn-primary rounded-0 px-4">Back to My Orders</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Cancel Modal -->
+  <div class="modal fade" id="sm-cancel-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Cancel Order</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+        <div class="modal-body"><p>Are you sure you want to cancel this order?</p><p class="text-muted small">Refund will be initiated within 5-7 business days.</p></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Keep It</button>
+          <button type="button" class="btn btn-danger" id="od-confirm-cancel">Yes, Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Modal -->
+  <div class="modal fade" id="sm-return-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Return Order</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+        <div class="modal-body">
+          <p>Reason for return (optional):</p>
+          <textarea class="form-control" id="od-return-reason" rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+          <button type="button" class="btn btn-warning" id="od-confirm-return">Request Return</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-sm-footer></div>
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+  var SM = window.ShopMax;
+  if (!SM) { document.addEventListener('DOMContentLoaded', function(){ init(); }); }
+  else { init(); }
+
+  var STATUS_TIMELINE = ['placed','confirmed','packed','shipped','out_for_delivery','delivered'];
+  var STATUS_LABELS = { placed:'Order Placed', confirmed:'Confirmed', packed:'Packed', shipped:'Shipped', out_for_delivery:'Out For Delivery', delivered:'Delivered' };
+  var STATUS_COLORS = {
+    placed:{bg:'#e3f2fd',color:'#1565c0'}, confirmed:{bg:'#e3f2fd',color:'#1565c0'},
+    packed:{bg:'#fff3e0',color:'#e65100'}, shipped:{bg:'#f3e5f5',color:'#6a1b9a'},
+    out_for_delivery:{bg:'#e8eaf6',color:'#283593'}, delivered:{bg:'#e8f5e9',color:'#2e7d32'},
+    cancelled:{bg:'#ffebee',color:'#c62828'}, returned:{bg:'#efebe9',color:'#4e342e'}
+  };
+
+  function init() {
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('id');
+    if (!orderId) { window.location.href = '/orders.html'; return; }
+
+    SM.api('/api/auth/me').then(function(res) {
+      if (!res.user) { window.location.href = '/login.html?next=/order-details.html?id=' + orderId; return null; }
+      return res.user;
+    }).then(function() { loadOrder(); }).catch(function() {
+      window.location.href = '/login.html?next=/order-details.html?id=' + orderId;
+    });
+
+    function money(n) { return '\u20B9' + Number(n||0).toFixed(2); }
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function fmtDate(d) { return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
+    function fmtDt(d) { return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+
+    function getStatusIdx(status) {
+      var idx = STATUS_TIMELINE.indexOf(status);
+      if (idx >= 0) return idx;
+      if (status === 'cancelled' || status === 'returned') return STATUS_TIMELINE.length;
+      return -1;
+    }
+
+    function buildTimeline(order) {
+      var status = order.status;
+      var currentIdx = getStatusIdx(status);
+      var isCancelled = status === 'cancelled';
+      var isReturned = status === 'returned';
+
+      var html = '<div class="d-flex flex-column">';
+      for (var i = 0; i < STATUS_TIMELINE.length; i++) {
+        var s = STATUS_TIMELINE[i];
+        var isComplete, isCurrent;
+
+        if (isCancelled) {
+          isComplete = i < 3; // up to "packed" is complete for cancelled
+          isCurrent = false;
+        } else if (isReturned) {
+          isComplete = i <= 5;
+          isCurrent = false;
+        } else {
+          isComplete = i < currentIdx;
+          isCurrent = i === currentIdx;
+        }
+
+        var cls = isComplete ? 'completed' : (isCurrent ? 'current' : 'pending');
+        var arrowCls = isComplete ? 'completed' : 'pending';
+
+        html += '<div class="timeline-item ' + cls + '">';
+        html += '<div class="d-flex align-items-start">';
+        html += '<div class="timeline-indicator mr-3">';
+        html += '<div class="' + cls + '" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
+        if (cls === 'completed') html += 'background:#4caf50;color:#fff;';
+        else if (cls === 'current') html += 'background:#2196f3;color:#fff;border:3px solid #bbdefb;';
+        else html += 'background:#f5f5f5;border:2px solid #ddd;';
+        html += '">';
+        if (cls === 'completed') html += '<span class="icon-check" style="font-size:16px;"></span>';
+        else if (cls === 'current') html += '<span style="width:10px;height:10px;background:#fff;border-radius:50%;display:inline-block;"></span>';
+        else html += '<span style="width:10px;height:10px;background:#bbb;border-radius:50%;display:inline-block;"></span>';
+        html += '</div></div>';
+
+        html += '<div class="flex-grow-1"><h6 class="mb-1">' + escapeHtml(STATUS_LABELS[s]) + '</h6>';
+        if (cls === 'current') html += '<span class="badge badge-primary" style="font-size:11px;">In Progress</span>';
+        html += '</div></div></div>';
+
+        if (i < STATUS_TIMELINE.length - 1) {
+          html += '<div class="timeline-arrow ' + arrowCls + '" style="margin-left:15px;"></div>';
+        }
+      }
+
+      if (isCancelled) {
+        html += '<div class="timeline-item cancelled mt-2">';
+        html += '<div class="d-flex align-items-start"><div class="timeline-indicator mr-3"><div class="cancelled" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ef5350;color:#fff;"><span class="icon-close" style="font-size:16px;"></span></div></div>';
+        html += '<div class="flex-grow-1"><h6 class="mb-1">Order Cancelled</h6></div></div></div>';
+      }
+      if (isReturned) {
+        html += '<div class="timeline-item returned mt-2">';
+        html += '<div class="d-flex align-items-start"><div class="timeline-indicator mr-3"><div class="returned" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#8d6e63;color:#fff;"><span class="icon-refresh" style="font-size:16px;"></span></div></div>';
+        html += '<div class="flex-grow-1"><h6 class="mb-1">Order Returned</h6></div></div></div>';
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    function renderOrder(order) {
+      var sc = STATUS_COLORS[order.status] || STATUS_COLORS.placed;
+
+      $('#sm-order-loading').addClass('d-none');
+      $('#sm-order-content').removeClass('d-none');
+
+      // Header
+      $('#od-order-id').text(order.id);
+      $('#od-order-date').text(fmtDate(order.created_at));
+
+      var badge = $('#od-status-badge');
+      badge.text(sc.color ? sc.label || order.status.replace(/_/g,' ') : order.status.replace(/_/g,' '))
+           .attr('style', 'background:'+sc.bg+';color:'+sc.color+';font-weight:600;');
+
+      // Items
+      var itemsHtml = '';
+      (order.items||[]).forEach(function(item, idx) {
+        var img = item.image_url || '/images/logo.png';
+        itemsHtml += '<div class="sm-order-detail-item row align-items-center mb-3 pb-3" style="border-bottom:1px solid #f0f0f0;">';
+        itemsHtml += '<div class="col-auto"><img src="'+esc(img)+'" class="sm-detail-item-img" alt=""></div>';
+        itemsHtml += '<div class="col">';
+        itemsHtml += '<h6 class="mb-1" style="font-weight:600;">'+escapeHtml(item.name||'Product')+'</h6>';
+        var meta = [];
+        if (item.color) meta.push('Color: '+escapeHtml(item.color));
+        if (item.size) meta.push('Size: '+escapeHtml(item.size));
+        if (item.sku) meta.push('SKU: '+escapeHtml(item.sku));
+        if (meta.length) itemsHtml += '<small class="text-muted">'+meta.join(' | ')+'</small><br>';
+        itemsHtml += '<small>Qty: '+item.quantity+'</small>';
+        itemsHtml += '</div>';
+        itemsHtml += '<div class="col-auto"><strong>'+money(item.price)+'</strong></div>';
+        itemsHtml += '</div>';
+      });
+      $('#od-items-list').html(itemsHtml);
+
+      // Timeline
+      $('#od-timeline').html(buildTimeline(order));
+
+      // Shipping address
+      var sh = order.shipping || {};
+      var addrHtml = '';
+      if (sh.fname) addrHtml += '<strong>'+escapeHtml(sh.fname)+'</strong><br>';
+      if (sh.address) addrHtml += escapeHtml(sh.address)+'<br>';
+      if (sh.state_country) addrHtml += escapeHtml(sh.state_country)+' ';
+      if (sh.postal_zip) addrHtml += escapeHtml(sh.postal_zip);
+      addrHtml += '<br>';
+      if (sh.phone) addrHtml += 'Phone: '+escapeHtml(sh.phone)+'<br>';
+      if (sh.email_address) addrHtml += 'Email: '+escapeHtml(sh.email_address);
+      $('#od-shipping-address').html(addrHtml);
+
+      // Tracking info
+      var trackHtml = '';
+      if (order.tracking_no) trackHtml += '<p class="mb-1"><strong>Tracking No:</strong> '+escapeHtml(order.tracking_no)+'</p>';
+      else trackHtml += '<p class="text-muted mb-1 small">Not available yet</p>';
+      if (order.courier) trackHtml += '<p class="mb-0"><strong>Courier:</strong> '+escapeHtml(order.courier)+'</p>';
+      else if (!order.tracking_no) trackHtml += '<p class="text-muted mb-0 small">Courier assigned after shipping</p>';
+      $('#od-tracking-info').html(trackHtml);
+
+      // Estimated delivery with countdown
+      if (order.estimated_delivery) {
+        $('#od-estimated-delivery').html('<strong>' + fmtDate(order.estimated_delivery) + '</strong>');
+        var estDate = new Date(order.estimated_delivery);
+        var now = new Date();
+        var daysLeft = Math.ceil((estDate - now) / (1000 * 60 * 60 * 24));
+        var countdownHtml = '';
+        if (order.status === 'delivered' || order.status === 'returned' || order.status === 'cancelled') {
+          // No countdown for terminal statuses
+        } else if (daysLeft > 0) {
+          countdownHtml = '<span style="color:#1565c0;">Expected in ' + daysLeft + ' day' + (daysLeft > 1 ? 's' : '') + '</span>';
+        } else if (daysLeft === 0) {
+          countdownHtml = '<span style="color:#e65100;">Expected today!</span>';
+        } else {
+          countdownHtml = '<span style="color:#c62828;">Delivery overdue by ' + Math.abs(daysLeft) + ' day' + (Math.abs(daysLeft) > 1 ? 's' : '') + '</span>';
+        }
+        $('#od-delivery-countdown').html(countdownHtml);
+      } else {
+        $('#od-estimated-delivery').html('<span class="text-muted">Not available</span>');
+      }
+
+      // Actual delivery
+      if (order.actual_delivery) {
+        $('#od-actual-delivery').html('<strong style="color:#2e7d32;"><span class="icon-check"></span> ' + fmtDt(order.actual_delivery) + '</strong>');
+      } else {
+        $('#od-actual-delivery').html('<span class="text-muted">Pending</span>');
+      }
+
+      // Price summary
+      $('#od-subtotal').text(money(order.subtotal));
+      if (order.discount && Number(order.discount) > 0) {
+        $('#od-discount-row').show();
+        $('#od-discount').text('- ' + money(order.discount));
+      }
+      var deliveryText = money(order.delivery_charge || 0);
+      if (!order.delivery_charge || order.delivery_charge === 0) {
+        if (order.subtotal >= 500) deliveryText = '<span class="text-success">FREE</span>';
+        else deliveryText = '<span class="text-success">FREE</span>';
+      }
+      $('#od-delivery').html(deliveryText);
+      $('#od-total').text(money(order.total));
+
+      // Payment
+      if (order.payment_method) {
+        $('#od-payment-method').text(order.payment_method.toUpperCase());
+      } else {
+        $('#od-payment-method').text('—');
+      }
+
+      // Payment Status
+      var pStatus = order.payment_status || '—';
+      var pStatusLabel = pStatus.charAt(0).toUpperCase() + pStatus.slice(1);
+      var pStatusColor = pStatus === 'paid' ? '#28a745' : (pStatus === 'failed' ? '#dc3545' : '#856404');
+      $('#od-payment-status').html('<span style="color:'+pStatusColor+';font-weight:600">'+pStatusLabel+'</span>');
+
+      // Transaction ID
+      if (order.payment_id) {
+        $('#od-pay-txn-row').show();
+        $('#od-pay-txn').text(order.payment_id);
+      }
+      // UPI ID
+      if (order.upi_id) {
+        $('#od-pay-upi-row').show();
+        $('#od-pay-upi').text(order.upi_id);
+      }
+      // Card last 4
+      if (order.card_last4) {
+        $('#od-pay-card-row').show();
+        $('#od-pay-card').text('**** '+order.card_last4);
+      }
+      // Wallet name
+      if (order.wallet_name) {
+        $('#od-pay-wallet-row').show();
+        $('#od-pay-wallet').text(order.wallet_name);
+      }
+
+      if (order.coupon_code) {
+        $('#od-coupon').html('<span class="badge badge-success">'+escapeHtml(order.coupon_code)+'</span>');
+      } else {
+        $('#od-coupon').text('None');
+      }
+
+      // Actions
+      var actionsHtml = '';
+      var canCancel = ['placed','confirmed','packed'].indexOf(order.status) >= 0;
+      var canReturn = order.status === 'delivered' && order.return_eligible;
+
+      actionsHtml += '<a href="/api/orders/'+order.id+'/invoice-print" target="_blank" class="btn btn-sm btn-outline-secondary w-100 rounded-0" style="padding:8px;"><span class="icon-file2"></span> Download Invoice</a>';
+
+      if (canCancel) {
+        actionsHtml += '<button class="btn btn-sm btn-outline-danger w-100 rounded-0 cancel-btn" style="padding:8px;" data-order-id="'+order.id+'"><span class="icon-close2"></span> Cancel Order</button>';
+      }
+      if (canReturn) {
+        actionsHtml += '<button class="btn btn-sm btn-outline-warning w-100 rounded-0 return-btn" style="padding:8px;" data-order-id="'+order.id+'"><span class="icon-refresh"></span> Return Order</button>';
+      }
+      if (order.status !== 'cancelled') {
+        actionsHtml += '<a href="/orders.html" class="btn btn-sm btn-outline-primary w-100 rounded-0" style="padding:8px;"><span class="icon-arrow-back"></span> Back to Orders</a>';
+      }
+      $('#od-actions').html(actionsHtml);
+
+      // Bind action handlers
+      $('.cancel-btn').off('click').click(function() {
+        $('#sm-cancel-modal').data('order-id', order.id).modal('show');
+      });
+      $('#od-confirm-cancel').click(function() {
+        var oid = $('#sm-cancel-modal').data('order-id');
+        $('#sm-cancel-modal').modal('hide');
+        SM.api('/api/orders/'+oid+'/status', { method:'PATCH', body:JSON.stringify({action:'cancel'}) })
+          .then(function() { SM.toast('Order cancelled!'); location.reload(); })
+          .catch(function(err) { SM.toast(err.message||'Failed', 'error'); });
+      });
+
+      $('.return-btn').off('click').click(function() {
+        var oid = $(this).data('order-id');
+        $('#sm-return-modal').data('order-id', oid).modal('show');
+      });
+      $('#od-confirm-return').click(function() {
+        var oid = $('#sm-return-modal').data('order-id');
+        var reason = $('#od-return-reason').val().trim();
+        $('#sm-return-modal').modal('hide');
+        SM.api('/api/orders/'+oid+'/status', { method:'PATCH', body:JSON.stringify({action:'return',reason:reason}) })
+          .then(function() { SM.toast('Return requested!'); location.reload(); })
+          .catch(function(err) { SM.toast(err.message||'Failed', 'error'); });
+      });
+
+      // Check reviews for each product
+      var reviewsHtml = '';
+      var productIds = [];
+      (order.items||[]).forEach(function(item) {
+        if (item.product_id && !productIds.includes(item.product_id)) productIds.push(item.product_id);
+      });
+      if (productIds.length === 0) {
+        $('#od-reviews-section').hide();
+        return;
+      }
+
+      // Show instructions to review
+      if (order.status === 'delivered') {
+        reviewsHtml = '<p class="text-muted small mb-3">Review the products from this order:</p>';
+        productIds.forEach(function(pid) {
+          var prodItem = (order.items||[]).find(function(i){ return i.product_id === pid; });
+          var name = prodItem ? prodItem.name : 'Product';
+          reviewsHtml += '<div class="d-flex align-items-center justify-content-between p-2 mb-2" style="background:#f9f9f9;border-radius:8px;">';
+          reviewsHtml += '<span class="small"><strong>'+escapeHtml(name)+'</strong></span>';
+          reviewsHtml += '<a href="/product/'+pid+'" class="btn btn-sm btn-primary rounded-0">Write Review</a>';
+          reviewsHtml += '</div>';
+        });
+        $('#od-reviews-list').html(reviewsHtml);
+      } else {
+        $('#od-reviews-section').hide();
+      }
+    }
+
+    function loadOrder() {
+      SM.api('/api/orders/' + orderId).then(function(order) {
+        renderOrder(order);
+      }).catch(function() {
+        $('#sm-order-loading').addClass('d-none');
+        $('#sm-order-not-found').removeClass('d-none');
+      });
+    }
+  }})();
+</script>
+</body>
+</html>

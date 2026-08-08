@@ -105,17 +105,31 @@
     // email login
     document.getElementById('sm-login-email-form').addEventListener('submit', function (e) {
       e.preventDefault();
+      // STEP 1: Frontend clicked Login
+      console.log('STEP 1 — Frontend clicked Login (email form)');
+
       var errEl = document.getElementById('sm-login-error');
       errEl.classList.add('d-none');
       var email = document.getElementById('login-email').value.trim();
       var password = document.getElementById('login-email-password').value;
+
+      // STEP 2: Request body (log before sending)
+      console.log('STEP 2 — Request body:', JSON.stringify({ email: email, password: password ? '***' : '' }));
+
+      // STEP 3: API endpoint being called
+      console.log('STEP 3 — API endpoint: POST /api/auth/login');
+
       window.ShopMax.api('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email: email, password: password })
       }).then(function (res) {
+        console.log('STEP 11 — Login API success, response:', JSON.stringify(res));
+        console.log('STEP 12 — Redirecting browser to next page');
         var next = window.ShopMax.qs('next') || '/index.html';
         window.location.href = next;
       }).catch(function (err) {
+        console.error('STEP 11 — Login API failed:', err.message);
+        console.error('STEP 11b — Full error object:', err);
         errEl.textContent = err.message || 'Login failed.';
         errEl.classList.remove('d-none');
       });
@@ -124,17 +138,30 @@
     // mobile login
     document.getElementById('sm-login-mobile-form').addEventListener('submit', function (e) {
       e.preventDefault();
+      // STEP 1: Frontend clicked Login
+      console.log('STEP 1 — Frontend clicked Login (mobile form)');
+
       var errEl = document.getElementById('sm-login-mobile-error');
       errEl.classList.add('d-none');
       var mobile = document.getElementById('login-mobile').value.trim();
       var password = document.getElementById('login-mobile-password').value;
+
+      // STEP 2: Request body
+      console.log('STEP 2 — Request body:', JSON.stringify({ mobile: mobile, password: password ? '***' : '' }));
+
+      // STEP 3: API endpoint
+      console.log('STEP 3 — API endpoint: POST /api/auth/login');
+
       window.ShopMax.api('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ mobile: mobile, password: password })
       }).then(function (res) {
+        console.log('STEP 11 — Login API success, response:', JSON.stringify(res));
         var next = window.ShopMax.qs('next') || '/index.html';
         window.location.href = next;
       }).catch(function (err) {
+        console.error('STEP 11 — Login API failed:', err.message);
+        console.error('STEP 11b — Full error object:', err);
         errEl.textContent = err.message || 'Login failed.';
         errEl.classList.remove('d-none');
       });

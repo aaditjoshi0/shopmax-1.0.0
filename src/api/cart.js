@@ -76,7 +76,7 @@ function validationError(msg) {
 async function sbValidateProduct(b, requestedQty, sb) {
   if (!b.product_id) return null;
 
-  var { data: product, error: pErr } = await supabase
+  var { data: product, error: pErr } = await sb
     .from('products')
     .select('*')
     .eq('id', b.product_id)
@@ -104,12 +104,23 @@ async function sbValidateProduct(b, requestedQty, sb) {
   return product;
 }
 
+function enrichBenefits(items) {
+  items.forEach(function (item) {
+    if (!item.product_id) return;
+    if (MODE === 'local') {
+      var p = store.raw.products.find(function (x) { return x.id === item.product_id; });
+      if (p && p.benefits) item.benefits = p.benefits;
+    }
+  });
+}
+
 // ── GET /api/cart ──────────────────────────────────────────────────────────
 
 router.get('/', getUser, async (req, res, next) => {
   try {
     if (MODE === 'local') {
       var cart = localFindCart(localOwnerKey(req, res));
+      enrichBenefits(cart.items);
       return res.json(cartResponse(cart.items));
     }
 
@@ -117,10 +128,21 @@ router.get('/', getUser, async (req, res, next) => {
       var sb = req.supabase || supabase;
       var userCart = await sbGetOrCreateCart(req.user.id, sb);
       var items = await sbFetchItems(userCart.id, sb);
+      // Batch-lookup benefits for all cart items
+      var pids = items.filter(function (i) { return i.product_id; }).map(function (i) { return i.product_id; });
+      if (pids.length) {
+        var { data: products } = await sb.from('products').select('id, benefits').in('id', pids);
+        if (products) {
+          var map = {};
+          products.forEach(function (p) { map[p.id] = p.benefits || []; });
+          items.forEach(function (i) { if (i.product_id && map[i.product_id]) i.benefits = map[i.product_id]; });
+        }
+      }
       return res.json(cartResponse(items));
     }
 
     var cart2 = localFindCart(localOwnerKey(req, res));
+    enrichBenefits(cart2.items);
     res.json(cartResponse(cart2.items));
   } catch (e) { next(e); }
 });
@@ -149,8 +171,12 @@ router.post('/items', getUser, async (req, res, next) => {
 
       // Validate variant stock if variant_id is provided
       if (item.variant_id) {
+        console.log('[cart] POST /items (local) — variant lookup: id=' + item.variant_id + ' type=' + typeof item.variant_id);
         var variant = store.raw.variants.find(function (v) { return v.id === item.variant_id; });
-        if (!variant) return res.status(400).json({ error: 'Variant not found.' });
+        if (!variant) {
+          console.warn('[cart] Variant not found (local): id=' + item.variant_id);
+          return res.status(400).json({ error: 'Variant not found.' });
+        }
         if (variant.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
         if (variant.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
         if (quantity > variant.stock) return res.status(400).json({ error: 'Only ' + variant.stock + ' of this variant available.' });
@@ -184,8 +210,16 @@ router.post('/items', getUser, async (req, res, next) => {
     if (req.user) {
       // If variant_id provided, validate variant stock; otherwise validate product stock
       if (b.variant_id) {
-        var { data: variant } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
-        if (!variant) return res.status(400).json({ error: 'Variant not found.' });
+        console.log('[cart] POST /items — variant lookup: variant_id=' + b.variant_id + ' type=' + typeof b.variant_id + ' product_id=' + b.product_id + ' user=' + (req.user ? req.user.id : 'guest'));
+        var { data: variant, error: vErr } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
+        if (vErr) {
+          console.warn('[cart] Variant lookup error: id=' + b.variant_id + ' product_id=' + b.product_id + ' error=' + vErr.message);
+          return res.status(500).json({ error: vErr.message });
+        }
+        if (!variant) {
+          console.warn('[cart] Variant not found: id=' + b.variant_id + ' product_id=' + b.product_id + ' user=' + (req.user ? req.user.id : 'guest'));
+          return res.status(400).json({ error: 'Variant not found.' });
+        }
         if (variant.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
         if (variant.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
         if (quantity > variant.stock) return res.status(400).json({ error: 'Only ' + variant.stock + ' of this variant available.' });
@@ -203,7 +237,8 @@ router.post('/items', getUser, async (req, res, next) => {
       var totalQty = existingQty + quantity;
 
       if (b.variant_id) {
-        var { data: v2 } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        var { data: v2, error: v2Err } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        if (v2Err) return res.status(500).json({ error: v2Err.message });
         if (totalQty > v2.stock) {
           var avail = Math.max(0, v2.stock - existingQty);
           if (avail <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
@@ -250,8 +285,16 @@ router.post('/items', getUser, async (req, res, next) => {
 
     // Guest in supabase mode — use localStore
     if (b.variant_id) {
-      var { data: guestV } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
-      if (!guestV) return res.status(400).json({ error: 'Variant not found.' });
+      console.log('[cart] POST /items (guest) — variant lookup: variant_id=' + b.variant_id + ' type=' + typeof b.variant_id + ' product_id=' + b.product_id);
+      var { data: guestV, error: gVErr } = await sb2.from('product_variants').select('*').eq('id', b.variant_id).maybeSingle();
+      if (gVErr) {
+        console.warn('[cart] Variant lookup error (guest): id=' + b.variant_id + ' error=' + gVErr.message);
+        return res.status(500).json({ error: gVErr.message });
+      }
+      if (!guestV) {
+        console.warn('[cart] Variant not found (guest): id=' + b.variant_id + ' product_id=' + b.product_id);
+        return res.status(400).json({ error: 'Variant not found.' });
+      }
       if (guestV.status !== 'published') return res.status(400).json({ error: 'This variant is not available.' });
       if (guestV.stock < 1) return res.status(400).json({ error: 'This variant is out of stock.' });
       if (quantity > guestV.stock) return res.status(400).json({ error: 'Only ' + guestV.stock + ' of this variant available.' });
@@ -278,7 +321,8 @@ router.post('/items', getUser, async (req, res, next) => {
     });
     if (gMatch) {
       if (b.variant_id) {
-        var { data: guestV2 } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        var { data: guestV2, error: gV2Err } = await sb2.from('product_variants').select('stock').eq('id', b.variant_id).single();
+        if (gV2Err) return res.status(500).json({ error: gV2Err.message });
         var gTotal = gMatch.quantity + quantity;
         if (gTotal > guestV2.stock) {
           var gAvail = Math.max(0, guestV2.stock - gMatch.quantity);

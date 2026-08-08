@@ -240,7 +240,8 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       fabric: b.fabric || '',
       delivery_info: b.delivery_info || '',
       return_policy: b.return_policy || '',
-      size_guide: b.size_guide || ''
+      size_guide: b.size_guide || '',
+      benefits: b.benefits || []
     };
 
     if (MODE === 'local') {
@@ -266,7 +267,7 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       created_at: now,
       updated_at: now
     };
-    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide'];
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits'];
     let { data, error } = await supabase.from('products').insert(insertPayload).select().single();
     if (error && (error.code === 'PGRST204' || error.code === '42703')) {
       // Columns don't exist in schema — retry without them
@@ -292,7 +293,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     if (MODE === 'local') {
       const p = store.raw.products.find(p => p.id === id);
       if (!p) return res.status(404).json({ error: 'Product not found.' });
-      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price','material','fabric','delivery_info','return_policy','size_guide'];
+      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price','material','fabric','delivery_info','return_policy','size_guide','benefits'];
       fields.forEach(f => {
         if (b[f] !== undefined) p[f] = b[f];
       });
@@ -307,7 +308,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     }
 
     const updates = {};
-    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide'];
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits'];
     const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'].concat(EXTRA_COLS);
     allowed.forEach(f => {
       if (b[f] !== undefined) updates[f] = b[f];

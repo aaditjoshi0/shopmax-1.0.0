@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Orders &mdash; ShopMax</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/aos.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+
+<div class="site-wrap">
+  <div data-sm-navbar></div>
+
+  <!-- Breadcrumb -->
+  <div class="bg-light py-2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-0"><a href="/index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">My Orders</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-section pt-0">
+    <div class="container">
+      <h2 class="h3 mb-4" style="font-weight:700;color:#1f1f1f;">My Orders</h2>
+
+      <!-- Sort Row -->
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <label class="text-muted mb-0" style="font-size:13px;">Sort by:</label>
+          <select id="sm-order-sort" class="form-control form-control-sm" style="max-width:180px;">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Amount</option>
+            <option value="lowest">Lowest Amount</option>
+          </select>
+        </div>
+        <div class="text-muted" style="font-size:13px;" id="sm-order-count"></div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="sm-orders-loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>
+        <p class="mt-2 text-muted">Loading your orders...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="sm-orders-empty" class="text-center py-5 d-none">
+        <div style="font-size:80px;margin-bottom:20px;" class="text-muted">&#9992;</div>
+        <h4 class="text-muted mb-3">No Orders Yet</h4>
+        <p class="text-muted mb-4">Looks like you haven&#39;t placed any orders yet.</p>
+        <a href="/shop.html" class="btn btn-primary px-4 py-2 rounded-0">Start Shopping</a>
+      </div>
+
+      <!-- Orders Container -->
+      <div id="sm-orders-list"></div>
+
+    </div>
+  </div>
+
+  <!-- Cancel Modal -->
+  <div class="modal fade" id="sm-cancel-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cancel Order</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to cancel this order?</p>
+          <p class="text-muted small">This action cannot be undone once the order has been shipped.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Keep It</button>
+          <button type="button" class="btn btn-danger" id="sm-confirm-cancel">Yes, Cancel Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Modal -->
+  <div class="modal fade" id="sm-return-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Return Order</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Initiate a return for this order?</p>
+          <div class="form-group">
+            <label for="sm-return-reason">Return Reason (optional)</label>
+            <textarea class="form-control" id="sm-return-reason" rows="3" placeholder="Please let us know why you are returning..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+          <button type="button" class="btn btn-warning" id="sm-confirm-return">Request Return</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="modal fade" id="sm-review-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Write a Review</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p><strong id="sm-review-product-name"></strong></p>
+          <div class="form-group">
+            <label>Your Rating</label>
+            <div id="sm-rating-stars" style="font-size:28px;cursor:pointer;">
+              <span class="review-star" data-val="1">&#9733;</span>
+              <span class="review-star" data-val="2">&#9733;</span>
+              <span class="review-star" data-val="3">&#9733;</span>
+              <span class="review-star" data-val="4">&#9733;</span>
+              <span class="review-star" data-val="5">&#9733;</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="sm-review-title" class="form-control" placeholder="Sum up your experience" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label>Review</label>
+            <textarea id="sm-review-text" class="form-control" rows="4" placeholder="Share details about product quality, fit, color..." maxlength="2000"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="sm-submit-review">Submit Review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-sm-footer></div>
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/main.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+  var SM = window.ShopMax;
+  if (!SM) { document.addEventListener('DOMContentLoaded', function(){ init(); }); }
+  else { init(); }
+
+  function init() {
+    console.log('[MyOrders] init() called');
+    var currentUser = null;
+    var allOrders = [];
+    var sortBy = 'newest';
+    var selectedRating = 0;
+    var currentReviewProductId = null;
+    var currentReviewOrderId = null;
+
+    // --- Auth check ---
+    SM.api('/api/auth/me').then(function(res) {
+      console.log('[MyOrders] Auth check returned:', res ? 'user=' + (res.user ? res.user.email : 'null') : 'null');
+      currentUser = res.user || null;
+      if (!currentUser) { console.log('[MyOrders] No user, redirecting to login'); window.location.href = '/login.html?next=/orders.html'; return; }
+      loadOrders();
+    }).catch(function(err) {
+      console.error('[MyOrders] Auth check failed:', err);
+      window.location.href = '/login.html?next=/orders.html';
+    });
+
+    function showLoading() {
+      $('#sm-orders-loading').removeClass('d-none');
+      $('#sm-orders-empty').addClass('d-none');
+      $('#sm-orders-list').empty();
+    }
+
+    function hideLoading() {
+      $('#sm-orders-loading').addClass('d-none');
+    }
+
+    function showError(msg, retryable) {
+      hideLoading();
+      var html = '<div class="alert alert-danger">' +
+        '<strong>' + escapeHtml(msg || 'Something went wrong') + '</strong>';
+      if (retryable) {
+        html += '<br><button class="btn btn-sm btn-outline-danger mt-2" onclick="location.reload()">Retry</button>';
+      }
+      html += '</div>';
+      $('#sm-orders-list').html(html);
+    }
+
+    // --- Normalize API response to an array ---
+    function normalizeOrders(raw) {
+      if (raw == null) return [];
+      if (Array.isArray(raw)) return raw;
+      if (raw.orders && Array.isArray(raw.orders)) return raw.orders;
+      if (raw.data && Array.isArray(raw.data)) return raw.data;
+      if (raw.order && typeof raw.order === 'object') return [raw.order];
+      if (typeof raw === 'object' && raw.id != null) return [raw];
+      console.warn('[MyOrders] Unexpected API response shape:', raw);
+      return [];
+    }
+
+    function loadOrders() {
+      console.log('[MyOrders] loadOrders() called');
+      showLoading();
+      $('#sm-orders-loading').html(
+        '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>' +
+        '<p class="mt-2 text-muted">Loading your orders...</p>'
+      );
+
+      SM.api('/api/orders').then(function(orders) {
+        console.log('[MyOrders] API returned. Parsing response...');
+        try {
+          allOrders = normalizeOrders(orders);
+          console.log('[MyOrders] Parsed ' + allOrders.length + ' orders');
+          renderOrders();
+        } catch(err) {
+          console.error('[MyOrders] Render failed:', err);
+          showError('Failed to display orders.', true);
+        } finally {
+          hideLoading();
+          console.log('[MyOrders] Loading state cleared');
+        }
+      }).catch(function(err) {
+        console.error('[MyOrders] API call failed:', err);
+        showError('Unable to load your orders.', true);
+      });
+    }
+
+    function money(n) { return '\u20B9' + Number(n || 0).toFixed(2); }
+    function escapeHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function formatDate(d) { return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }); }
+    function formatDateTime(d) { return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+
+    var STATUS_COLORS = {
+      placed: { bg:'#e3f2fd', color:'#1565c0', label:'Processing', chipClass:'bg-processing' },
+      confirmed: { bg:'#e3f2fd', color:'#1565c0', label:'Processing', chipClass:'bg-processing' },
+      packed: { bg:'#fff3e0', color:'#e65100', label:'Packed', chipClass:'bg-packed' },
+      shipped: { bg:'#f3e5f5', color:'#6a1b9a', label:'Shipped', chipClass:'bg-shipped' },
+      out_for_delivery: { bg:'#e8eaf6', color:'#283593', label:'Out For Delivery', chipClass:'bg-out-for-delivery' },
+      delivered: { bg:'#e8f5e9', color:'#2e7d32', label:'Delivered', chipClass:'bg-delivered' },
+      cancelled: { bg:'#ffebee', color:'#c62828', label:'Cancelled', chipClass:'bg-cancelled' },
+      returned: { bg:'#efebe9', color:'#4e342e', label:'Returned', chipClass:'bg-returned' }
+    };
+
+    var STATUS_ORDER = ['placed','confirmed','packed','shipped','out_for_delivery','delivered','cancelled','returned'];
+    function getStatusOrder(status) { return STATUS_ORDER.indexOf(status) >= 0 ? STATUS_ORDER.indexOf(status) : 999; }
+
+    // --- Timeline steps ---
+    function getTimelineSteps(status) {
+      status = status || 'placed';
+      var statusIdx = 0;
+      for (var i = 0; i < STATUS_TIMELINE.length; i++) {
+        if (STATUS_TIMELINE[i] === status) { statusIdx = i; break; }
+        if (status === 'cancelled' || status === 'returned') statusIdx = i + 1;
+      }
+      var steps = [];
+      for (var j = 0; j < STATUS_TIMELINE.length; j++) {
+        var s = STATUS_TIMELINE[j];
+        var done = false;
+        if (status === 'cancelled') done = getStatusOrder('shipped') <= j;
+        else if (status === 'returned') done = getStatusOrder('delivered') <= j;
+        else done = j <= statusIdx;
+        steps.push({ status: s, label: STATUS_LABELS[s], completed: done, current: !done && (j === Math.max(0, statusIdx - (status==='cancelled'||status==='returned'?1:0)) || (status !== 'cancelled' && status !== 'returned' && j === statusIdx)) });
+      }
+      return steps;
+    }
+
+    var STATUS_TIMELINE = ['placed','confirmed','packed','shipped','out_for_delivery','delivered'];
+    var STATUS_LABELS = {
+      placed:'Order Placed', confirmed:'Confirmed', packed:'Packed',
+      shipped:'Shipped', out_for_delivery:'Out For Delivery', delivered:'Delivered'
+    };
+
+    // --- Filter & Sort ---
+    function getFilteredOrders() {
+      var filtered = allOrders.slice();
+
+      if (sortBy === 'newest') {
+        filtered.sort(function(a,b) { return new Date(b.created_at || 0) - new Date(a.created_at || 0); });
+      } else if (sortBy === 'oldest') {
+        filtered.sort(function(a,b) { return new Date(a.created_at || 0) - new Date(b.created_at || 0); });
+      } else if (sortBy === 'highest') {
+        filtered.sort(function(a,b) { return (Number(b.total)||0) - (Number(a.total)||0); });
+      } else if (sortBy === 'lowest') {
+        filtered.sort(function(a,b) { return (Number(a.total)||0) - (Number(b.total)||0); });
+      }
+
+      return filtered;
+    }
+
+    // --- Render ---
+    function renderOrders() {
+      console.log('[MyOrders] renderOrders() called with ' + allOrders.length + ' orders');
+      var filtered = getFilteredOrders();
+      var $list = $('#sm-orders-list');
+      var $loading = $('#sm-orders-loading');
+      var $empty = $('#sm-orders-empty');
+
+      try {
+        if (!Array.isArray(allOrders) || allOrders.length === 0) {
+          $loading.addClass('d-none');
+          $empty.removeClass('d-none');
+          $list.empty();
+          $('#sm-order-count').text('0 orders');
+          console.log('[MyOrders] No orders found, showing empty state');
+          return;
+        }
+
+        $empty.addClass('d-none');
+        $('#sm-order-count').text(filtered.length + ' of ' + allOrders.length + ' orders');
+
+        if (filtered.length === 0) {
+          $list.html('<div class="text-center py-5"><p class="text-muted">No orders match your filter criteria.</p><button class="btn btn-sm btn-outline-primary clear-filters" style="padding:4px 16px;">Clear Filters</button></div>');
+          $list.on('click', '.clear-filters', function() {
+            sortBy = 'newest';
+            $('#sm-order-sort').val('newest');
+            renderOrders();
+          });
+          return;
+        }
+
+        var html = '<div class="row">';
+        for (var i = 0; i < filtered.length; i++) {
+          try {
+            html += renderOrderCard(filtered[i]);
+          } catch(cardErr) {
+            console.error('[MyOrders] error rendering card for order #' + (filtered[i] && filtered[i].id ? filtered[i].id : '?'), cardErr);
+            html += '<div class="alert alert-warning col-12">Failed to render order #' + escapeHtml(String(filtered[i] && filtered[i].id ? filtered[i].id : '')) + '</div>';
+          }
+        }
+        html += '</div>';
+        $list.html(html);
+        console.log('[MyOrders] Rendered ' + filtered.length + ' order cards successfully');
+      } catch (err) {
+        console.error('[MyOrders] renderOrders() threw:', err);
+        $list.html('<div class="alert alert-danger">Unable to load your orders. <button class="btn btn-sm btn-outline-danger ml-2" onclick="location.reload()">Retry</button></div>');
+      }
+    }
+
+    function renderOrderCard(order) {
+      if (!order || typeof order !== 'object') return '';
+      
+      try {
+        var statusVal = (order && order.status) ? order.status : 'placed';
+        var sc = STATUS_COLORS[statusVal] || STATUS_COLORS.placed;
+        var items = Array.isArray(order && order.items) ? order.items : [];
+        var firstItem = items.length > 0 ? (items[0] || {}) : {};
+        
+        var imgSrc = '/images/logo.png';
+        if (firstItem && firstItem.image_url) {
+          imgSrc = firstItem.image_url;
+        } else if (firstItem && firstItem.thumbnail_url) {
+          imgSrc = firstItem.thumbnail_url;
+        }
+
+        var productId = 0;
+        if (firstItem && firstItem.product_id) {
+          productId = Number(firstItem.product_id);
+          if (isNaN(productId)) productId = 0;
+        }
+
+        var timelineSteps = getTimelineSteps(statusVal);
+
+        var productNames = '';
+        var moreCount = 0;
+        if (items.length > 0) {
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var name = (item && item.name) ? item.name : 'Product';
+            if (i === 0) {
+              productNames = escapeHtml(name);
+            } else if (i === 1) {
+              productNames += ', ' + escapeHtml(name);
+            } else {
+              moreCount++;
+            }
+          }
+        }
+        if (moreCount > 0) productNames += ' +' + moreCount + ' more';
+
+        var actionsHtml = buildActions(order, productId);
+
+        var orderTotal = 0;
+        if (order && order.total != null) {
+          if (typeof order.total === 'number') {
+            orderTotal = order.total;
+          } else {
+            orderTotal = parseFloat(order.total) || 0;
+          }
+        }
+
+        var timelineHtml = '';
+        var showTimeline = ['placed','confirmed','packed','shipped','out_for_delivery'].indexOf(statusVal) >= 0;
+        if (showTimeline) {
+          timelineHtml = '<div class="sm-order-timeline mt-3">';
+          for (var ti = 0; ti < timelineSteps.length; ti++) {
+            var step = timelineSteps[ti];
+            var cls = step && step.completed ? 'completed' : (step && step.current ? 'current' : 'pending');
+            timelineHtml += '<div class="timeline-step ' + cls + '"><span class="timeline-dot"></span>' +
+              '<span class="timeline-label">' + escapeHtml(step && step.label ? step.label : '') + '</span></div>';
+            if (ti < timelineSteps.length - 1) timelineHtml += '<div class="timeline-connector ' + cls + '"></div>';
+          }
+          timelineHtml += '</div>';
+        }
+
+        var displayName = firstItem && firstItem.color ? escapeHtml(firstItem.color) : '';
+        var displaySize = firstItem && firstItem.size ? escapeHtml(firstItem.size) : '';
+        var metaParts = [];
+        if (displayName) metaParts.push(displayName);
+        if (displaySize) metaParts.push(displaySize);
+        var metaText = metaParts.join(' | ');
+        var qty = (firstItem && firstItem.quantity) ? firstItem.quantity : 1;
+
+        return '' +
+          '<div class="col-12 order-card-wrap mb-3" data-order-id="' + escapeHtml(String(order && order.id ? order.id : '')) + '">' +
+            '<div class="sm-order-card">' +
+              '<div class="sm-order-card-header">' +
+                '<div class="sm-order-header-left">' +
+                  '<span class="sm-order-number">Order # ' + escapeHtml(String(order && order.id ? order.id : '')) + '</span>' +
+                  '<span class="sm-order-date">' + formatDate(order && order.created_at ? order.created_at : null) + '</span>' +
+                '</div>' +
+                '<div class="sm-order-header-right">' +
+                  '<span class="sm-status-badge ' + sc.chipClass + '">' + escapeHtml(sc.label) + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="sm-order-card-body">' +
+                '<div class="sm-order-item-row">' +
+                  '<img src="' + escapeHtml(imgSrc) + '" alt="" class="sm-order-item-img">' +
+                  '<div class="sm-order-item-info">' +
+                    '<div class="sm-order-item-name">' + productNames + '</div>' +
+                    '<div class="sm-order-item-meta">' +
+                      '<span>' + metaText + '</span>' +
+                      '<span>&times; ' + qty + '</span>' +
+                    '</div>' +
+                    timelineHtml +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="sm-order-card-footer">' +
+                '<div class="sm-order-amount"><span class="text-muted" style="font-size:12px;">Total Paid</span><br><strong>' + money(orderTotal) + '</strong></div>' +
+                '<div class="sm-order-actions">' + actionsHtml + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      } catch(err) {
+        console.error('[MyOrders] renderOrderCard() threw for order:', err, order && order.id ? order.id : '?');
+        return '<div class="alert alert-danger col-12">Error loading order #' + escapeHtml(String(order && order.id ? order.id : '?')) + '</div>';
+      }
+    }
+
+    function buildActions(order, productId) {
+      var acts = '';
+      try {
+        var statusVal = (order && order.status) ? order.status : 'placed';
+        var canCancel = ['placed','confirmed','packed'].indexOf(statusVal) >= 0;
+        var canReturn = statusVal === 'delivered' && !!(order && order.return_eligible);
+        var isDelivered = statusVal === 'delivered';
+        var isCancelled = statusVal === 'cancelled';
+        var orderId = order && order.id ? escapeHtml(String(order.id)) : '';
+
+        if (!isCancelled) {
+          acts += '<a href="/order-details.html?id=' + orderId + '" class="btn btn-sm btn-outline-primary action-btn" title="View Details"><span class="icon-eye"></span> View Details</a>';
+        }
+        if (canCancel) {
+          acts += '<button class="btn btn-sm btn-outline-danger action-btn cancel-order-btn" data-order-id="' + orderId + '" title="Cancel Order"><span class="icon-close2"></span> Cancel</button>';
+        }
+        if (isDelivered) {
+          acts += '<button class="btn btn-sm btn-outline-warning action-btn return-order-btn" data-order-id="' + orderId + '" title="Return Order"><span class="icon-refresh"></span> Return</button>';
+          if (productId) {
+            acts += '<button class="btn btn-sm btn-outline-dark action-btn write-review-btn" data-order-id="' + orderId + '" data-product-id="' + productId + '" title="Write Review"><span class="icon-star2"></span> Write Review</button>';
+          }
+        }
+        if (isDelivered || isCancelled) {
+          acts += '<button class="btn btn-sm btn-outline-primary action-btn buy-again-btn" data-order-id="' + orderId + '" title="Buy Again"><span class="icon-shopping-bag"></span> Buy Again</button>';
+        }
+        acts += '<a href="/api/orders/' + orderId + '/invoice-print" target="_blank" class="btn btn-sm btn-outline-secondary action-btn" title="Download Invoice"><span class="icon-file2"></span> Invoice</a>';
+      } catch(err) {
+        console.error('[MyOrders] buildActions() threw:', err);
+      }
+      return acts;
+    }
+
+    $(document).on('change', '#sm-order-sort', function() { sortBy = $(this).val(); renderOrders(); });
+
+    // --- Cancel Order ---
+    $(document).on('click', '.cancel-order-btn', function() {
+      var orderId = $(this).data('order-id');
+      $('#sm-cancel-modal').data('order-id', orderId).modal('show');
+    });
+    $('#sm-confirm-cancel').click(function() {
+      var orderId = $('#sm-cancel-modal').data('order-id');
+      $('#sm-cancel-modal').modal('hide');
+      SM.api('/api/orders/' + orderId + '/status', {
+        method: 'PATCH',
+        body: JSON.stringify({ action: 'cancel' })
+      }).then(function() {
+        SM.toast('Order cancelled successfully!');
+        loadOrders();
+      }).catch(function(err) {
+        SM.toast(err.message || 'Failed to cancel order', 'error');
+      });
+    });
+
+    // --- Return Order ---
+    $(document).on('click', '.return-order-btn', function() {
+      var orderId = $(this).data('order-id');
+      $('#sm-return-modal').data('order-id', orderId).modal('show');
+    });
+    $('#sm-confirm-return').click(function() {
+      var orderId = $('#sm-return-modal').data('order-id');
+      var reason = $('#sm-return-reason').val().trim();
+      $('#sm-return-modal').modal('hide');
+      SM.api('/api/orders/' + orderId + '/status', {
+        method: 'PATCH',
+        body: JSON.stringify({ action: 'return', reason: reason })
+      }).then(function() {
+        SM.toast('Return request submitted!');
+        loadOrders();
+      }).catch(function(err) {
+        SM.toast(err.message || 'Failed to submit return', 'error');
+      });
+      $('#sm-return-reason').val('');
+    });
+
+    // --- Buy Again ---
+    $(document).on('click', '.buy-again-btn', function() {
+      var orderId = $(this).data('order-id');
+      var order = allOrders.find(function(o) { return o && o.id === orderId; });
+      if (!order || !order.items || !Array.isArray(order.items) || order.items.length === 0) {
+        SM.toast('Could not find order details', 'error');
+        return;
+      }
+      var itemsAdded = 0;
+      var totalItems = 0;
+      for (var bi = 0; bi < order.items.length; bi++) {
+        if (order.items[bi] && order.items[bi].product_id) totalItems++;
+      }
+      if (totalItems === 0) { SM.toast('No items to re-order', 'error'); return; }
+
+      for (var idx = 0; idx < order.items.length; idx++) {
+        (function(item) {
+          if (!item || !item.product_id) { return; }
+          SM.api('/api/products/' + item.product_id).then(function(prod) {
+            if (!prod || !prod.id) { itemsAdded++; return; }
+            var cartItem = { product_id: prod.id, quantity: Number(item && item.quantity) || 1 };
+            if (item && item.size) cartItem.size = item.size;
+            if (item && item.color) cartItem.color = item.color;
+            if (item && item.variant_id) cartItem.variant_id = item.variant_id;
+            SM.addToCart(cartItem).then(function() {
+              itemsAdded++;
+              if (itemsAdded >= totalItems) {
+                SM.toast('All items added to cart!');
+                window.location.href = '/cart.html';
+              }
+            }).catch(function() {
+              itemsAdded++;
+              if (itemsAdded >= totalItems) {
+                SM.toast('Some items could not be added', 'error');
+              }
+            });
+          }).catch(function() {
+            itemsAdded++;
+          });
+        })(order.items[idx]);
+      }
+    });
+
+    // --- Write Review ---
+    $(document).on('click', '.write-review-btn', function() {
+      var orderId = $(this).data('order-id');
+      var productId = $(this).data('product-id');
+      currentReviewOrderId = orderId;
+      currentReviewProductId = productId;
+      selectedRating = 0;
+      $('#sm-review-title').val('');
+      $('#sm-review-text').val('');
+      $('.review-star').removeClass('active');
+      updateReviewStars();
+      var pname = 'Product';
+      var order = allOrders.find(function(o) { return o && String(o.id) === String(orderId); });
+      if (order && order.items && Array.isArray(order.items)) {
+        for (var pi = 0; pi < order.items.length; pi++) {
+          if (String(order.items[pi].product_id) === String(productId)) {
+            pname = order.items[pi].name || ('Product #' + productId);
+            break;
+          }
+        }
+      }
+      $('#sm-review-product-name').text(pname);
+      $('#sm-review-modal').modal('show');
+    });
+
+    $(document).on('mouseenter mouseleave click', '.review-star', function(e) {
+      e.preventDefault();
+      var val = parseInt($(this).data('val'));
+      if (e.type === 'click') {
+        selectedRating = selectedRating === val ? 0 : val;
+        updateReviewStars();
+        return;
+      }
+      if (e.type === 'mouseenter') {
+        $('.review-star').each(function() {
+          $(this).css('color', parseInt($(this).data('val')) <= val ? '#ffc107' : '#ccc');
+        });
+      } else {
+        updateReviewStars();
+      }
+    });
+
+    function updateReviewStars() {
+      $('.review-star').each(function() {
+        var val = parseInt($(this).data('val'));
+        var isActive = val <= selectedRating;
+        $(this).css('color', isActive ? '#ffc107' : '#ccc');
+      });
+    }
+
+    $('#sm-submit-review').click(function() {
+      if (selectedRating === 0) {
+        SM.toast('Please select a rating', 'error');
+        return;
+      }
+      var title = $('#sm-review-title').val().trim();
+      if (!title) {
+        SM.toast('Please enter a title for your review', 'error');
+        return;
+      }
+      var review = $('#sm-review-text').val().trim();
+      if (!review) {
+        SM.toast('Please write your review', 'error');
+        return;
+      }
+      SM.api('/api/reviews', {
+        method: 'POST',
+        body: JSON.stringify({ product_id: currentReviewProductId, rating: selectedRating, title: title, review: review, order_id: currentReviewOrderId })
+      }).then(function() {
+        $('#sm-review-modal').modal('hide');
+        SM.toast('Review submitted! Thank you.');
+        $('.write-review-btn[data-order-id="' + currentReviewOrderId + '"][data-product-id="' + currentReviewProductId + '"]')
+          .text(' Reviewed').addClass('disabled').prop('disabled', true);
+      }).catch(function(err) {
+        SM.toast(err.message || 'Failed to submit review', 'error');
+      });
+    });
+
+    // Rating star CSS hover
+    $('<style>.review-star:hover, .review-star:hover ~ .review-star { color: #ffc107 !important; }.review-star.active { color: #ffc107 !important; }</style>').appendTo('head');
+
+  }
+})();
+</script>
+</body>
+</html>

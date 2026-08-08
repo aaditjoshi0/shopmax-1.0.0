@@ -195,7 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var subtotal = allItems.reduce(function (s, i) { return s + Number(i.price) * Number(i.quantity); }, 0);
     var totalQty = allItems.reduce(function (s, i) { return s + Number(i.quantity); }, 0);
-    var delivery = calcDelivery(subtotal);
+    var hasFreeBenefit = allItems.some(function (i) { return i.benefits && i.benefits.indexOf('free_delivery') >= 0; });
+    var delivery = hasFreeBenefit ? 0 : calcDelivery(subtotal);
     var finalTotal = subtotal + delivery;
 
     itemsCountEl.textContent = totalQty + ' item' + (totalQty !== 1 ? 's' : '');

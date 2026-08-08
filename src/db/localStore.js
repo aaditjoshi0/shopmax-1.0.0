@@ -13,12 +13,12 @@ const DEFAULTS = {
   profiles: [],
   products: [],
   carts: [],          // { id, user_id, items: [{ product_id, name, price, image_url, quantity, size, meta }] }
-  orders: [],         // { id, user_id, items, shipping, total, status, created_at }
+  orders: [],         // { id, user_id, items, shipping, subtotal, total, discount, delivery_charge, coupon_code, status, tracking_no, courier, estimated_delivery, actual_delivery, return_eligible, return_reason, payment_method, payment_id, created_at }
   designs: [],        // { id, user_id, name, canvas_data, thumbnail_url, product_type, created_at }
   listings: [],       // { id, user_id, title, description, price, image_url, size, category, status, created_at }
   variants: [],       // { id, product_id, sku, size, color, price, compare_at_price, stock, status }
   images: [],         // { id, product_id, color, url, alt, sort_order }
-  reviews: [],        // { id, product_id, user_id, user_name, rating, title, comment, created_at }
+  reviews: [],        // { id, product_id, user_id, order_id, user_name, rating, title, review, verified_purchase, created_at, updated_at }
   ratings: [],        // { id, target_type, target_id, user_id, rating, created_at, updated_at }
   wishlists: [],      // { id, user_id, product_id, created_at }
   users: [],          // local-only auth: { id, email, password (hashed), full_name, mobile, birthdate }

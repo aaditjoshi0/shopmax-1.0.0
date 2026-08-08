@@ -165,6 +165,7 @@
 
   // ---- addToCart helper used across pages ----
   function addToCart(item) {
+    console.log('[addToCart] payload:', JSON.stringify(item));
     return api('/api/cart/items', { method: 'POST', body: JSON.stringify(item) })
       .then(function (cart) { setBadge(cart.count || 0); return cart; });
   }
@@ -204,7 +205,7 @@
             '<a class="dropdown-item disabled text-muted" href="#">Signed in as ' + escapeHtml(currentUser.name || currentUser.email) + '</a>' +
             '<div class="dropdown-divider"></div>' +
             '<a class="dropdown-item" href="/account.html">My Account</a>' +
-            '<a class="dropdown-item" href="/account.html#orders">My Orders</a>' +
+            '<a class="dropdown-item" href="/orders.html">My Orders</a>' +
             '<a class="dropdown-item" href="/account.html#designs">My Designs</a>' +
             (currentUser.role === 'admin' ? '<div class="dropdown-divider"></div><a class="dropdown-item" href="/admin.html">Admin Panel</a>' : '') +
             '<div class="dropdown-divider"></div>' +
@@ -447,6 +448,41 @@
     bindNavEvents();
   }
 
+  // Global Product Benefits
+  var PRODUCT_BENEFITS_MAP = {
+    free_delivery:  { label:'Free Delivery',     icon:'icon-truck',     desc:'Free delivery on all orders' },
+    cod:            { label:'Cash On Delivery',  icon:'icon-money',     desc:'Pay after delivery' },
+    return_7:       { label:'7 Days Return',     icon:'icon-refresh',   desc:'Easy returns, 7 days' },
+    return_10:      { label:'10 Days Return',    icon:'icon-refresh',   desc:'Easy returns, 10 days' },
+    return_30:      { label:'30 Days Return',    icon:'icon-refresh',   desc:'Easy returns, 30 days' },
+    exchange:       { label:'Exchange Available',icon:'icon-retweet',   desc:'Easy exchange available' },
+    secure_payment: { label:'Secure Payment',    icon:'icon-lock',      desc:'100% secure checkout' },
+    top_brand:      { label:'Top Brand',         icon:'icon-trophy',    desc:'Trusted quality brand' },
+    warranty:       { label:'Warranty Available', icon:'icon-shield',    desc:'Manufacturer warranty' },
+    fast_delivery:  { label:'Fast Delivery',     icon:'icon-flash',     desc:'Delivered in 1-2 days' },
+    same_day:       { label:'Same Day Delivery', icon:'icon-plane',     desc:'Same day dispatch' },
+    official_store: { label:'Official Store',    icon:'icon-check-circle', desc:'Authentic products only' },
+    sustainable:    { label:'Sustainable Product',icon:'icon-leaf',      desc:'Eco-friendly choice' },
+    customizable:   { label:'Customizable',      icon:'icon-wrench',    desc:'Customize your product' },
+    premium:        { label:'Premium Product',   icon:'icon-diamond',   desc:'Best quality guaranteed' },
+    limited_stock:  { label:'Limited Stock',     icon:'icon-warning',   desc:'Hurry, only few left' }
+  };
+
+  function benefitBadgesHtml(ids) {
+    if (!ids || !ids.length) return '';
+    return ids.map(function (id) {
+      var b = PRODUCT_BENEFITS_MAP[id];
+      if (!b) return '';
+      return '<div class="sm-benefit-card">' +
+        '<div class="sm-benefit-card-icon"><span class="' + b.icon + '"></span></div>' +
+        '<div class="sm-benefit-card-text">' +
+          '<div class="sm-benefit-card-title">' + b.label + '</div>' +
+          '<div class="sm-benefit-card-desc">' + (b.desc || '') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   // expose
   window.ShopMax = {
     api: api,
@@ -464,6 +500,7 @@
     refreshAuth: refreshAuth,
     isLoggedIn: isLoggedIn,
     requireLogin: requireLogin,
+    benefitBadgesHtml: benefitBadgesHtml,
     get user() { return currentUser; }
   };
 })();

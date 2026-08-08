@@ -28,6 +28,7 @@
         <li><a href="#" class="sm-admin-nav-link" data-section="inventory"><span class="icon-box"></span> Inventory</a></li>
         <li><a href="#" class="sm-admin-nav-link" data-section="analytics"><span class="icon-bar-chart"></span> Analytics</a></li>
         <li><a href="#" class="sm-admin-nav-link" data-section="ratings"><span class="icon-star"></span> Ratings</a></li>
+        <li><a href="#" class="sm-admin-nav-link" data-section="reviews"><span class="icon-pencil"></span> Reviews</a></li>
         <li><a href="#" class="sm-admin-nav-link" data-section="users"><span class="icon-users"></span> Users</a></li>
         <li><a href="#" class="sm-admin-nav-link" data-section="coupons"><span class="icon-tag"></span> Coupons</a></li>
         <li><a href="#" class="sm-admin-nav-link" data-section="settings"><span class="icon-cog"></span> Settings</a></li>
@@ -102,7 +103,7 @@
         <div class="sm-admin-card">
           <div class="table-responsive">
             <table class="table table-sm">
-              <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
               <tbody id="sm-orders-body"><tr><td colspan="7" class="text-muted">Loading...</td></tr></tbody>
             </table>
           </div>
@@ -307,6 +308,10 @@
                         <label class="form-check-label" for="pf-newarrival">New Arrival</label>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <h4>Product Benefits</h4>
+                      <div class="row" id="pf-benefits-container"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -455,6 +460,52 @@
         </div>
       </section>
 
+      <!-- Reviews -->
+      <section id="sec-reviews" class="sm-admin-section">
+        <div class="d-flex justify-content-between align-items-center mb-3" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 class="sm-admin-section-title" style="margin:0">Review Moderation</h2>
+        </div>
+        <div class="sm-admin-card">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="sm-admin-reviews-search" placeholder="Search by product, title, review or user...">
+            </div>
+            <div class="col-md-3">
+              <select class="form-control" id="sm-admin-reviews-rating">
+                <option value="">All Ratings</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-primary w-100" id="sm-admin-reviews-filter">Filter</button>
+            </div>
+          </div>
+          <div id="sm-admin-reviews-loading" class="py-3 text-center"><p class="text-muted mb-0">Loading reviews...</p></div>
+          <div id="sm-admin-reviews-content" style="display:none">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Customer</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Date</th>
+                    <th style="width:120px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="sm-admin-reviews-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="sm-admin-reviews-empty" style="display:none"><p class="text-muted text-center py-4 mb-0">No reviews found.</p></div>
+        </div>
+      </section>
+
       <!-- Coupons -->
       <section id="sec-coupons" class="sm-admin-section">
         <div class="d-flex justify-content-between align-items-center mb-3" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -554,6 +605,16 @@
   </main>
 </div>
 
+<style>
+  .sm-status-placed { background:#e3f2fd; color:#1565c0; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-confirmed { background:#e3f2fd; color:#1565c0; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-packed { background:#fff3e0; color:#e65100; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-shipped { background:#f3e5f5; color:#6a1b9a; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-out_for_delivery { background:#e8eaf6; color:#283593; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-delivered { background:#e8f5e9; color:#2e7d32; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-cancelled { background:#ffebee; color:#c62828; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+  .sm-status-returned { background:#efebe9; color:#4e342e; padding:3px 10px; border-radius:4px; font-size:12px; font-weight:600; display:inline-block; }
+</style>
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -594,6 +655,7 @@
       if (sec === 'orders') { loadOrders(); }
       if (sec === 'dashboard') { loadDashboard(); }
       if (sec === 'ratings') { loadAdminRatings(); }
+      if (sec === 'reviews') { loadReviews(); }
       if (sec === 'coupons') { loadCoupons(); $('adm-coupon-analytics').style.display = 'none'; $('adm-coupon-analytics-table-row').style.display = 'none'; }
     });
   });
@@ -658,6 +720,64 @@
     });
   }
 
+  // ======================== Reviews (admin) ========================
+  function loadReviews() {
+    var loadingEl = $('sm-admin-reviews-loading');
+    var contentEl = $('sm-admin-reviews-content');
+    var emptyEl = $('sm-admin-reviews-empty');
+    loadingEl.style.display = '';
+    contentEl.style.display = 'none';
+    emptyEl.style.display = 'none';
+
+    var search = $('sm-admin-reviews-search') ? $('sm-admin-reviews-search').value.trim() : '';
+    var rating = $('sm-admin-reviews-rating') ? $('sm-admin-reviews-rating').value : '';
+    var qs = [];
+    if (search) qs.push('search=' + encodeURIComponent(search));
+    if (rating) qs.push('rating=' + encodeURIComponent(rating));
+
+    API('/api/admin/reviews' + (qs.length ? '?' + qs.join('&') : '')).then(function (reviews) {
+      loadingEl.style.display = 'none';
+      if (!reviews || !reviews.length) {
+        emptyEl.style.display = '';
+        return;
+      }
+      contentEl.style.display = '';
+      $('sm-admin-reviews-tbody').innerHTML = reviews.map(function (r) {
+        var stars = '';
+        for (var i = 1; i <= 5; i++) stars += i <= r.rating ? '&#9733;' : '&#9734;';
+        var body = (r.title ? '<strong>' + h(r.title) + '</strong><br>' : '') + h(r.review || '');
+        return '<tr>' +
+          '<td>' + h(r.product_name || ('Product #' + r.product_id)) + '</td>' +
+          '<td>' + h(r.user_name || 'Anonymous') + (r.verified_purchase ? ' <span class="badge badge-success">Verified</span>' : '') + '</td>' +
+          '<td style="color:#ffc107;white-space:nowrap">' + stars + '</td>' +
+          '<td style="max-width:340px">' + body + '</td>' +
+          '<td style="white-space:nowrap">' + (r.created_at ? new Date(r.created_at).toLocaleDateString() : '-') + '</td>' +
+          '<td><button type="button" class="btn btn-sm btn-outline-danger admin-review-delete-btn" data-review-id="' + r.id + '">Delete</button></td>' +
+        '</tr>';
+      }).join('');
+    }).catch(function () {
+      loadingEl.style.display = 'none';
+      $('sm-admin-reviews-tbody').innerHTML = '<tr><td colspan="6" class="text-muted">Failed to load reviews.</td></tr>';
+      contentEl.style.display = '';
+    });
+  }
+
+  $('sm-admin-reviews-filter').addEventListener('click', loadReviews);
+  $('sm-admin-reviews-search').addEventListener('keydown', function (e) { if (e.key === 'Enter') loadReviews(); });
+  jQuery(document).on('click', '.admin-review-delete-btn', function () {
+    var id = jQuery(this).data('review-id');
+    if (!confirm('Delete this review? This cannot be undone.')) return;
+    var btn = this;
+    jQuery(btn).prop('disabled', true).text('Deleting...');
+    API('/api/admin/reviews/' + id, { method: 'DELETE' }).then(function () {
+      jQuery(btn).closest('tr').remove();
+      SM.toast ? SM.toast('Review deleted!') : alert('Review deleted!');
+    }).catch(function (err) {
+      jQuery(btn).prop('disabled', false).text('Delete');
+      SM.toast ? SM.toast(err.message || 'Failed to delete review', 'error') : alert(err.message || 'Failed to delete review');
+    });
+  });
+
   // ======================== Users ========================
   function loadUsers() {
     API('/api/admin/users').then(function (users) {
@@ -687,14 +807,18 @@
         var itemCount = items.reduce(function (s, i) { return s + Number(i.quantity || 1); }, 0);
         var customer = (o.shipping && o.shipping.fname) ? h(o.shipping.fname) : 'N/A';
         if (o.shipping && o.shipping.lname) customer += ' ' + h(o.shipping.lname);
-        var statusBadge = '<span class="sm-status-badge sm-status-' + (o.status || 'placed') + '">' + h(o.status || 'placed') + '</span>';
+        var statusBadge = '<span class="sm-status-' + (o.status || 'placed') + '">' + h((o.status || 'placed').replace(/_/g, ' ')) + '</span>';
+        var pMethod = (o.payment_method || '').toUpperCase();
+        if (pMethod === 'COD') pMethod = '<span style="color:#27ae60;font-weight:700">COD</span>';
+        else if (o.payment_status === 'paid') pMethod = '<span style="color:#28a745;font-weight:700">' + pMethod + '</span>';
+        else if (o.payment_status) pMethod = '<span style="color:#856404">' + pMethod + '</span>';
         return '<tr>' +
           '<td><a href="#" class="sm-order-detail-link" data-id="' + o.id + '">#' + o.id + '</a></td>' +
           '<td>' + customer + '</td>' +
           '<td>' + itemCount + '</td>' +
           '<td>₹' + Number(o.total || 0).toFixed(2) + '</td>' +
+          '<td>' + (pMethod || '-') + '</td>' +
           '<td>' + statusBadge + '</td>' +
-          '<td>' + (o.created_at ? new Date(o.created_at).toLocaleDateString() : '-') + '</td>' +
           '<td><button class="btn btn-sm btn-outline-primary sm-view-order" data-id="' + o.id + '">View</button></td>' +
         '</tr>';
       }).join('');
@@ -715,25 +839,127 @@
         return '<tr><td>' + h(i.name) + '</td><td>' + (i.size || '-') + '</td><td>' + (i.color || '-') + '</td><td>' + (i.quantity || 1) + '</td><td>₹' + Number(i.price || 0).toFixed(2) + '</td><td>₹' + (Number(i.price || 0) * Number(i.quantity || 1)).toFixed(2) + '</td></tr>';
       }).join('');
 
+      // Build status dropdown with valid transitions
+      var VALID_TRANSITIONS = {
+        placed: ['confirmed', 'cancelled'],
+        confirmed: ['packed', 'cancelled'],
+        packed: ['shipped', 'cancelled'],
+        shipped: ['out_for_delivery', 'cancelled'],
+        out_for_delivery: ['delivered'],
+        delivered: ['returned'],
+        cancelled: [],
+        returned: []
+      };
+      var TRANSITION_LABELS = {
+        confirmed: 'Confirmed', packed: 'Packed', shipped: 'Shipped',
+        out_for_delivery: 'Out For Delivery', delivered: 'Delivered', cancelled: 'Cancelled', returned: 'Returned'
+      };
+      var currentStatus = o.status || 'placed';
+      var availableTransitions = VALID_TRANSITIONS[currentStatus] || [];
+      var statusOptions = availableTransitions.length
+        ? availableTransitions.map(function (s) { return '<option value="' + s + '">' + (TRANSITION_LABELS[s] || s) + '</option>'; }).join('')
+        : '<option value="">No transitions available</option>';
+
+      var canShip = currentStatus === 'packed' || currentStatus === 'shipped' || currentStatus === 'out_for_delivery';
+      var trackSection = availableTransitions.indexOf('shipped') >= 0 || availableTransitions.indexOf('out_for_delivery') >= 0
+        ? '<div class="row mt-2" id="admin-track-fields" style="display:' + (canShip ? 'flex' : 'none') + '">' +
+            '<div class="col-md-6"><label class="small">Tracking No.</label><input type="text" class="form-control form-control-sm" id="admin-track-no" value="' + h(o.tracking_no || '') + '"></div>' +
+            '<div class="col-md-6"><label class="small">Courier</label><input type="text" class="form-control form-control-sm" id="admin-courier" value="' + h(o.courier || '') + '"></div>' +
+          '</div>'
+        : '';
+
+      var pInfo = '';
+      var pMethod = o.payment_method ? h(o.payment_method.toUpperCase()) : '—';
+      var pStatus = o.payment_status || '—';
+      var pStatusLabel = pStatus.charAt(0).toUpperCase() + pStatus.slice(1);
+      var pStatusColor = pStatus === 'paid' ? '#28a745' : (pStatus === 'failed' ? '#dc3545' : '#856404');
+      pInfo += '<p><strong>Payment Method:</strong> ' + pMethod + '</p>';
+      pInfo += '<p><strong>Payment Status:</strong> <span style="color:' + pStatusColor + ';font-weight:600">' + pStatusLabel + '</span></p>';
+      if (o.payment_id) pInfo += '<p><strong>Transaction ID:</strong> ' + h(o.payment_id) + '</p>';
+      if (o.payment_gateway) pInfo += '<p><strong>Gateway:</strong> ' + h(o.payment_gateway) + '</p>';
+      if (o.upi_id) pInfo += '<p><strong>UPI ID:</strong> ' + h(o.upi_id) + '</p>';
+      if (o.card_last4) pInfo += '<p><strong>Card:</strong> **** ' + h(o.card_last4) + '</p>';
+      if (o.wallet_name) pInfo += '<p><strong>Wallet:</strong> ' + h(o.wallet_name) + '</p>';
+      if (o.payment_time) pInfo += '<p><strong>Payment Time:</strong> ' + new Date(o.payment_time).toLocaleString() + '</p>';
+      if (o.is_cod) pInfo += '<p class="mb-0"><span class="badge badge-success">Cash on Delivery</span></p>';
+
       body.innerHTML =
-        '<div class="row mb-3"><div class="col-md-6">' +
-          '<h6>Order #' + o.id + '</h6>' +
-          '<p><strong>Status:</strong> ' + h(o.status || 'placed') + '</p>' +
+        '<div class="row mb-3"><div class="col-md-12">' +
+          '<div class="d-flex justify-content-between align-items-center mb-3">' +
+            '<h5 class="mb-0">Order #' + o.id + '</h5>' +
+            '<span class="sm-status-badge sm-status-' + currentStatus + '">' + h(currentStatus.replace(/_/g, ' ')) + '</span>' +
+          '</div>' +
           '<p><strong>Date:</strong> ' + (o.created_at ? new Date(o.created_at).toLocaleString() : '-') + '</p>' +
-          '<p><strong>Subtotal:</strong> ₹' + Number(o.subtotal || 0).toFixed(2) + '</p>' +
-          '<p><strong>Total:</strong> ₹' + Number(o.total || 0).toFixed(2) + '</p>' +
-        '</div><div class="col-md-6">' +
+          '<p><strong>Subtotal:</strong> ₹' + Number(o.subtotal || 0).toFixed(2) + ' &nbsp;|&nbsp; <strong>Total:</strong> ₹' + Number(o.total || 0).toFixed(2) + '</p>' +
+          pInfo +
+          (o.coupon_code ? '<p><strong>Coupon:</strong> ' + h(o.coupon_code) + '</p>' : '') +
+        '</div></div>' +
+        '<div class="row mb-3"><div class="col-md-6">' +
           '<h6>Billing Details</h6>' +
-          '<p>' + h(ship.fname || '') + ' ' + h(ship.lname || '') + '</p>' +
-          '<p>' + h(ship.address || '') + '</p>' +
-          '<p>' + h(ship.state_country || '') + ' - ' + h(ship.postal_zip || '') + '</p>' +
-          '<p>Email: ' + h(ship.email_address || '') + '</p>' +
-          '<p>Phone: ' + h(ship.phone || '') + '</p>' +
+          '<p class="mb-1">' + h(ship.fname || '') + ' ' + h(ship.lname || '') + '</p>' +
+          '<p class="mb-1">' + h(ship.address || '') + '</p>' +
+          '<p class="mb-1">' + h(ship.state_country || '') + ' - ' + h(ship.postal_zip || '') + '</p>' +
+          '<p class="mb-1">Email: ' + h(ship.email_address || '') + '</p>' +
+          '<p class="mb-1">Phone: ' + h(ship.phone || '') + '</p>' +
+        '</div><div class="col-md-6">' +
+          '<h6>Delivery</h6>' +
+          '<p class="mb-1"><strong>Est. Delivery:</strong> ' + (o.estimated_delivery ? new Date(o.estimated_delivery).toLocaleDateString() : 'N/A') + '</p>' +
+          '<p class="mb-1"><strong>Tracking:</strong> ' + h(o.tracking_no || 'Not assigned') + '</p>' +
+          '<p class="mb-1"><strong>Courier:</strong> ' + h(o.courier || 'Not assigned') + '</p>' +
         '</div></div>' +
         '<h6>Items Ordered</h6>' +
-        '<table class="table table-sm"><thead><tr><th>Product</th><th>Size</th><th>Color</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>' + itemRows + '</tbody></table>';
-    }).catch(function () {
-      body.innerHTML = '<div class="alert alert-danger">Failed to load order details.</div>';
+        '<table class="table table-sm"><thead><tr><th>Product</th><th>Size</th><th>Color</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>' + itemRows + '</tbody></table>' +
+        '<hr><div class="row"><div class="col-md-12">' +
+          '<label class="font-weight-bold">Update Status</label>' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<select class="form-control form-control-sm" id="admin-order-status" style="max-width:200px;" ' + (availableTransitions.length ? '' : 'disabled') + '>' + statusOptions + '</select>' +
+            trackSection +
+            '<button class="btn btn-sm btn-primary ml-2" id="admin-update-status-btn" ' + (availableTransitions.length ? '' : 'disabled') + '>Update</button>' +
+          '</div>' +
+          '<small class="text-muted mt-1 d-block">Current: ' + h(currentStatus.replace(/_/g, ' ')) + '</small>' +
+        '</div></div>';
+
+      // Bind status update
+      var updateBtn = document.getElementById('admin-update-status-btn');
+      if (updateBtn) {
+        updateBtn.addEventListener('click', function () {
+          var newStatus = document.getElementById('admin-order-status').value;
+          if (!newStatus) return;
+          updateBtn.disabled = true;
+          updateBtn.textContent = 'Updating...';
+          var payload = { action: newStatus };
+          var trackNo = document.getElementById('admin-track-no');
+          var courier = document.getElementById('admin-courier');
+          if (trackNo && trackNo.value.trim()) payload.tracking_no = trackNo.value.trim();
+          if (courier && courier.value.trim()) payload.courier = courier.value.trim();
+          API('/api/orders/' + o.id + '/status', { method: 'PATCH', body: JSON.stringify(payload) })
+            .then(function () {
+              alert('Order status updated to ' + newStatus);
+              jQuery('#sm-order-modal').modal('hide');
+              loadOrders();
+            })
+            .catch(function (err) {
+              alert('Failed: ' + (err.message || 'Unknown error'));
+              updateBtn.disabled = false;
+              updateBtn.textContent = 'Update';
+            });
+        });
+      }
+
+      // Show/hide tracking fields when status selection changes
+      var statusSelect = document.getElementById('admin-order-status');
+      if (statusSelect) {
+        statusSelect.addEventListener('change', function () {
+          var val = this.value;
+          var trackFields = document.getElementById('admin-track-fields');
+          if (trackFields) {
+            trackFields.style.display = (val === 'shipped' || val === 'out_for_delivery') ? 'flex' : 'none';
+          }
+        });
+      }
+    }).catch(function (err) {
+      console.error('[admin] Failed to load order details:', err && err.message ? err.message : err);
+      body.innerHTML = '<div class="alert alert-danger">Failed to load order details' + (err && err.message ? ': ' + h(err.message) : '') + '.</div>';
     });
   }
 
@@ -1367,6 +1593,46 @@
     }).join('');
   }
 
+  // ======================== Product Benefits ========================
+
+  var PRODUCT_BENEFITS = [
+    { id:'free_delivery',  label:'Free Delivery',     icon:'icon-truck' },
+    { id:'cod',            label:'Cash On Delivery',  icon:'icon-money' },
+    { id:'return_7',       label:'7 Days Return',     icon:'icon-refresh' },
+    { id:'return_10',      label:'10 Days Return',    icon:'icon-refresh' },
+    { id:'return_30',      label:'30 Days Return',    icon:'icon-refresh' },
+    { id:'exchange',       label:'Exchange Available',icon:'icon-retweet' },
+    { id:'secure_payment', label:'Secure Payment',    icon:'icon-lock' },
+    { id:'top_brand',      label:'Top Brand',         icon:'icon-trophy' },
+    { id:'warranty',       label:'Warranty Available', icon:'icon-shield' },
+    { id:'fast_delivery',  label:'Fast Delivery',     icon:'icon-flash' },
+    { id:'same_day',       label:'Same Day Delivery', icon:'icon-plane' },
+    { id:'official_store', label:'Official Store',    icon:'icon-check-circle' },
+    { id:'sustainable',    label:'Sustainable Product',icon:'icon-leaf' },
+    { id:'customizable',   label:'Customizable',      icon:'icon-wrench' },
+    { id:'premium',        label:'Premium Product',   icon:'icon-diamond' },
+    { id:'limited_stock',  label:'Limited Stock',     icon:'icon-warning' }
+  ];
+
+  function renderBenefitCheckboxes() {
+    var container = $('pf-benefits-container');
+    if (!container) return;
+    container.innerHTML = PRODUCT_BENEFITS.map(function (b) {
+      return '<div class="col-md-6 col-lg-4"><div class="form-check">' +
+        '<input type="checkbox" class="form-check-input" id="pf-benefit-' + b.id + '" value="' + b.id + '">' +
+        '<label class="form-check-label" for="pf-benefit-' + b.id + '"><span class="' + b.icon + '"></span> ' + b.label + '</label>' +
+      '</div></div>';
+    }).join('');
+  }
+
+  function populateBenefitCheckboxes(selected) {
+    selected = selected || [];
+    PRODUCT_BENEFITS.forEach(function (b) {
+      var cb = $('pf-benefit-' + b.id);
+      if (cb) cb.checked = selected.indexOf(b.id) >= 0;
+    });
+  }
+
   // ======================== Products — Form ========================
   var editingProductId = null;
 
@@ -1402,6 +1668,7 @@
       $('pf-featured').checked = !!product.featured;
       $('pf-bestseller').checked = !!product.bestseller;
       $('pf-newarrival').checked = !!product.new_arrival;
+      populateBenefitCheckboxes(product.benefits || []);
       if ($('pf-category').querySelector('option[value="' + product.category + '"]')) {
         $('pf-category').value = product.category || '';
       }
@@ -1419,6 +1686,7 @@
       $('pf-featured').checked = false;
       $('pf-bestseller').checked = false;
       $('pf-newarrival').checked = false;
+      populateBenefitCheckboxes([]);
       $('sm-variant-mgmt').style.display = 'none';
       $('sm-image-mgmt').style.display = 'none';
     }
@@ -1462,7 +1730,8 @@
       fabric: $('pf-fabric').value.trim(),
       delivery_info: $('pf-delivery').value.trim(),
       return_policy: $('pf-return').value.trim(),
-      size_guide: $('pf-sizeguide').value.trim()
+      size_guide: $('pf-sizeguide').value.trim(),
+      benefits: Array.from(document.querySelectorAll('#pf-benefits-container input[type=checkbox]:checked')).map(function (cb) { return cb.value; })
     };
   }
 
@@ -1938,6 +2207,7 @@
   loadOrders();
   loadSettings();
   loadCoupons();
+  renderBenefitCheckboxes();
   bindEvents();
 })();
 </script>

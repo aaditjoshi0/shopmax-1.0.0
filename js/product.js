@@ -204,6 +204,7 @@
           '</button>' +
         '</div>' +
         tagsHtml +
+        '<div class="sm-pdp-benefits" id="sm-pdp-benefits">' + SM.benefitBadgesHtml(p.benefits) + '</div>' +
         skuHtml +
       '</div>';
 
@@ -713,81 +714,99 @@
         '<div class="sm-review-header">' +
           '<div class="sm-review-stars">' + SM.starHtml(r.rating) + '</div>' +
           '<span class="sm-review-author">' + SM.escapeHtml(r.user_name || 'Anonymous') + '</span>' +
+          (r.verified_purchase ? '<span class="sm-review-verified">Verified Purchase</span>' : '') +
           '<span class="sm-review-date">' + new Date(r.created_at).toLocaleDateString() + '</span>' +
         '</div>' +
         (r.title ? '<div class="sm-review-title">' + SM.escapeHtml(r.title) + '</div>' : '') +
-        (r.comment ? '<div class="sm-review-body">' + SM.escapeHtml(r.comment) + '</div>' : '') +
+        ((r.review) ? '<div class="sm-review-body">' + SM.escapeHtml(r.review) + '</div>' : '') +
       '</div>';
     }).join('');
 
     $('sm-reviews-list').innerHTML = reviewsHtml || '<p class="text-muted">No reviews yet. Be the first to review this product!</p>';
 
-    var formHtml = '';
+    var formWrap = $('sm-review-form-wrap');
+    if (!formWrap) return;
+
     if (SM.isLoggedIn()) {
-      formHtml =
-        '<div class="sm-review-form-wrap">' +
-          '<h4>Write a Review</h4>' +
-          '<div class="sm-review-form">' +
-            '<div class="sm-review-form-rating">' +
-              '<label>Your Rating:</label>' +
-              '<div class="sm-review-stars-input" id="sm-review-stars">' +
-                [1,2,3,4,5].map(function (n) { return '<span class="sm-review-star" data-val="' + n + '">&#9733;</span>'; }).join('') +
+      formWrap.innerHTML = '<p class="text-muted">Checking your eligibility...</p>';
+      SM.api('/api/reviews/eligible?product_id=' + productId).then(function (elig) {
+        if (elig.alreadyReviewed) {
+          formWrap.innerHTML = '<p class="text-muted">You have already reviewed this product.</p>';
+          return;
+        }
+        if (!elig.purchaseEligible) {
+          formWrap.innerHTML = '<p class="text-muted">You can review this product after it has been delivered to you.</p>';
+          return;
+        }
+        formWrap.innerHTML =
+          '<div class="sm-review-form-wrap">' +
+            '<h4>Write a Review</h4>' +
+            '<div class="sm-review-form">' +
+              '<div class="sm-review-form-rating">' +
+                '<label>Your Rating:</label>' +
+                '<div class="sm-review-stars-input" id="sm-review-stars">' +
+                  [1,2,3,4,5].map(function (n) { return '<span class="sm-review-star" data-val="' + n + '">&#9733;</span>'; }).join('') +
+                '</div>' +
+                '<input type="hidden" id="sm-review-rating" value="5">' +
               '</div>' +
-              '<input type="hidden" id="sm-review-rating" value="5">' +
+              '<div class="sm-review-form-group">' +
+                '<label>Title</label>' +
+                '<input type="text" id="sm-review-title" class="form-control" placeholder="Summarize your review" maxlength="200">' +
+              '</div>' +
+              '<div class="sm-review-form-group">' +
+                '<label>Your Review</label>' +
+                '<textarea id="sm-review-text" class="form-control" rows="4" placeholder="Share your experience..." maxlength="2000"></textarea>' +
+              '</div>' +
+              '<button type="button" class="btn btn-primary" id="sm-submit-review">Submit Review</button>' +
             '</div>' +
-            '<div class="sm-review-form-group">' +
-              '<label>Title (optional)</label>' +
-              '<input type="text" id="sm-review-title" class="form-control" placeholder="Summarize your review" maxlength="200">' +
-            '</div>' +
-            '<div class="sm-review-form-group">' +
-              '<label>Your Review</label>' +
-              '<textarea id="sm-review-comment" class="form-control" rows="4" placeholder="Share your experience..." maxlength="2000"></textarea>' +
-            '</div>' +
-            '<button type="button" class="btn btn-primary" id="sm-submit-review">Submit Review</button>' +
-          '</div>' +
-        '</div>';
+          '</div>';
+        bindReviewForm(productId);
+      }).catch(function () {
+        formWrap.innerHTML = '';
+      });
     } else {
-      formHtml = '<div class="sm-review-login"><a href="/login.html">Sign in</a> to write a review.</div>';
+      formWrap.innerHTML = '<div class="sm-review-login"><a href="/login.html">Sign in</a> to write a review.</div>';
     }
-    $('sm-review-form-wrap').innerHTML = formHtml;
+  }
 
-    if (SM.isLoggedIn()) {
-      var starInput = $('sm-review-stars');
-      var ratingInput = $('sm-review-rating');
-      var submitBtn = $('sm-submit-review');
+  function bindReviewForm(productId) {
+    var starInput = $('sm-review-stars');
+    var ratingInput = $('sm-review-rating');
+    var submitBtn = $('sm-submit-review');
 
-      if (starInput) {
-        setStarDisplay(5);
-        starInput.addEventListener('click', function (e) {
-          var star = e.target.closest('.sm-review-star');
-          if (!star) return;
-          var val = parseInt(star.getAttribute('data-val'), 10);
-          if (ratingInput) ratingInput.value = val;
-          setStarDisplay(val);
+    if (starInput) {
+      setStarDisplay(5);
+      starInput.addEventListener('click', function (e) {
+        var star = e.target.closest('.sm-review-star');
+        if (!star) return;
+        var val = parseInt(star.getAttribute('data-val'), 10);
+        if (ratingInput) ratingInput.value = val;
+        setStarDisplay(val);
+      });
+    }
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function () {
+        var rating = ratingInput ? parseInt(ratingInput.value, 10) : 5;
+        var title = $('sm-review-title') ? $('sm-review-title').value.trim() : '';
+        var review = $('sm-review-text') ? $('sm-review-text').value.trim() : '';
+        if (!title) { SM.toast('Please enter a title for your review.', 'error'); return; }
+        if (!review) { SM.toast('Please write your review.', 'error'); return; }
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        SM.api('/api/reviews', {
+          method: 'POST',
+          body: JSON.stringify({ product_id: productId, rating: rating, title: title, review: review })
+        }).then(function () {
+          SM.toast('Review submitted!');
+          loadReviews(productId);
+          loadRatings(productId);
+        }).catch(function (err) {
+          SM.toast(err.message || 'Failed to submit review', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Review';
         });
-      }
-
-      if (submitBtn) {
-        submitBtn.addEventListener('click', function () {
-          var rating = ratingInput ? parseInt(ratingInput.value, 10) : 5;
-          var title = $('sm-review-title') ? $('sm-review-title').value.trim() : '';
-          var comment = $('sm-review-comment') ? $('sm-review-comment').value.trim() : '';
-          if (!comment) { SM.toast('Please write a review.', 'error'); return; }
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Submitting...';
-          SM.api('/api/reviews', {
-            method: 'POST',
-            body: JSON.stringify({ product_id: productId, rating: rating, title: title, comment: comment })
-          }).then(function () {
-            SM.toast('Review submitted!');
-            loadReviews(productId);
-          }).catch(function (err) {
-            SM.toast(err.message || 'Failed to submit review', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Review';
-          });
-        });
-      }
+      });
     }
   }
 

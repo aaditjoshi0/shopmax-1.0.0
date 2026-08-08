@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { supabase, MODE, getAuthedClient } = require('../../config/supabase');
+const { supabase, MODE, getAuthedClient, getServiceClient } = require('../../config/supabase');
 const store = require('../db/localStore');
 const { getUser, requireUser, requireAdmin, fetchUserRole } = require('../middleware/auth');
 
@@ -177,7 +177,9 @@ router.post('/signup', async (req, res, next) => {
       refreshToken = data.session.refresh_token;
     }
 
-    var sb = accessToken ? getAuthedClient(accessToken) : supabase;
+    // Use service client when no access token (email confirmation required)
+    // so profile upsert bypasses RLS and always succeeds.
+    var sb = accessToken ? getAuthedClient(accessToken) : (getServiceClient() || supabase);
     await sb.from('profiles').upsert({
       id: u.id, email: u.email, full_name: full_name || '', mobile: mobile || '', birthdate: birthdate || '', role: 'customer'
     }, { onConflict: 'id' });
@@ -186,14 +188,23 @@ router.post('/signup', async (req, res, next) => {
     setSession(res, sessUser, accessToken, refreshToken);
     await mergeGuestCart(req, res, u.id, accessToken);
     res.json({ user: sessUser });
-  } catch (e) { next(e); }
+  } catch (e) {
+    console.error('[SIGNUP] Unhandled error:', e.message || e, e.stack || '');
+    next(e);
+  }
 });
 
 // ── Login ───────────────────────────────────────────────────────────────────
 
 router.post('/login', async (req, res, next) => {
   try {
+    // ── STEP 4: Request received by server ─────────────────────────────────
+    console.log('STEP 4 — Request received by server');
+    console.log('STEP 4b — Request headers:', JSON.stringify(req.headers));
+    console.log('STEP 4c — Signed cookies:', JSON.stringify(req.signedCookies));
+
     var { email, mobile, password } = req.body || {};
+    console.log('STEP 4d — Parsed body:', JSON.stringify({ email: email, mobile: mobile, password: password ? '***' : '' }));
     if (!password) return res.status(400).json({ error: 'Password is required.' });
     if (!email && !mobile) return res.status(400).json({ error: 'Email or mobile number is required.' });
 
@@ -207,41 +218,88 @@ router.post('/login', async (req, res, next) => {
       var userProfile = store.raw.profiles.find(function (p) { return p.id === user.id; });
       var role = (userProfile && userProfile.role) || 'customer';
       var session = { id: user.id, email: user.email, name: user.full_name || user.email, mobile: user.mobile, role: role };
+      // Clear any lingering admin session
+      res.clearCookie('sm_admin_session');
       setSession(res, session);
       await mergeGuestCart(req, res, user.id);
       return res.json({ user: session });
     }
 
-    // Supabase mode
+    // ── STEP 5: Email received ──────────────────────────────────────────────
     var loginEmail = email;
+    console.log('STEP 5 — Email received:', loginEmail);
+
     if (!loginEmail && mobile) {
+      console.log('STEP 5b — Looking up profile by mobile:', mobile);
       var { data: profile } = await supabase.from('profiles').select('email').eq('mobile', mobile).single();
       if (!profile || !profile.email) {
+        console.warn('[LOGIN] No profile found for mobile:', mobile);
         return res.status(401).json({ error: 'No account found with that mobile number.' });
       }
       loginEmail = profile.email;
+      console.log('[LOGIN] Found email for mobile:', loginEmail);
     }
 
-    var { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: password });
-    if (error) return res.status(401).json({ error: error.message });
-    var u = data.user;
-    var accessToken = data.session.access_token;
-    var refreshToken = data.session.refresh_token;
+    // ── STEP 6: Calling Supabase signInWithPassword() ──────────────────────
+    console.log('STEP 6 — Calling Supabase signInWithPassword for:', loginEmail);
+
+    
+
+    var authResult = await supabase.auth.signInWithPassword({
+      email: loginEmail,
+      password: password
+    });
+
+    // ── STEP 7: Log FULL Supabase response ─────────────────────────────────
+    console.log('STEP 7 — FULL Supabase response:');
+    console.log(JSON.stringify({
+      data: authResult.data,
+      error: authResult.error
+    }, null, 2));
+
+    // ── STEP 8: If error exists, print every field ──────────────────────────
+    if (authResult.error) {
+      var e = authResult.error;
+      console.log('STEP 8 — ERROR DETAILS:');
+      console.log('  error.code:', e.code);
+      console.log('  error.status:', e.status);
+      console.log('  error.name:', e.name);
+      console.log('  error.message:', e.message);
+      console.log('  error.stack:', e.stack);
+      // Log the full error object itself
+      console.log('  Full error object:', JSON.stringify(e, Object.getOwnPropertyNames(e)));
+      return res.status(401).json({ error: e.message });
+    }
+    var u = authResult.data.user;
+    var accessToken = authResult.data.session.access_token;
+    var refreshToken = authResult.data.session.refresh_token;
+    console.log('STEP 7b — Auth succeeded. User ID:', u.id);
 
     var sb = getAuthedClient(accessToken);
     var { data: profile } = await sb.from('profiles').select('role').eq('id', u.id).maybeSingle();
     var role = (profile && profile.role) || 'customer';
+    console.log('STEP 9 — Profile role lookup:', role, profile ? 'found' : 'not found');
+
     var sessUser = { id: u.id, email: u.email, name: (u.user_metadata && u.user_metadata.full_name) || u.email, mobile: mobile || (u.user_metadata && u.user_metadata.mobile) || '', role: role };
     setSession(res, sessUser, accessToken, refreshToken);
+    console.log('STEP 10 — Session cookie set, responding with user');
+
+    // Clear any lingering admin session so it doesn't override this customer session
+    res.clearCookie('sm_admin_session');
+
     await mergeGuestCart(req, res, u.id, accessToken);
     res.json({ user: sessUser });
-  } catch (e) { next(e); }
+  } catch (e) {
+    console.error('[LOGIN] Unhandled error:', e.message || e, e.stack || '');
+    next(e);
+  }
 });
 
 // ── Logout ──────────────────────────────────────────────────────────────────
 
 router.post('/logout', function (req, res) {
   res.clearCookie('sm_session');
+  res.clearCookie('sm_admin_session');
   res.json({ ok: true });
 });
 

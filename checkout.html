@@ -1,138 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ShopMax &mdash; Checkout</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/aos.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/custom.css">
+<title>ShopMax &mdash; Checkout</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+<link rel="stylesheet" href="fonts/icomoon/style.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/magnific-popup.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/owl.carousel.min.css">
+<link rel="stylesheet" href="css/owl.theme.default.min.css">
+<link rel="stylesheet" href="css/aos.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
 <div class="site-wrap">
-    <div data-sm-navbar></div>
-    <div class="bg-light py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <a href="cart.html">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
-            </div>
-        </div>
+<div data-sm-navbar></div>
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-0">
+        <a href="/index.html">Home</a> <span class="mx-2 mb-0">/</span>
+        <a href="/cart.html">Cart</a> <span class="mx-2 mb-0">/</span>
+        <strong class="text-black">Checkout</strong>
+      </div>
     </div>
-    <div class="site-section">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <div class="border p-4 rounded" role="alert">Returning customer? <a href="#">Click here</a> to login</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-5 mb-md-0">
-                    <h2 class="h3 mb-3 text-black">Billing Details</h2>
-                    <div class="p-3 p-lg-5 border">
-                        <div class="form-group">
-                            <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
-                            <select id="c_country" class="form-control">
-                                <option value="India">India</option>
-                                <option value="bangladesh">Bangladesh</option>
-                                <option value="Algeria">Algeria</option>
-                                <option value="Afghanistan">Afghanistan</option>
-                            </select>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_fname" name="c_fname">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_lname" name="c_lname">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="c_phone" class="text-black">Phone Number <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
-                        </div>
-                        <div class="form-group">
-                            <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_address" name="c_address" placeholder="Street address">
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="c_city" class="text-black">City <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_city" name="c_city">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_state_country" class="text-black">State <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_state_country" name="c_state_country">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="c_postal_zip" class="text-black">Pin Code <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_email_address" name="c_email_address">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="c_order_notes" class="text-black">Order Notes</label>
-                            <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="3" class="form-control" placeholder="Write your notes here..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row mb-5">
-                        <div class="col-md-12">
-                            <h2 class="h3 mb-3 text-black">Coupon Code</h2>
-                            <div class="p-3 p-lg-5 border">
-                                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
-                                <div class="input-group w-75">
-                                    <input type="text" class="form-control" id="c_code" placeholder="Coupon Code">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary btn-sm px-4" type="button" id="sm-apply-coupon">Apply</button>
-                                    </div>
-                                </div>
-                                <div id="sm-coupon-msg" class="mt-2 small" style="display:none"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5">
-                        <div class="col-md-12">
-                            <h2 class="h3 mb-3 text-black">Your Order</h2>
-                            <div class="p-3 p-lg-5 border">
-                                <div id="sm-order-loading" class="text-center py-4 text-muted">Loading your cart...</div>
-                                <table class="table site-block-order-table mb-4" id="sm-order-table" style="display:none">
-                                    <thead><tr><th>Product</th><th>Total</th></tr></thead>
-                                    <tbody id="sm-order-items"></tbody>
-                                </table>
-                                <div class="border p-3 mb-3">
-                                    <h3 class="h6 mb-0"><a class="d-block" data-toggle="collapse" href="#collapsebank" role="button">Direct Bank Transfer</a></h3>
-                                    <div class="collapse" id="collapsebank">
-                                        <div class="py-2"><p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary btn-lg btn-block" id="sm-place-order-btn" disabled>Place Order</button>
-                                </div>
-                                <div id="sm-order-error" class="alert alert-danger mt-3" style="display:none"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div data-sm-footer></div>
+  </div>
 </div>
+
+<div class="site-section sm-checkout-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+
+        <div class="sm-checkout-progress mb-4">
+          <div class="sm-progress-step active" data-step="address">
+            <span class="sm-progress-dot">1</span><span class="sm-progress-label">Address</span>
+          </div>
+          <div class="sm-progress-line"></div>
+          <div class="sm-progress-step" data-step="payment">
+            <span class="sm-progress-dot">2</span><span class="sm-progress-label">Payment</span>
+          </div>
+          <div class="sm-progress-line"></div>
+          <div class="sm-progress-step" data-step="confirm">
+            <span class="sm-progress-dot">3</span><span class="sm-progress-label">Confirm</span>
+          </div>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="sm-checkout-step" id="step-address">
+          <h2 class="sm-checkout-step-title">Shipping Address</h2>
+          <div class="sm-chk-card">
+            <div class="form-group">
+              <label for="c_country">Country <span class="text-danger">*</span></label>
+              <select id="c_country" class="form-control"><option value="India">India</option></select>
+            </div>
+            <div class="form-group">
+              <label for="c_fname">Full Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="c_fname" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+              <label for="c_phone">Mobile Number <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="c_phone" placeholder="10-digit number" maxlength="10">
+            </div>
+            <div class="form-group">
+              <label for="c_email_address">Email Address <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="c_email_address" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label for="c_address">Address <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="c_address" placeholder="Street, area, landmark">
+            </div>
+            <div class="form-row">
+              <div class="col-md-6 mb-3">
+                <label for="c_city">City <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="c_city">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="c_state_country">State <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="c_state_country">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-6 mb-3">
+                <label for="c_postal_zip">PIN Code <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="c_postal_zip" maxlength="6">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="c_order_notes">Order Notes (optional)</label>
+              <textarea class="form-control" id="c_order_notes" rows="2" placeholder="Any special instructions..."></textarea>
+            </div>
+            <button class="btn btn-dark btn-lg btn-block sm-address-btn" id="btn-continue-payment">
+              Continue to Payment
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="sm-checkout-step" id="step-payment" style="display:none">
+          <h2 class="sm-checkout-step-title">Select Payment Method</h2>
+          <div class="sm-pay-options">
+
+            <!-- Card -->
+            <div class="sm-pay-row" data-method="card">
+              <div class="sm-pay-row-inner">
+                <div class="sm-pay-radio-wrap"><div class="" id="radio-card"></div></div>
+                <div class="sm-pay-info">
+                  <div class="sm-pay-label">Credit / Debit Card</div>
+                  <div class="sm-pay-badges">
+                    <span class="sm-card-badge">Visa</span><span class="sm-card-badge">Mastercard</span><span class="sm-card-badge">RuPay</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pay-expand" id="expand-card" style="display:none">
+                <div class="sm-demo-banner">
+                  Demo Mode: Card <code>4242 4242 4242 4242</code> | Holder: <code>SHOPMAX TEST USER</code> | Expiry: <code>12/30</code> | CVV: <code>123</code>
+                </div>
+                <div class="form-group">
+                  <label class="sm-pay-field-label">Card Number</label>
+                  <input type="text" class="form-control" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19">
+                  <div class="sm-field-err" id="err-card-number"></div>
+                </div>
+                <div class="form-group">
+                  <label class="sm-pay-field-label">Card Holder Name</label>
+                  <input type="text" class="form-control" id="card-holder" placeholder="SHOPMAX TEST USER">
+                  <div class="sm-field-err" id="err-card-holder"></div>
+                </div>
+                <div class="form-row">
+                  <div class="col-6">
+                    <label class="sm-pay-field-label">Expiry</label>
+                    <input type="text" class="form-control" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                    <div class="sm-field-err" id="err-card-expiry"></div>
+                  </div>
+                  <div class="col-6">
+                    <label class="sm-pay-field-label">CVV</label>
+                    <input type="text" class="form-control" id="card-cvv" placeholder="123" maxlength="3">
+                    <div class="sm-field-err" id="err-card-cvv"></div>
+                  </div>
+                </div>
+                <button class="btn btn-dark btn-block sm-pay-action">Pay Now</button>
+              </div>
+            </div>
+
+            <!-- UPI -->
+            <div class="sm-pay-row" data-method="upi">
+              <div class="sm-pay-row-inner">
+                <div class="sm-pay-radio-wrap"><div class="" id="radio-upi"></div></div>
+                <div class="sm-pay-info">
+                  <div class="sm-pay-label">UPI</div>
+                  <div class="sm-pay-badges"><span class="sm-card-badge sm-badge-upi">GPay</span><span class="sm-card-badge sm-badge-upi">PhonePe</span><span class="sm-card-badge sm-badge-upi">BHIM</span></div>
+                </div>
+              </div>
+              <div class="sm-pay-expand" id="expand-upi" style="display:none">
+                <div class="form-group">
+                  <label class="sm-pay-field-label">UPI ID</label>
+                  <input type="text" class="form-control" id="upi-id" placeholder="yourname@oksbi">
+                  <div class="sm-field-err" id="err-upi"></div>
+                </div>
+                <div class="text-center mb-3">
+                  <div class="sm-qr-box"><canvas id="qr-canvas" width="140" height="140"></canvas></div>
+                  <button class="btn btn-sm btn-link" id="btn-qr-pay">I Have Paid (QR)</button>
+                </div>
+                <button class="btn btn-dark btn-block sm-pay-action">Pay via UPI</button>
+              </div>
+            </div>
+
+            <!-- Net Banking -->
+            <div class="sm-pay-row" data-method="netbanking">
+              <div class="sm-pay-row-inner">
+                <div class="sm-pay-radio-wrap"><div class="" id="radio-netbanking"></div></div>
+                <div class="sm-pay-info">
+                  <div class="sm-pay-label">Net Banking</div>
+                  <div class="sm-pay-badges">
+                    <span class="sm-card-badge">SBI</span><span class="sm-card-badge">HDFC</span><span class="sm-card-badge">ICICI</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pay-expand" id="expand-netbanking" style="display:none">
+                <div class="form-group">
+                  <label class="sm-pay-field-label">Select Bank</label>
+                  <select class="form-control" id="netbank-select">
+                    <option value="">-- Choose Bank --</option>
+                    <option value="SBI">State Bank of India</option>
+                    <option value="HDFC">HDFC Bank</option>
+                    <option value="ICICI">ICICI Bank</option>
+                    <option value="Axis">Axis Bank</option>
+                    <option value="Kotak">Kotak Mahindra Bank</option>
+                    <option value="BOB">Bank of Baroda</option>
+                    <option value="PNB">Punjab National Bank</option>
+                  </select>
+                  <div class="sm-field-err" id="err-netbanking"></div>
+                </div>
+                <button class="btn btn-dark btn-block sm-pay-action">Continue to Bank</button>
+              </div>
+            </div>
+
+            <!-- Wallet -->
+            <div class="sm-pay-row" data-method="wallet">
+              <div class="sm-pay-row-inner">
+                <div class="sm-pay-radio-wrap"><div class="" id="radio-wallet"></div></div>
+                <div class="sm-pay-info">
+                  <div class="sm-pay-label">Wallet</div>
+                  <div class="sm-pay-badges">
+                    <span class="sm-card-badge">Paytm</span><span class="sm-card-badge">Amazon Pay</span><span class="sm-card-badge">Mobikwik</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sm-pay-expand" id="expand-wallet" style="display:none">
+                <div class="form-group">
+                  <label class="sm-pay-field-label">Select Wallet</label>
+                  <select class="form-control" id="wallet-select">
+                    <option value="">-- Choose Wallet --</option>
+                    <option value="Paytm Wallet">Paytm</option>
+                    <option value="Amazon Pay">Amazon Pay</option>
+                    <option value="Mobikwik">Mobikwik</option>
+                  </select>
+                  <div class="sm-field-err" id="err-wallet"></div>
+                </div>
+                <div class="form-group">
+                  <label class="sm-pay-field-label">Mobile Number (optional)</label>
+                  <input type="text" class="form-control" id="wallet-mobile" placeholder="10-digit number" maxlength="10">
+                </div>
+                <button class="btn btn-dark btn-block sm-pay-action">Pay via Wallet</button>
+              </div>
+            </div>
+
+            <!-- COD -->
+            <div class="sm-pay-row sm-pay-row-cod" data-method="cod">
+              <div class="sm-pay-row-inner">
+                <div class="sm-pay-radio-wrap"><div class="" id="radio-cod"></div></div>
+                <div class="sm-pay-info">
+                  <div class="sm-pay-label">Cash On Delivery</div>
+                  <div class="sm-pay-sub">Pay when your order arrives</div>
+                </div>
+                <div class="sm-pay-check" id="cod-checkmark" style="display:none">&#10003;</div>
+              </div>
+            </div>
+
+          </div>
+          <div class="mt-3">
+            <a href="#" class="sm-chk-back" id="link-back-address">&larr; Back to address</a>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="sm-checkout-step" id="step-confirm" style="display:none">
+          <h2 class="sm-checkout-step-title">Review &amp; Place Order</h2>
+          <div class="sm-chk-card">
+            <p class="mb-3">Review your order and payment details before placing the order.</p>
+            <button class="btn btn-dark btn-lg btn-block" id="btn-place-order" disabled>Complete Payment First</button>
+            <div class="alert alert-danger mt-3" id="err-order" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Order Summary -->
+      <div class="col-lg-5">
+        <div class="sm-summary-sticky">
+          <h2 class="sm-checkout-step-title">Order Summary</h2>
+          <div class="sm-chk-card">
+            <div id="sm-order-loading" class="text-center py-4 text-muted">Loading cart...</div>
+            <table class="table table-sm sm-order-table" id="sm-order-table" style="display:none">
+              <thead><tr><th>Item</th><th class="text-right">Total</th></tr></thead>
+              <tbody id="sm-order-items"></tbody>
+            </table>
+            <div class="sm-coupon-section">
+              <label class="sm-sum-label">Coupon Code</label>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="c_code" placeholder="Enter coupon code">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-dark" type="button" id="btn-coupon-apply">Apply</button>
+                </div>
+              </div>
+              <div id="coupon-msg" class="small mt-1" style="display:none"></div>
+            </div>
+            <div id="sm-pay-status" class="sm-pay-status-box" style="display:none"></div>
+            <div class="sm-secure text-center mt-2">
+              <svg width="12" height="12" viewBox="0 0 24 24" style="vertical-align:middle"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.5 5.25-1.35 9-6.25 9-11.5V7l-9-5z" fill="#28a745"/></svg>
+              <span class="small text-muted ml-1" style="vertical-align:middle">Secure &amp; encrypted payment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div data-sm-footer></div>
+</div>
+
+<!-- Payment overlay -->
+<div class="sm-pay-modal-bg" id="overlay-bg" style="display:none">
+  <div class="sm-pay-modal-box">
+    <div class="sm-pay-modal-spinner"></div>
+    <p class="mt-3 mb-0" id="overlay-text">Processing payment...</p>
+  </div>
+</div>
+
+<!-- OTP Modal -->
+<div class="modal fade" id="otp-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header"><h6 class="modal-title">Enter OTP</h6></div>
+      <div class="modal-body text-center">
+        <p class="text-muted small">Demo OTP: <code>123456</code></p>
+        <input type="text" class="form-control text-center" id="otp-input" placeholder="123456" maxlength="6">
+        <div class="sm-field-err" id="err-otp" style="margin-top:8px"></div>
+        <button class="btn btn-dark btn-block mt-3" id="btn-otp-verify">Verify &amp; Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/popper.min.js"></script>
@@ -143,168 +325,364 @@
 <script src="js/main.js"></script>
 <script src="js/app.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var SM = window.ShopMax;
-  var loadingEl = document.getElementById('sm-order-loading');
-  var tableEl = document.getElementById('sm-order-table');
-  var itemsEl = document.getElementById('sm-order-items');
-  var placeBtn = document.getElementById('sm-place-order-btn');
-  var errorEl = document.getElementById('sm-order-error');
-  var couponInput = document.getElementById('c_code');
-  var applyBtn = document.getElementById('sm-apply-coupon');
-  var couponMsg = document.getElementById('sm-coupon-msg');
+(function(){
+'use strict';
+var SM = window.ShopMax;
+var el = function(id){ return document.getElementById(id); };
 
-  var cartItems = [];
-  var cartSubtotal = 0;
-  var appliedCoupon = null;
-  var currentDiscount = 0;
-  var currentDelivery = 0;
+// Elements
+var loadingEl = el('sm-order-loading');
+var itemsBody = el('sm-order-items');
+var tableEl = el('sm-order-table');
+var errOrder = el('err-order');
+var btnOrder = el('btn-place-order');
+var couponMsg = el('coupon-msg');
+var payStatus = el('sm-pay-status');
+var overlayBg = el('overlay-bg');
+var overlayText = el('overlay-text');
 
-  function fmt(n) { return '\u20B9' + Number(n || 0).toFixed(2); }
+// State
+var cartItems=[], subtotal=0;
+var coupon=null, discount=0, deliveryFee=0;
+var paymentDone=false, payoutResult=null, chosenMethod=null;
+var stepAddress = el('step-address');
+var stepPayment = el('step-payment');
+var stepConfirm = el('step-confirm');
 
-  function calcDelivery(subtotal) {
-    if (subtotal < 500) return 50;
-    if (subtotal < 1000) return 30;
-    return 0;
+// Helpers
+function fmt(n){ return '\u20B9'+Number(n||0).toFixed(2); }
+function esc(s){ return SM.escapeHtml ? SM.escapeHtml(String(s||'')) : String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function finalTotal(){ return Math.max(0, subtotal - discount + deliveryFee); }
+function showOverlay(msg){ overlayText.textContent = msg||'Processing payment...'; overlayBg.style.display = 'flex'; }
+function hideOverlay(){ overlayBg.style.display = 'none'; }
+function clearFieldErrors(){ document.querySelectorAll('.sm-field-err').forEach(function(e){ e.textContent=''; e.style.display='none'; }); }
+function showFieldErr(id,msg){ var e = el(id); if(e){ e.textContent=msg; e.style.display='block'; } }
+
+function updatePayStatus(){
+  if(chosenMethod==='cod'){
+    payStatus.innerHTML = '<div class="sm-pay-status-item"> Cash on Delivery &middot; Pay upon delivery</div>';
+    payStatus.style.display='block'; return;
   }
-
-  function calcDiscount(subtotal, coupon) {
-    if (!coupon) return 0;
-    if (coupon.type === 'percent') return Math.round((subtotal * coupon.value) / 100);
-    if (coupon.type === 'fixed') return Math.min(coupon.value, subtotal);
-    return 0;
+  if(paymentDone && payoutResult){
+    var pm = payoutResult.method==='upi' ? 'UPI ('+(payoutResult.upi_id||'')+')'
+      : payoutResult.method==='card' ? 'Card ('+(payoutResult.card_type||'')+' **'+ (payoutResult.last4||'')+')'
+      : payoutResult.method==='net_banking' ? 'Net Banking ('+(payoutResult.bank||'')+')'
+      : payoutResult.method==='wallet' ? 'Wallet ('+(payoutResult.wallet_name||'')+')'
+      : payoutResult.method||'';
+    payStatus.innerHTML = '<div class="sm-pay-success-box">&#10003; Payment Successful</div><div class="small text-muted mt-1">'+esc(pm)+'<br>TXN: '+(payoutResult.transaction_id||'')+'</div>';
+    payStatus.style.display='block'; return;
   }
-
-  function showError(msg) {
-    errorEl.textContent = msg;
-    errorEl.style.display = 'block';
-    placeBtn.disabled = false;
-    placeBtn.textContent = 'Place Order';
+  if(chosenMethod){
+    payStatus.innerHTML = '<div class="sm-pay-status-pending">Complete payment for '+chosenMethod.replace(/_/g,' ').toUpperCase()+'</div>';
+    payStatus.style.display='block'; return;
   }
+  payStatus.style.display='none';
+}
 
-  function renderOrder() {
-    if (cartItems.length === 0) {
-      loadingEl.textContent = 'Your cart is empty.';
-      tableEl.style.display = 'none';
-      return;
-    }
-    loadingEl.style.display = 'none';
-    tableEl.style.display = '';
-    placeBtn.disabled = false;
-
-    if (!appliedCoupon || !appliedCoupon.free_delivery) {
-      currentDelivery = calcDelivery(cartSubtotal);
-    }
-    currentDiscount = calcDiscount(cartSubtotal, appliedCoupon);
-    var finalTotal = Math.max(0, cartSubtotal - currentDiscount + currentDelivery);
-
-    var html = '';
-    cartItems.forEach(function (item) {
-      var lineTotal = Number(item.price) * Number(item.quantity);
-      html += '<tr><td>' +
-        '<div style="display:flex;align-items:center;gap:10px">' +
-          '<img src="' + (item.image_url || 'images/cloth_1.jpg') + '" alt="" style="width:50px;height:60px;object-fit:cover;border-radius:4px">' +
-          '<div><strong>' + SM.escapeHtml(item.name) + '</strong>' +
-            (item.size ? '<br><small>Size: ' + SM.escapeHtml(item.size) + '</small>' : '') +
-            (item.color ? '<br><small>Color: ' + SM.escapeHtml(item.color) + '</small>' : '') +
-            '<br><small>Qty: ' + item.quantity + '</small></div></div></td>' +
-        '<td>' + fmt(lineTotal) + '</td></tr>';
-    });
-
-    html += '<tr><td class="text-black font-weight-bold">Subtotal</td><td class="text-black">' + fmt(cartSubtotal) + '</td></tr>';
-
-    if (currentDiscount > 0) {
-      html += '<tr><td class="text-success font-weight-bold">Discount' + (appliedCoupon ? ' (' + SM.escapeHtml(appliedCoupon.code) + ')' : '') + '</td><td class="text-success">-' + fmt(currentDiscount) + '</td></tr>';
-    }
-
-    html += '<tr><td class="text-black font-weight-bold">Delivery Charges</td><td class="text-black">' + (currentDelivery === 0 ? '<span class="text-success">FREE</span>' : fmt(currentDelivery)) + '</td></tr>';
-    html += '<tr><td class="text-black font-weight-bold"><strong>Total</strong></td><td class="text-black font-weight-bold"><strong>' + fmt(finalTotal) + '</strong></td></tr>';
-
-    itemsEl.innerHTML = html;
+function updatePlaceBtn(){
+  if(chosenMethod==='cod'){
+    btnOrder.disabled = false;
+    btnOrder.textContent = 'Place Order (Cash on Delivery)';
+    btnOrder.className = 'btn btn-success btn-lg btn-block'; return;
   }
+  if(paymentDone){
+    btnOrder.disabled = false;
+    btnOrder.textContent = 'Place Order';
+    btnOrder.className = 'btn btn-success btn-lg btn-block'; return;
+  }
+  btnOrder.disabled = true;
+  btnOrder.textContent = 'Complete Payment First';
+  btnOrder.className = 'btn btn-secondary btn-lg btn-block';
+}
 
-  // Load cart
-  SM.api('/api/cart').then(function (cart) {
-    cartItems = cart.items || [];
-    cartSubtotal = cart.subtotal || 0;
-    if (cartItems.length === 0) { loadingEl.textContent = 'Your cart is empty.'; return; }
-    renderOrder();
-  }).catch(function () { loadingEl.textContent = 'Failed to load your cart.'; });
+function renderOrderSummary(){
+  if(!cartItems.length){ loadingEl.textContent='Your cart is empty.'; tableEl.style.display='none'; return; }
+  loadingEl.style.display='none'; tableEl.style.display='';
+  var hasFree = cartItems.some(function(i){ return i.benefits && i.benefits.indexOf('free_delivery')>=0; });
+  if(hasFree) deliveryFee = 0;
+  else if(!coupon||!coupon.free_delivery) deliveryFee = subtotal<500?50:subtotal<1000?30:0;
+  discount = coupon ? (coupon.type==='percent'?Math.round(subtotal*coupon.value/100):Math.min(coupon.value,subtotal)) : 0;
 
-  // Coupon apply (backend-validated)
-  applyBtn.addEventListener('click', function () {
-    var code = couponInput.value.trim().toUpperCase();
-    if (!code) { couponMsg.textContent = 'Please enter a coupon code.'; couponMsg.style.color = '#dc3545'; couponMsg.style.display = 'block'; return; }
-
-    applyBtn.disabled = true;
-    applyBtn.textContent = 'Validating...';
-    couponMsg.style.display = 'none';
-
-    SM.api('/api/cart/validate-coupon', { method: 'POST', body: JSON.stringify({ code: code, subtotal: cartSubtotal }) }).then(function (res) {
-      applyBtn.disabled = false;
-      applyBtn.textContent = 'Apply';
-      if (!res.valid) {
-        couponMsg.textContent = res.error || 'Invalid coupon code.';
-        couponMsg.style.color = '#dc3545';
-        couponMsg.style.display = 'block';
-        return;
-      }
-      appliedCoupon = res.coupon;
-      currentDiscount = res.discount;
-      currentDelivery = res.freeDelivery ? 0 : currentDelivery;
-      couponMsg.textContent = 'Coupon applied! ' + res.coupon.label;
-      couponMsg.style.color = '#28a745';
-      couponMsg.style.display = 'block';
-      couponInput.disabled = true;
-      applyBtn.disabled = true;
-      renderOrder();
-    }).catch(function () {
-      applyBtn.disabled = false;
-      applyBtn.textContent = 'Apply';
-      couponMsg.textContent = 'Failed to validate coupon. Please try again.';
-      couponMsg.style.color = '#dc3545';
-      couponMsg.style.display = 'block';
-    });
+  var html = '';
+  cartItems.forEach(function(it){
+    var ln = Number(it.price||0)*Number(it.quantity||1);
+    html += '<tr><td style="font-size:13px"><div style="display:flex;align-items:center;gap:10px">'+
+      '<img src="'+(it.image_url||'images/product_01.png')+'" style="width:40px;height:48px;object-fit:cover;border-radius:4px" onerror="this.src=\'images/product_01.png\'">'+
+      '<div><strong>'+esc(it.name)+'</strong>'+
+        (it.size?'<br><small>Size: '+esc(it.size)+'</small>':'')+
+        (it.color?'<br><small>Color: '+esc(it.color)+'</small>':'')+
+        '<br><small>Qty: '+it.quantity+'</small></div></div></td>'+
+      '<td class="text-right">'+fmt(ln)+'</td></tr>';
   });
+  html += '<tr><td>Subtotal</td><td class="text-right">'+fmt(subtotal)+'</td></tr>';
+  if(discount) html += '<tr><td class="text-success">Discount'+(coupon?' ('+esc(coupon.code)+')':'')+'</td><td class="text-right">-'+fmt(discount)+'</td></tr>';
+  html += '<tr><td>Delivery</td><td class="text-right">'+(deliveryFee===0?'<span class="text-success">FREE</span>':fmt(deliveryFee))+'</td></tr>';
+  html += '<tr><td><strong>TOTAL</strong></td><td class="text-right"><strong>'+fmt(finalTotal())+'</strong></td></tr>';
+  itemsBody.innerHTML = html;
+}
 
-  // Place Order
-  placeBtn.addEventListener('click', function () {
-    placeBtn.disabled = true;
-    placeBtn.textContent = 'Placing Order...';
-    errorEl.style.display = 'none';
+// Load cart
+SM.api('/api/cart').then(function(res){
+  cartItems = res.items || [];
+  subtotal = res.subtotal || 0;
+  if(!cartItems.length){ loadingEl.textContent = 'Your cart is empty.'; return; }
+  renderOrderSummary();
+}).catch(function(){ loadingEl.textContent = 'Failed to load your cart.'; });
 
-    var shipping = {
-      fname: (document.getElementById('c_fname').value || '').trim(),
-      lname: (document.getElementById('c_lname').value || '').trim(),
-      phone: (document.getElementById('c_phone').value || '').trim(),
-      address: (document.getElementById('c_address').value || '').trim(),
-      city: (document.getElementById('c_city').value || '').trim(),
-      state_country: (document.getElementById('c_state_country').value || '').trim(),
-      postal_zip: (document.getElementById('c_postal_zip').value || '').trim(),
-      email_address: (document.getElementById('c_email_address').value || '').trim(),
-      country: document.getElementById('c_country').value,
-      order_notes: (document.getElementById('c_order_notes').value || '').trim()
-    };
-
-    var missing = [];
-    if (!shipping.fname) missing.push('First Name');
-    if (!shipping.phone) missing.push('Phone');
-    if (!shipping.address) missing.push('Address');
-    if (!shipping.city) missing.push('City');
-    if (!shipping.state_country) missing.push('State');
-    if (!shipping.postal_zip) missing.push('Pin Code');
-    if (!shipping.email_address) missing.push('Email');
-    if (missing.length > 0) { showError('Please fill in: ' + missing.join(', ')); return; }
-
-    var payload = { shipping: shipping };
-    if (appliedCoupon) payload.coupon_code = appliedCoupon.code;
-
-    SM.api('/api/orders', { method: 'POST', body: JSON.stringify(payload) })
-      .then(function (res) {
-        window.location.href = 'thankyou.html?order_id=' + encodeURIComponent(res.order.id);
-      }).catch(function (err) { showError(err.message || 'Failed to place order.'); });
+// Coupon
+el('btn-coupon-apply').addEventListener('click', function(){
+  var code = el('c_code').value.trim().toUpperCase();
+  if(!code){ couponMsg.textContent='Please enter a coupon code.'; couponMsg.style.cssText='color:#dc3545;display:block'; return; }
+  this.disabled = true; this.textContent = 'Validating...'; couponMsg.style.display='none';
+  SM.api('/api/cart/validate-coupon', {method:'POST', body:JSON.stringify({code:code, subtotal:subtotal})}).then(function(res){
+    el('btn-coupon-apply').disabled = false; el('btn-coupon-apply').textContent = 'Apply';
+    if(!res.valid){
+      couponMsg.textContent = res.error||'Invalid code.'; couponMsg.style.cssText='color:#dc3545;display:block'; return;
+    }
+    coupon = res.coupon; discount = res.discount;
+    if(res.freeDelivery) deliveryFee = 0;
+    couponMsg.textContent = 'Coupon applied! '+res.coupon.label;
+    couponMsg.style.cssText='color:#28a745;display:block';
+    el('c_code').disabled = true;
+    el('btn-coupon-apply').disabled = true;
+    renderOrderSummary();
+  }).catch(function(){
+    el('btn-coupon-apply').disabled = false; el('btn-coupon-apply').textContent = 'Apply';
+    couponMsg.textContent='Failed to validate.'; couponMsg.style.cssText='color:#dc3545;display:block';
   });
 });
+
+// Address -> Payment
+el('btn-continue-payment').addEventListener('click', function(){
+  var f = el('c_fname').value.trim(), ph = el('c_phone').value.trim(), a = el('c_address').value.trim();
+  var c = el('c_city').value.trim(), st = el('c_state_country').value.trim(), zip = el('c_postal_zip').value.trim(), em = el('c_email_address').value.trim();
+  var missing = [];
+  if(!f) missing.push('Name'); if(!ph) missing.push('Mobile'); if(!a) missing.push('Address');
+  if(!c) missing.push('City'); if(!st) missing.push('State'); if(!zip) missing.push('PIN'); if(!em) missing.push('Email');
+  if(missing.length){ SM.toast('Please fill all required fields: '+missing.join(', '), 'error'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(ph.length!==10 || !/^\d{10}$/.test(ph)){ SM.toast('Phone must be exactly 10 digits.','error'); return; }
+  if(zip.length!==6 || !/^\d{6}$/.test(zip)){ SM.toast('PIN code must be exactly 6 digits.','error'); return; }
+
+  stepAddress.style.display='none';
+  stepPayment.style.display='';
+  document.querySelectorAll('.sm-progress-step')[1].classList.add('active');
+  updatePayStatus(); updatePlaceBtn();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+// Back
+el('link-back-address').addEventListener('click', function(e){
+  e.preventDefault();
+  stepPayment.style.display='none'; stepAddress.style.display='';
+  document.querySelectorAll('.sm-progress-step')[1].classList.remove('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+// === Payment row toggle ===
+var allPayRows = document.querySelectorAll('.sm-pay-row');
+var allExpands = { card:el('expand-card'), upi:el('expand-upi'), netbanking:el('expand-netbanking'), wallet:el('expand-wallet') };
+var allRadios = { card:el('radio-card'), upi:el('radio-upi'), netbanking:el('radio-netbanking'), wallet:el('radio-wallet'), cod:el('radio-cod') };
+var codTick = el('cod-checkmark');
+
+function deselectAll(){
+  Object.values(allExpands).forEach(function(ex){ if(ex) ex.style.display='none'; });
+  allPayRows.forEach(function(r){ r.classList.remove('sm-selected'); });
+  Object.values(allRadios).forEach(function(r){ if(r) r.innerHTML=''; });
+  if(codTick) codTick.style.display='none';
+}
+
+function selectPay(method){
+  deselectAll();
+  allPayRows.forEach(function(r){
+    if(r.getAttribute('data-method')===method){
+      r.classList.add('sm-selected');
+      var ex = r.querySelector('.sm-pay-expand');
+      if(ex) ex.style.display='block';
+      if(method==='cod'&&codTick) codTick.style.display='';
+    }
+  });
+  if(allRadios[method]) allRadios[method].innerHTML = '<span class="sm-dot-fill"></span>';
+}
+
+allPayRows.forEach(function(row){
+  row.addEventListener('click', function(e){
+    if(e.target.closest('input,button,select,.btn,canvas,.sm-pay-action')) return;
+    var m = row.getAttribute('data-method');
+    if(row.classList.contains('sm-selected')){
+      deselectAll();
+      chosenMethod = null; paymentDone = false; payoutResult = null;
+      updatePayStatus(); updatePlaceBtn(); return;
+    }
+    chosenMethod = m;
+    selectPay(m);
+    updatePayStatus(); updatePlaceBtn();
+    if(m==='cod'){
+      updatePayStatus(); updatePlaceBtn();
+      showConfirmStep();
+    }
+  });
+});
+
+// Card formatting
+el('card-number').addEventListener('input', function(){ var v=this.value.replace(/\D/g,'').substring(0,16); this.value=v.replace(/(.{4})/g,'$1 ').trim(); });
+el('card-expiry').addEventListener('input', function(){ var v=this.value.replace(/\D/g,'').substring(0,4); if(v.length>=3) this.value=v.substring(0,2)+'/'+v.substring(2); });
+el('c_phone').addEventListener('input', function(){ this.value=this.value.replace(/\D/g,'').substring(0,10); });
+el('wallet-mobile').addEventListener('input', function(){ this.value=this.value.replace(/\D/g,'').substring(0,10); });
+el('c_postal_zip').addEventListener('input', function(){ this.value=this.value.replace(/\D/g,'').substring(0,6); });
+
+// === PAY SUBMIT HANDLERS ===
+// Card
+var cardPayBtn = document.querySelector('.sm-pay-row[data-method="card"] .sm-pay-action');
+if(cardPayBtn) cardPayBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  clearFieldErrors();
+  var num = (el('card-number').value||'').replace(/\s/g,'');
+  var holder = (el('card-holder').value||'').trim();
+  var exp = (el('card-expiry').value||'').trim();
+  var cvv = (el('card-cvv').value||'').trim();
+
+  // DEMO TEST CARD — always accept exact match
+  if(num==='4242424242424242' && holder.toUpperCase()==='SHOPMAX TEST USER' && exp==='12/30' && cvv==='123'){
+    payoutResult = { success:true, transaction_id:'TXN'+Date.now(), gateway:'Demo Gateway', method:'card', card_type:'Visa', last4:'4242', timestamp:new Date().toISOString() };
+    paymentDone = true; updatePayStatus(); updatePlaceBtn();
+    SM.toast('Payment successful! (Demo card)');
+    showConfirmStep(); return;
+  }
+
+  var errs=false;
+  if(!/^\d{16}$/.test(num)){ showFieldErr('err-card-number','Invalid card number. Must be 16 digits.'); errs=true; }
+  if(!holder||!/^[a-zA-Z\s]+$/.test(holder)||holder.trim().length<2){ showFieldErr('err-card-holder','Invalid holder name.'); errs=true; }
+  if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(exp)){ showFieldErr('err-card-expiry','Invalid expiry (MM/YY).'); errs=true; }
+  else { var parts=exp.split('/'); var ed=new Date(2000+parseInt(parts[1]),parseInt(parts[0],10),0); if(ed<new Date()){showFieldErr('err-card-expiry','Card expired.');errs=true;} }
+  if(!/^\d{3}$/.test(cvv)){showFieldErr('err-card-cvv','Invalid CVV (3 digits).');errs=true;}
+  if(errs) return;
+
+  showOverlay('Processing card...');
+  SM.api('/api/payment/process',{method:'POST',body:JSON.stringify({method:'card',payload:{card_number:num,card_holder:holder,expiry:exp,cvv:cvv},amount:finalTotal()})}).then(function(res){
+    hideOverlay();
+    if(res.success){
+      paymentDone = true; payoutResult = res; payoutResult.method = 'card';
+      updatePayStatus(); updatePlaceBtn();
+      SM.toast('Payment successful!'); showConfirmStep();
+    } else { SM.toast(res.error||'Payment failed','error'); }
+  }).catch(function(){ hideOverlay(); SM.toast('Payment failed. Try again.','error'); });
+});
+
+// UPI
+var upiBtn = document.querySelector('.sm-pay-row[data-method="upi"] .sm-pay-action');
+if(upiBtn) upiBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var upi = (el('upi-id').value||'').trim();
+  if(!upi){ showFieldErr('err-upi','Please enter UPI ID'); return; }
+  if(!/^[a-zA-Z0-9._+\-]{3,}@[a-zA-Z0-9._-]{3,}$/.test(upi)){ showFieldErr('err-upi','Invalid UPI format. Example: abc@oksbi'); return; }
+  showOverlay('Processing UPI...');
+  SM.api('/api/payment/process',{method:'POST',body:JSON.stringify({method:'upi',payload:{upi_id:upi},amount:finalTotal()})}).then(function(res){
+    hideOverlay();
+    if(res.success){ paymentDone=true; payoutResult=res; updatePayStatus(); updatePlaceBtn(); SM.toast('UPI payment successful!'); showConfirmStep(); }
+    else { SM.toast(res.error||'UPI payment error','error'); }
+  }).catch(function(){ hideOverlay(); SM.toast('Payment error','error'); });
+});
+
+// QR
+el('btn-qr-pay').addEventListener('click', function(e){
+  e.stopPropagation();
+  showOverlay('Confirming QR payment...');
+  SM.api('/api/payment/process',{method:'POST',body:JSON.stringify({method:'qr',payload:{},amount:finalTotal()})}).then(function(res){
+    hideOverlay();
+    if(res.success){ paymentDone=true; payoutResult=res; updatePayStatus(); updatePlaceBtn(); SM.toast('QR payment confirmed!'); showConfirmStep(); }
+    else { SM.toast(res.error||'QR payment failed','error'); }
+  }).catch(function(){ hideOverlay(); SM.toast('Failed','error'); });
+});
+
+// Net Banking
+var netBtn = document.querySelector('.sm-pay-row[data-method="netbanking"] .sm-pay-action');
+if(netBtn) netBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var bank = el('netbank-select').value;
+  if(!bank){ showFieldErr('err-netbanking','Please select a bank.'); return; }
+  showOverlay('Connecting to bank...');
+  SM.api('/api/payment/process',{method:'POST',body:JSON.stringify({method:'net_banking',payload:{bank:bank},amount:finalTotal()})}).then(function(res){
+    hideOverlay();
+    if(res.success){ paymentDone=true; payoutResult=res; updatePayStatus(); updatePlaceBtn(); SM.toast('Net banking payment done!'); showConfirmStep(); }
+    else { SM.toast(res.error||'Payment failed','error'); }
+  }).catch(function(){ hideOverlay(); SM.toast('Failed','error'); });
+});
+
+// Wallet
+var walBtn = document.querySelector('.sm-pay-row[data-method="wallet"] .sm-pay-action');
+if(walBtn) walBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var w = el('wallet-select').value;
+  if(!w){ showFieldErr('err-wallet','Please select a wallet.'); return; }
+  var mob = (el('wallet-mobile').value||'').trim();
+  showOverlay('Processing wallet...');
+  SM.api('/api/payment/process',{method:'POST',body:JSON.stringify({method:'wallet',payload:{wallet_name:w,mobile:mob},amount:finalTotal()})}).then(function(res){
+    hideOverlay();
+    if(res.success){ paymentDone=true; payoutResult=res; updatePayStatus(); updatePlaceBtn(); SM.toast('Wallet payment success!'); showConfirmStep(); }
+    else { SM.toast(res.error||'Payment failed','error'); }
+  }).catch(function(){ hideOverlay(); SM.toast('Error processing','error'); });
+});
+
+// OTP modal
+el('btn-otp-verify').addEventListener('click',function(){
+  if(el('otp-input').value.trim()==='123456'){ jQuery('#otp-modal').modal('hide'); SM.toast('OTP verified!'); }
+  else { showFieldErr('err-otp','Invalid OTP. Use 123456.'); }
+});
+
+function showConfirmStep(){
+  stepConfirm.style.display='';
+  document.querySelectorAll('.sm-progress-step')[2].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// QR canvas
+setTimeout(function(){
+  var c = el('qr-canvas'); if(!c) return;
+  var ctx=c.getContext('2d'), s=140; c.width=s; c.height=s;
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,s,s); var cs=s/6;
+  function t(x,y){ctx.fillStyle='#000';ctx.fillRect(x,y,cs*1.5,cs*1.5);ctx.fillStyle='#fff';ctx.fillRect(x+cs*0.25,y+cs*0.25,cs,cs);ctx.fillStyle='#000';ctx.fillRect(x+cs*0.5,y+cs*0.5,cs*0.5,cs*0.5);}
+  t(0,0); t(s-cs*1.5,0); t(0,s-cs*1.5);
+  for(var y=2;y<7;y++)for(var x=0;x<7;x++)if(Math.random()>0.5){ctx.fillStyle='#000';ctx.fillRect(x*cs+2,y*cs+2,cs-4,cs-4);}
+}, 100);
+
+// ===== PLACE ORDER =====
+btnOrder.addEventListener('click', function(){
+  this.disabled = true; this.textContent = 'Placing Order...';
+  errOrder.style.display = 'none';
+  var sh = {
+    fname: el('c_fname').value.trim(), phone: el('c_phone').value.trim(),
+    address: el('c_address').value.trim(), city:   el('c_city').value.trim(),
+    state_country: el('c_state_country').value.trim(), postal_zip: el('c_postal_zip').value.trim(),
+    email_address: el('c_email_address').value.trim(), country: el('c_country').value,
+    order_notes: el('c_order_notes').value.trim()
+  };
+  var miss = [];
+  if(!sh.fname) miss.push('Name'); if(!sh.phone) miss.push('Phone'); if(!sh.address) miss.push('Address');
+  if(!sh.city) miss.push('City'); if(!sh.state_country) miss.push('State'); if(!sh.postal_zip) miss.push('PIN'); if(!sh.email_address) miss.push('Email');
+  if(miss.length){ showError('Please fill all required fields: '+miss.join(', ')); return; }
+  if(!chosenMethod){ showError('Please select a payment method.'); return; }
+  if(chosenMethod!=='cod' && !paymentDone){ showError('Please complete the payment first.'); return; }
+
+  var payload = {
+    shipping: sh,
+    payment_method: chosenMethod,
+    payment_result: payoutResult||{ success: true, method: 'cod', is_cod: true }
+  };
+  if(coupon) payload.coupon_code = coupon.code;
+
+  SM.api('/api/orders', {method:'POST', body:JSON.stringify(payload)}).then(function(res){
+    window.location.href = 'thankyou.html?order_id='+encodeURIComponent(res.order.id);
+  }).catch(function(err){ showError(err?.message||'Failed to place order.'); });
+});
+
+function showError(msg){
+  errOrder.textContent = msg; errOrder.style.display = 'block';
+  btnOrder.disabled = false; updatePlaceBtn();
+}
+
+// Init
+updatePayStatus(); updatePlaceBtn();
+}());
 </script>
 </body>
 </html>

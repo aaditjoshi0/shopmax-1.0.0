@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const products = require('./products.json');
-const { supabase, MODE, isConfigured } = require('../../config/supabase');
+const { supabase, MODE, isConfigured, getServiceClient } = require('../../config/supabase');
 
 function seedIfEmpty(verbose) {
   if (MODE === 'local') {
@@ -142,6 +142,46 @@ function seedIfEmpty(verbose) {
   // SUPABASE mode — upsert products every boot (keeps data in sync with products.json).
   if (MODE === 'supabase') {
     (async () => {
+
+      // Seed admin user first so it's available immediately
+      const sb = getServiceClient();
+      if (sb) {
+        const { data: existingAdmin } = await sb.from('profiles').select('id').eq('role', 'admin').maybeSingle();
+        if (!existingAdmin) {
+          const { data: newUser, error: createErr } = await sb.auth.admin.createUser({
+            email: 'admin@shopmax.com',
+            password: 'Admin@123456',
+            email_confirm: true,
+            user_metadata: { full_name: 'ShopMax Admin' }
+          });
+          if (createErr) {
+            console.warn('[seed] admin user creation failed:', createErr.message);
+          } else if (newUser && newUser.user) {
+            const uid = newUser.user.id;
+            const { error: profileErr } = await sb.from('profiles').upsert({
+              id: uid,
+              email: 'admin@shopmax.com',
+              full_name: 'ShopMax Admin',
+              mobile: '',
+              birthdate: '',
+              avatar_url: null,
+              role: 'admin',
+              created_at: new Date().toISOString()
+            }, { onConflict: 'id' });
+            if (profileErr) {
+              console.warn('[seed] admin profile upsert failed:', profileErr.message);
+            } else {
+              console.log('[seed] admin user created (admin@shopmax.com / Admin@123456)');
+            }
+          }
+        } else {
+          if (verbose) console.log('[seed] admin user already exists — skipping.');
+        }
+      } else {
+        console.warn('[seed] SUPABASE_SERVICE_KEY not set — cannot seed admin user.');
+        console.warn('[seed] Add SUPABASE_SERVICE_KEY to .env or create admin@shopmax.com manually in Supabase Dashboard > Authentication > Users.');
+      }
+
       for (const p of products) {
         const { data: upserted, error } = await supabase.from('products').upsert({
           name: p.name,
@@ -160,7 +200,7 @@ function seedIfEmpty(verbose) {
         }, { onConflict: 'slug' }).select('id, slug, sizes, colors, stock, price, compare_at_price, sku').single();
         if (error) {
           console.warn('[seed] error on ' + p.slug + ':', error.message);
-          return;
+          continue;
         }
         // Generate variants for products with sizes/colors
         if (upserted && ((p.sizes && p.sizes.length > 0) || (p.colors && p.colors.length > 0))) {
