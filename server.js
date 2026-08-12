@@ -288,7 +288,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SESSION_SECRET));
 
 // --- Login guard: require auth for protected HTML pages ---
-const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html', '/cart.html', '/checkout.html', '/orders.html', '/order-details.html'];
+const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html', '/cart.html', '/checkout.html', '/orders.html', '/order-details.html', '/customize.html'];
 const PUBLIC_ROUTES = ['/product/'];   // product detail pages are public
 app.use((req, res, next) => {
   // Allow API routes, static assets (css/js/images/fonts), and public pages
@@ -297,6 +297,8 @@ app.use((req, res, next) => {
   // Allow public routes (product detail pages, shop, category pages)
   if (PUBLIC_ROUTES.some(r => req.path.startsWith(r))) return next();
   if (req.path === '/shop.html' || req.path === '/men.html' || req.path === '/women.html') return next();
+  // Marketplace browsing is public; publishing/liking/saving is gated per-action by the API.
+  if (req.path === '/marketplace.html' || req.path === '/marketplace-item.html') return next();
   // Check session cookie
   const token = req.signedCookies && req.signedCookies.sm_session;
   if (token && typeof token === 'object' && token.id) return next();
@@ -431,6 +433,126 @@ app.post('/api/admin/seed', (req, res) => {
   }
 });
 
+// --- Image proxy ---
+//
+// Some products (added through the admin panel) point at images hosted on other
+// domains. The customizer draws the garment onto a <canvas> and then exports it
+// with toDataURL(); a cross-origin image without CORS headers taints that canvas
+// and the export throws "Tainted canvases may not be exported."
+//
+// Streaming those images back through our own origin makes them same-origin, so
+// the canvas is never tainted. Nothing about canvas security is weakened.
+//
+// This endpoint takes a URL from the client, so it is SSRF-guarded: public
+// http(s) hosts only, no private/loopback address ranges, image content-types
+// only, with a size cap and a timeout.
+const dns = require('dns').promises;
+const net = require('net');
+
+const PROXY_MAX_BYTES = 12 * 1024 * 1024;
+const PROXY_TIMEOUT_MS = 10000;
+
+function isPrivateAddress(ip) {
+  if (net.isIPv4(ip)) {
+    const p = ip.split('.').map(Number);
+    if (p[0] === 10) return true;                              // 10.0.0.0/8
+    if (p[0] === 127) return true;                             // loopback
+    if (p[0] === 0) return true;                               // this network
+    if (p[0] === 169 && p[1] === 254) return true;             // link-local
+    if (p[0] === 172 && p[1] >= 16 && p[1] <= 31) return true; // 172.16.0.0/12
+    if (p[0] === 192 && p[1] === 168) return true;             // 192.168.0.0/16
+    if (p[0] === 100 && p[1] >= 64 && p[1] <= 127) return true;// CGNAT
+    if (p[0] >= 224) return true;                              // multicast/reserved
+    return false;
+  }
+  if (net.isIPv6(ip)) {
+    const v = ip.toLowerCase();
+    if (v === '::1' || v === '::') return true;
+    if (v.startsWith('fe80') || v.startsWith('fc') || v.startsWith('fd')) return true;
+    // IPv4-mapped (::ffff:10.0.0.1) — check the embedded address.
+    const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(v);
+    if (mapped) return isPrivateAddress(mapped[1]);
+    return false;
+  }
+  return true; // unparseable — refuse
+}
+
+async function assertPublicHost(hostname) {
+  if (net.isIP(hostname)) {
+    if (isPrivateAddress(hostname)) throw new Error('Blocked address');
+    return;
+  }
+  const records = await dns.lookup(hostname, { all: true });
+  if (!records.length) throw new Error('Blocked address');
+  for (const r of records) {
+    if (isPrivateAddress(r.address)) throw new Error('Blocked address');
+  }
+}
+
+app.get('/api/image-proxy', async (req, res) => {
+  const raw = req.query.url;
+  if (!raw || typeof raw !== 'string') {
+    return res.status(400).json({ error: 'url is required' });
+  }
+
+  let target;
+  try {
+    target = new URL(raw);
+  } catch (_) {
+    return res.status(400).json({ error: 'Invalid url' });
+  }
+  if (target.protocol !== 'http:' && target.protocol !== 'https:') {
+    return res.status(400).json({ error: 'Only http and https urls are supported' });
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PROXY_TIMEOUT_MS);
+
+  try {
+    await assertPublicHost(target.hostname);
+
+    const upstream = await fetch(target.href, {
+      signal: controller.signal,
+      redirect: 'follow',
+      headers: { 'User-Agent': 'ShopMax-ImageProxy', 'Accept': 'image/*' }
+    });
+
+    // A redirect may have landed somewhere else entirely — re-check the host.
+    const finalUrl = new URL(upstream.url || target.href);
+    await assertPublicHost(finalUrl.hostname);
+
+    if (!upstream.ok) {
+      return res.status(502).json({ error: 'Upstream image responded ' + upstream.status });
+    }
+
+    const type = (upstream.headers.get('content-type') || '').split(';')[0].trim();
+    if (!/^image\//i.test(type)) {
+      return res.status(415).json({ error: 'Not an image (' + (type || 'unknown') + ')' });
+    }
+
+    const declared = Number(upstream.headers.get('content-length') || 0);
+    if (declared && declared > PROXY_MAX_BYTES) {
+      return res.status(413).json({ error: 'Image is too large' });
+    }
+
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+    if (buffer.length > PROXY_MAX_BYTES) {
+      return res.status(413).json({ error: 'Image is too large' });
+    }
+
+    res.set('Content-Type', type);
+    res.set('Content-Length', String(buffer.length));
+    return res.send(buffer);
+  } catch (e) {
+    const msg = e && e.name === 'AbortError' ? 'Upstream image timed out'
+      : (e && e.message === 'Blocked address') ? 'That host is not allowed'
+      : 'Could not fetch that image';
+    return res.status(502).json({ error: msg });
+  } finally {
+    clearTimeout(timer);
+  }
+});
+
 // --- Image upload (admin) ---
 const multer = require('multer');
 const crypto = require('crypto');
@@ -481,11 +603,11 @@ app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => 
 // --- Error-handling middleware (must be after all routes) ---
 app.use((err, req, res, next) => {
   console.error('[error]', err.message || err);
+  const status = err.statusCode || err.status || 500;
   if (req.path.startsWith('/api/')) {
-    const status = err.statusCode || 500;
     return res.status(status).json({ error: err.message || 'Internal server error' });
   }
-  res.status(status || 500).send('Internal Server Error');
+  res.status(status).send('Internal Server Error');
 });
 
 // --- Fallback: SPA-ish route handling for clean URLs ---

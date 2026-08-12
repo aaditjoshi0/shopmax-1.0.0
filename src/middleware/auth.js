@@ -1,12 +1,30 @@
 const { MODE, supabase, getAuthedClient } = require('../../config/supabase');
 const store = require('../db/localStore');
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Local mode mints ids like "local-a1b2c3…"; Supabase uses auth.users UUIDs.
+// A cookie therefore outlives a mode switch and, left alone, gets handed to
+// Postgres as a uuid — every authenticated query then 500s ("invalid input
+// syntax for type uuid"). Treat a mismatched cookie as simply logged out.
+function idMatchesMode(id) {
+  if (!id) return false;
+  return MODE === 'supabase' ? UUID_RE.test(id) : !UUID_RE.test(id);
+}
+
+function dropStaleSession(res, cookieName) {
+  try { res.clearCookie(cookieName); } catch (_) {}
+}
+
 function getUser(req, res, next) {
   req.user = null;
   try {
     // Admin session takes priority
     const adminToken = req.signedCookies && req.signedCookies.sm_admin_session;
-    if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin') {
+    if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin'
+        && !idMatchesMode(adminToken.id)) {
+      dropStaleSession(res, 'sm_admin_session');
+    } else if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin') {
       req.user = {
         id: adminToken.id,
         email: adminToken.email,
@@ -87,7 +105,9 @@ function getUser(req, res, next) {
       return next();
     }
     const token = req.signedCookies && req.signedCookies.sm_session;
-    if (token && typeof token === 'object' && token.id) {
+    if (token && typeof token === 'object' && token.id && !idMatchesMode(token.id)) {
+      dropStaleSession(res, 'sm_session');
+    } else if (token && typeof token === 'object' && token.id) {
       req.user = {
         id: token.id,
         email: token.email,
@@ -183,7 +203,8 @@ function getUser(req, res, next) {
 function requireUser(req, res, next) {
   // Admin session always takes priority over regular session
   const adminToken = req.signedCookies && req.signedCookies.sm_admin_session;
-  if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin') {
+  if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin'
+      && idMatchesMode(adminToken.id)) {
     req.user = {
       id: adminToken.id,
       email: adminToken.email,
@@ -217,7 +238,8 @@ async function fetchUserRole(userId) {
 
 function requireAdmin(req, res, next) {
   const adminToken = req.signedCookies && req.signedCookies.sm_admin_session;
-  if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin') {
+  if (adminToken && typeof adminToken === 'object' && adminToken.id && adminToken.role === 'admin'
+      && idMatchesMode(adminToken.id)) {
     req.user = {
       id: adminToken.id,
       email: adminToken.email,

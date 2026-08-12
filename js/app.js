@@ -178,8 +178,8 @@
       { href: '/men.html',        label: 'Men' },
       { href: '/women.html',      label: 'Women' },
       { href: '/shop.html',       label: 'Home' },
-      { href: '/shop.html',       label: 'Community Marketplace' },
-      { href: '/shop.html',       label: 'Customize', accent: true }
+      { href: '/marketplace.html', label: 'Community Marketplace' },
+      { href: '/customize.html', label: 'Customize', accent: true }
     ];
   }
 
@@ -206,7 +206,7 @@
             '<div class="dropdown-divider"></div>' +
             '<a class="dropdown-item" href="/account.html">My Account</a>' +
             '<a class="dropdown-item" href="/orders.html">My Orders</a>' +
-            '<a class="dropdown-item" href="/account.html#designs">My Designs</a>' +
+            '<a class="dropdown-item" href="/my-designs.html">My Designs</a>' +
             (currentUser.role === 'admin' ? '<div class="dropdown-divider"></div><a class="dropdown-item" href="/admin.html">Admin Panel</a>' : '') +
             '<div class="dropdown-divider"></div>' +
             '<a class="dropdown-item" href="#" id="sm-logout-link">Log out</a>' +

@@ -2758,3 +2758,465 @@
   .sm-chk-card { padding: 16px; }
   .sm-pay-row-inner { padding: 12px; }
 }
+
+/* ============ Customize page (Step 2) ============ */
+.sm-custom-section { padding-top: 32px; padding-bottom: 60px; }
+.sm-custom-title { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.sm-custom-sub { color: #888; margin-bottom: 28px; }
+
+.sm-custom-steps {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.sm-custom-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: #bbb;
+}
+.sm-custom-step-item span {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+}
+.sm-custom-step-item.active { color: #000; }
+.sm-custom-step-item.active span { border-color: #000; color: #fff; background: #000; }
+.sm-custom-step-line {
+  flex: 1;
+  min-width: 32px;
+  height: 2px;
+  background: #e5e5e5;
+  margin: 0 14px;
+}
+.sm-custom-step-line.done { background: #000; }
+
+/* Step 1 - garment grid */
+.sm-garment-card {
+  border: 1px solid #eee;
+  background: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .2s ease;
+}
+.sm-garment-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+.sm-garment-img {
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.sm-garment-img img { max-height: 260px; object-fit: contain; }
+.sm-garment-info { padding: 14px 16px 16px; display: flex; flex-direction: column; flex-grow: 1; }
+.sm-garment-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.sm-garment-price { font-size: 14px; margin-bottom: 12px; }
+.sm-garment-price-cur { color: #000; font-weight: 700; }
+.sm-garment-price-old { color: #aaa; margin-left: 6px; font-size: 13px; }
+.sm-garment-select {
+  margin-top: auto;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  cursor: pointer;
+  transition: opacity .2s ease;
+}
+.sm-garment-select:hover { opacity: .85; }
+
+/* Step 2 - preview + controls */
+.sm-canvas-stage { position: relative; }
+.sm-custom-preview {
+  position: relative;
+  border: 1px solid #eee;
+  background: #fafafa;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+.sm-custom-preview img { max-height: 420px; object-fit: contain; }
+.sm-custom-dropzone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  color: #bbb;
+  font-size: 13px;
+  padding: 26px 34px;
+  text-align: center;
+  pointer-events: none;
+}
+.sm-custom-preview-label {
+  display: inline-block;
+  margin-top: 10px;
+  background: #000;
+  color: #fff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+.sm-custom-name { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+.sm-custom-price { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+.sm-custom-ctrl { margin-bottom: 18px; }
+.sm-custom-ctrl-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #555;
+  margin-bottom: 8px;
+}
+.sm-custom-placeholder {
+  font-size: 12px;
+  color: #aaa;
+}
+.sm-custom-btn-row { display: flex; gap: 10px; margin-top: 22px; }
+
+/* Step 3 - summary */
+.sm-custom-summary-card {
+  border: 1px solid #eee;
+  padding: 22px;
+  background: #fff;
+}
+.sm-custom-summary-card img { width: 72px; height: 72px; object-fit: cover; border: 1px solid #eee; }
+.sm-custom-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 1px solid #f2f2f2;
+  font-size: 14px;
+}
+.sm-custom-summary-row .label { color: #888; }
+.sm-custom-summary-row .value { font-weight: 600; color: #000; }
+
+@media (max-width: 767px) {
+  .sm-custom-preview { min-height: 260px; }
+  .sm-custom-preview img { max-height: 300px; }
+  .sm-garment-img img { max-height: 200px; }
+}
+
+/* Step 3 - image editor */
+.sm-custom-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
+  margin: 0 auto;
+  touch-action: none;
+  cursor: default;
+  background: #fff;
+}
+.sm-custom-canvas.sm-grab { cursor: grab; }
+.sm-custom-canvas.sm-dragging { cursor: grabbing; }
+.sm-custom-file-note {
+  font-size: 12px;
+  color: #333;
+  margin-top: 8px;
+}
+.sm-custom-file-name { font-weight: 600; word-break: break-all; }
+.sm-custom-design-tools { margin-top: 10px; }
+.sm-custom-size-row { display: flex; align-items: center; gap: 10px; }
+.sm-custom-size-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sm-custom-size-btn:hover { background: #f5f5f5; }
+.sm-custom-slider { flex: 1; min-width: 0; }
+.sm-custom-scale-label {
+  min-width: 44px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+}
+.sm-custom-rot-row { display: flex; gap: 10px; }
+.sm-custom-rot-btn { flex: 1; font-size: 13px; }
+.sm-custom-remove-btn { width: 100%; }
+.sm-custom-final-canvas {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+/* Step 4 - text editor */
+.sm-custom-text-input-row { display: flex; gap: 8px; }
+.sm-custom-text-input-row .form-control { border-radius: 0; }
+.sm-custom-text-tools { margin-top: 10px; }
+.sm-custom-color {
+  width: 100%;
+  height: 38px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   COMMUNITY MARKETPLACE
+   Cards reuse the theme's .item-entry / .product-item idiom so they sit
+   naturally next to the shop grid; everything below is additive.
+   ========================================================================== */
+
+.sm-mk-hero {
+  background: linear-gradient(120deg, #f6f5ff 0%, #fdf1f4 100%);
+  padding: 56px 0;
+  margin-bottom: 36px;
+}
+.sm-mk-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.sm-mk-hero p { color: #555; max-width: 640px; margin-bottom: 22px; }
+
+/* tab strip: Explore / My designs / Saved / Liked */
+.sm-mk-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 26px;
+}
+.sm-mk-tab {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #888;
+  cursor: pointer;
+}
+.sm-mk-tab:hover { color: #333; }
+.sm-mk-tab.active { color: #111; border-bottom-color: #111; }
+
+/* search + filter bar */
+.sm-mk-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 26px;
+}
+.sm-mk-filters .form-control { max-width: 220px; }
+.sm-mk-filters .sm-mk-search { max-width: 320px; flex: 1 1 240px; }
+.sm-mk-count { color: #888; font-size: 14px; margin-left: auto; }
+
+/* card */
+.sm-mk-card { position: relative; }
+.sm-mk-card .product-item { position: relative; overflow: hidden; }
+.sm-mk-card .product-item img { transition: transform .35s ease; }
+.sm-mk-card:hover .product-item img { transform: scale(1.04); }
+
+.sm-mk-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+.sm-mk-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 2px 8px rgba(0,0,0,.16);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  transition: transform .15s ease, color .15s ease, background .15s ease;
+}
+.sm-mk-icon:hover { transform: scale(1.1); }
+.sm-mk-icon.on { color: #fff; }
+.sm-mk-icon.sm-mk-like.on { background: #e0245e; }
+.sm-mk-icon.sm-mk-save.on { background: #111; }
+.sm-mk-icon:disabled { opacity: .5; cursor: default; }
+
+/* the little pop when a like registers */
+@keyframes smPop { 0% { transform: scale(1); } 45% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.sm-mk-icon.pop { animation: smPop .28s ease; }
+
+.sm-mk-designer {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 2px;
+}
+.sm-mk-designer a { color: #888; }
+.sm-mk-designer a:hover { color: #111; }
+
+.sm-mk-meta {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
+.sm-mk-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 2px;
+}
+.sm-mk-badge.mine { background: #2b7a4b; }
+
+/* My Designs — compact square cards, exactly 1/3 of the standard 400px card.
+   Scoped to the page's grid (class set by my-designs.html) so the marketplace
+   keeps its full-size cards. */
+.sm-mk-mine .sm-mk-card { margin-bottom: 18px; }
+.sm-mk-mine .sm-mk-card .product-item.md-height {
+  width: 133.333px;               /* 400px / 3 */
+  height: 133.333px;              /* 400px / 3 */
+  aspect-ratio: 1 / 1;
+  padding: 6px;
+}
+.sm-mk-mine .sm-mk-card .product-item img { max-width: 96%; top: 2%; }
+.sm-mk-mine .sm-mk-actions { top: 4px; right: 4px; gap: 4px; }
+.sm-mk-mine .sm-mk-icon { width: 26px; height: 26px; font-size: 13px; }
+.sm-mk-mine .sm-mk-badge { top: 4px; left: 4px; font-size: 9px; padding: 2px 6px; }
+.sm-mk-mine .sm-mk-meta { gap: 10px; font-size: 12px; margin-top: 2px; }
+
+/* Initials tile — shown in place of a thumbnail that is missing or fails to
+   load, so a card never renders a broken-image icon. */
+.sm-mk-init {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ececec;
+  color: #9a9a9a;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+/* detail page */
+.sm-mk-detail-img {
+  background: #f4f4f4;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+}
+.sm-mk-detail-img img { width: 100%; height: auto; display: block; }
+.sm-mk-price { font-size: 2rem; font-weight: 700; color: #111; margin: 8px 0 18px; }
+.sm-mk-byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+.sm-mk-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex: 0 0 40px;
+}
+.sm-mk-tag {
+  display: inline-block;
+  background: #f1f1f1;
+  color: #555;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin: 0 6px 6px 0;
+}
+.sm-mk-cta { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+.sm-mk-cta .btn { min-width: 160px; }
+
+/* publish dialog */
+.sm-mk-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+}
+.sm-mk-modal[hidden] { display: none; }
+.sm-mk-modal-box {
+  background: #fff;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+}
+.sm-mk-modal-box h3 { font-size: 1.3rem; margin-bottom: 4px; }
+.sm-mk-modal-box .sm-mk-sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+.sm-mk-preview-thumb {
+  width: 100%;
+  max-width: 220px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin: 0 auto 18px;
+  display: block;
+}

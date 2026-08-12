@@ -230,8 +230,16 @@ router.post('/items', getUser, async (req, res, next) => {
       var cart2 = await sbGetOrCreateCart(req.user.id, sb2);
 
       var colorName = b.color || '';
-      var queryMatch = sb2.from('cart_items').select('id, quantity').eq('product_id', b.product_id).eq('size', b.size || '').eq('color', colorName).eq('cart_id', cart2.id);
-      var { data: existingRows } = await queryMatch;
+      // Made-to-order items have no product_id and each one is a distinct piece,
+      // so they never merge into an existing line — always add their own row.
+      var existingRows = null;
+      if (b.product_id) {
+        var queryMatch = sb2.from('cart_items').select('id, quantity, meta')
+          .eq('product_id', b.product_id).eq('size', b.size || '')
+          .eq('color', colorName).eq('cart_id', cart2.id);
+        var matched = await queryMatch;
+        existingRows = matched.data;
+      }
 
       var existingQty = existingRows && existingRows.length > 0 ? existingRows[0].quantity : 0;
       var totalQty = existingQty + quantity;
@@ -245,8 +253,10 @@ router.post('/items', getUser, async (req, res, next) => {
           return res.status(400).json({ error: 'Only ' + avail + ' more available.' });
         }
       } else {
+        // Returns null for made-to-order items (customizer / marketplace designs),
+        // which carry no product_id and therefore have no stock ceiling.
         var product2 = await sbValidateProduct(b, quantity, sb2);
-        if (totalQty > product2.stock) {
+        if (product2 && totalQty > product2.stock) {
           var available = Math.max(0, product2.stock - existingQty);
           if (available <= 0) return res.status(400).json({ error: 'You already have the maximum available quantity in your cart.' });
           return res.status(400).json({ error: 'Only ' + available + ' more available.' });

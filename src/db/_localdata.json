@@ -835,11 +835,63 @@
       "id": "0afa0fa5f84f78b3b1cc546d",
       "owner": "guest:guest-d3fd949d96552fdcb9354437",
       "items": []
+    },
+    {
+      "id": "0b8ffed64760cc1ea922be94",
+      "owner": "guest:guest-ba1ae866a8d6594b5a15f60d",
+      "items": []
+    },
+    {
+      "id": "ebd18a0631e22164c8ee5772",
+      "owner": "guest:guest-bd0a78ee700f422d1d4a7258",
+      "items": []
+    },
+    {
+      "id": "55c6d162e20a8acef065e1ee",
+      "owner": "guest:guest-f2f9f216bf886e51b34febc2",
+      "items": []
+    },
+    {
+      "id": "c3926e433af8effc07e41ccd",
+      "owner": "guest:guest-e1157e15ecbd83dc3efe0bad",
+      "items": []
+    },
+    {
+      "id": "0d8aef33ea39005970a3dc99",
+      "owner": "guest:guest-c7ff746b083051636af5d7c4",
+      "items": []
+    },
+    {
+      "id": "e76b1743d2f258c90d2ce7e9",
+      "owner": "guest:guest-7f932d4fe78c6e01bc825b9e",
+      "items": [
+        {
+          "id": "8270533b429c043c08509bf8",
+          "product_id": null,
+          "variant_id": null,
+          "name": "Custom",
+          "price": 10,
+          "image_url": null,
+          "size": null,
+          "color": "",
+          "quantity": 1,
+          "meta": {
+            "source": "customizer"
+          }
+        }
+      ]
+    },
+    {
+      "id": "90a6d4d5d574a62f04cd1917",
+      "owner": "guest:guest-c656829423a3ef7deae17c14",
+      "items": []
     }
   ],
   "orders": [],
   "designs": [],
   "listings": [],
+  "listing_likes": [],
+  "listing_saves": [],
   "variants": [
     {
       "id": 1002,

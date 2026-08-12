@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Customize &mdash; ShopMax</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+  <link rel="stylesheet" href="/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/magnific-popup.css">
+  <link rel="stylesheet" href="/css/jquery-ui.css">
+  <link rel="stylesheet" href="/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/css/aos.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/custom.css">
+</head>
+<body>
+<div class="site-wrap">
+  <div data-sm-navbar></div>
+
+  <div class="bg-light py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-0">
+          <a href="/index.html">Home</a> <span class="mx-2 mb-0">/</span>
+          <strong class="text-black">Customize</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-section sm-custom-section">
+    <div class="container">
+      <h1 class="sm-custom-title">Customize Your Outfit</h1>
+      <p class="sm-custom-sub">Pick a product, then choose your color, position and size.</p>
+
+      <div class="sm-custom-steps" id="custom-steps">
+        <div class="sm-custom-step-item active" data-step="1"><span>1</span> Choose Clothing</div>
+        <div class="sm-custom-step-line" data-line="1"></div>
+        <div class="sm-custom-step-item" data-step="2"><span>2</span> Customize</div>
+        <div class="sm-custom-step-line" data-line="2"></div>
+        <div class="sm-custom-step-item" data-step="3"><span>3</span> Preview</div>
+      </div>
+
+      <!-- STEP 1: Choose Clothing -->
+      <div id="custom-step-1">
+        <div id="sm-garment-loading" class="text-center py-5 text-muted">Loading customizable products...</div>
+        <div id="sm-garment-error" class="text-center py-5" style="display:none">
+          <span class="icon icon-search"></span>
+          <h3 class="mt-2">Unable to load products.</h3>
+          <p class="text-muted" id="sm-garment-error-msg"></p>
+          <button type="button" class="btn btn-dark rounded-0 px-4" id="sm-garment-retry">Try Again</button>
+        </div>
+        <div id="sm-garment-grid" class="row"></div>
+      </div>
+
+      <!-- STEP 2: Customize -->
+      <div id="custom-step-2" style="display:none">
+        <div class="row">
+          <div class="col-lg-7 mb-4 mb-lg-0">
+            <div class="sm-canvas-stage">
+              <div class="sm-custom-preview">
+                <canvas id="custom-preview-canvas" class="sm-custom-canvas"></canvas>
+                <div class="sm-custom-dropzone" id="sm-custom-dropzone">Upload a design to get started</div>
+              </div>
+              <div class="sm-custom-preview-label" id="custom-preview-position">Front</div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="sm-tool-panel">
+              <h1 class="sm-custom-name" id="custom-product-name"></h1>
+              <div class="sm-custom-price" id="custom-product-price"></div>
+
+              <div class="sm-custom-ctrl">
+                <div class="sm-custom-ctrl-title">Color</div>
+                <div class="sm-pdp-colors" id="custom-colors"></div>
+              </div>
+
+              <div class="sm-custom-ctrl">
+                <div class="sm-custom-ctrl-title">Add Design</div>
+                <input type="file" id="custom-file-input" accept="image/png,image/jpeg,image/webp" style="display:none">
+                <button type="button" class="btn btn-outline-dark btn-block rounded-0" id="custom-add-design">Upload Image / Logo</button>
+                <div class="sm-custom-file-note" id="custom-file-note" style="display:none">Design uploaded: <span class="sm-custom-file-name" id="custom-file-name"></span></div>
+                <div class="sm-custom-design-tools" id="custom-design-tools" style="display:none">
+                  <div class="sm-custom-ctrl-title mt-3">Design Size</div>
+                  <div class="sm-custom-size-row">
+                    <button type="button" class="sm-custom-size-btn" id="custom-size-minus">&minus;</button>
+                    <input type="range" class="sm-custom-slider" id="custom-size-slider" min="30" max="250" step="5" value="100">
+                    <button type="button" class="sm-custom-size-btn" id="custom-size-plus">+</button>
+                    <span class="sm-custom-scale-label" id="custom-scale-label">100%</span>
+                  </div>
+                  <div class="sm-custom-ctrl-title mt-3">Rotate</div>
+                  <div class="sm-custom-rot-row">
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-0 sm-custom-rot-btn" id="custom-rotate-left">&#8630; Rotate Left</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-0 sm-custom-rot-btn" id="custom-rotate-right">&#8631; Rotate Right</button>
+                  </div>
+                  <button type="button" class="btn btn-outline-danger btn-sm rounded-0 sm-custom-remove-btn mt-3" id="custom-remove-design">Remove Design</button>
+                </div>
+              </div>
+
+              <div class="sm-custom-ctrl">
+                <div class="sm-custom-ctrl-title">Add Text</div>
+                <div class="sm-custom-text-input-row">
+                  <input type="text" class="form-control" id="custom-text-input" placeholder="Type your text..." maxlength="60">
+                  <button type="button" class="btn btn-dark rounded-0" id="custom-add-text">Add</button>
+                </div>
+                <div class="sm-custom-text-tools" id="custom-text-tools" style="display:none">
+                  <div class="sm-custom-ctrl-title mt-3">Font</div>
+                  <select class="form-control form-control-sm" id="custom-text-font">
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Impact">Impact</option>
+                    <option value="Courier New">Courier New</option>
+                  </select>
+                  <div class="sm-custom-ctrl-title mt-3">Color</div>
+                  <input type="color" id="custom-text-color" class="sm-custom-color" value="#000000">
+                  <div class="sm-custom-ctrl-title mt-3">Size</div>
+                  <div class="sm-custom-size-row">
+                    <button type="button" class="sm-custom-size-btn" id="custom-text-minus">&minus;</button>
+                    <input type="range" class="sm-custom-slider" id="custom-text-slider" min="30" max="250" step="5" value="100">
+                    <button type="button" class="sm-custom-size-btn" id="custom-text-plus">+</button>
+                    <span class="sm-custom-scale-label" id="custom-text-scale-label">100%</span>
+                  </div>
+                  <div class="sm-custom-ctrl-title mt-3">Rotate</div>
+                  <div class="sm-custom-rot-row">
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-0 sm-custom-rot-btn" id="custom-text-rotate-left">&#8630; Rotate Left</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-0 sm-custom-rot-btn" id="custom-text-rotate-right">&#8631; Rotate Right</button>
+                  </div>
+                  <button type="button" class="btn btn-outline-danger btn-sm rounded-0 sm-custom-remove-btn mt-3" id="custom-remove-text">Remove Text</button>
+                </div>
+              </div>
+
+              <div class="sm-custom-ctrl">
+                <div class="sm-custom-ctrl-title">Position</div>
+                <div class="sm-pdp-sizes" id="custom-positions">
+                  <button type="button" class="sm-pdp-size active" data-position="Front">Front</button>
+                  <button type="button" class="sm-pdp-size" data-position="Back">Back</button>
+                  <button type="button" class="sm-pdp-size" data-position="Sleeve">Sleeve</button>
+                </div>
+              </div>
+
+              <div class="sm-custom-ctrl">
+                <div class="sm-custom-ctrl-title">Size</div>
+                <div class="sm-pdp-sizes" id="custom-sizes"></div>
+              </div>
+
+              <div class="sm-custom-btn-row">
+                <button type="button" class="btn btn-outline-secondary rounded-0" id="custom-reset">Reset</button>
+                <button type="button" class="btn btn-dark rounded-0 flex-grow-1" id="custom-continue">Continue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Preview / Add to Cart -->
+      <div id="custom-step-3" style="display:none">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="sm-custom-summary-card">
+              <div class="d-flex align-items-center mb-3">
+                <canvas id="custom-final-canvas" class="sm-custom-final-canvas mr-3"></canvas>
+                <div>
+                  <h5 class="mb-1" id="custom-final-name"></h5>
+                  <div class="text-muted small">Customized product</div>
+                </div>
+              </div>
+              <div class="sm-custom-summary-row"><span class="label">Color</span><span class="value" id="custom-final-color"></span></div>
+              <div class="sm-custom-summary-row"><span class="label">Size</span><span class="value" id="custom-final-size"></span></div>
+              <div class="sm-custom-summary-row"><span class="label">Position</span><span class="value" id="custom-final-position"></span></div>
+              <div class="sm-custom-summary-row"><span class="label">Price</span><span class="value" id="custom-final-price"></span></div>
+            </div>
+            <div class="text-center mt-4">
+              <button type="button" class="btn btn-success btn-lg rounded-0 px-5" id="custom-addcart">Add to Cart</button>
+              <button type="button" class="btn btn-outline-black btn-lg rounded-0 px-4 mt-2 mt-sm-0" id="custom-save">Save Design</button>
+              <button type="button" class="btn btn-black btn-lg rounded-0 px-4 mt-2 mt-sm-0" id="custom-publish">Publish to Community</button>
+              <p class="text-muted small mt-2 mb-0">
+                <strong>Save</strong> keeps this design privately in <a href="/marketplace.html?tab=mine">My designs</a> so you can publish it later.
+                <strong>Publish</strong> puts it in the Community Marketplace straight away, for anyone to buy or remix.
+              </p>
+              <div class="mt-3">
+                <button type="button" class="btn btn-link text-decoration-none" id="custom-edit">Edit Customization</button>
+                <button type="button" class="btn btn-link text-decoration-none" id="custom-choose-another">Choose Another Product</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-sm-footer></div>
+</div>
+
+<!-- Publish-to-marketplace dialog (filled in by js/customize.js) -->
+<div class="sm-mk-modal" id="custom-publish-modal" hidden>
+  <div class="sm-mk-modal-box">
+    <h3>Publish to the Community Marketplace</h3>
+    <p class="sm-mk-sub">Other shoppers will be able to buy this design or open it in the customizer and make their own version.</p>
+
+    <img id="custom-publish-thumb" class="sm-mk-preview-thumb" alt="Your design">
+
+    <div class="form-group">
+      <label for="custom-publish-title">Title <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" id="custom-publish-title" maxlength="80" placeholder="e.g. Midnight Bloom Tee">
+    </div>
+
+    <div class="form-group">
+      <label for="custom-publish-desc">Description</label>
+      <textarea class="form-control" id="custom-publish-desc" rows="3" maxlength="2000"
+                placeholder="What inspired it? Anything a buyer should know?"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-sm-6">
+        <label for="custom-publish-price">Price (&#8377;) <span class="text-danger">*</span></label>
+        <input type="number" class="form-control" id="custom-publish-price" min="1" step="1">
+        <small class="form-text text-muted" id="custom-publish-price-hint"></small>
+      </div>
+      <div class="form-group col-sm-6">
+        <label for="custom-publish-category">Garment type</label>
+        <select class="form-control" id="custom-publish-category">
+          <option value="tshirt">T-shirt</option>
+          <option value="hoodie">Hoodie</option>
+          <option value="shirt">Shirt</option>
+          <option value="jacket">Jacket</option>
+          <option value="bottoms">Bottoms</option>
+          <option value="accessory">Accessory</option>
+          <option value="other" selected>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="custom-publish-tags">Tags</label>
+      <input type="text" class="form-control" id="custom-publish-tags" placeholder="streetwear, floral, minimal">
+      <small class="form-text text-muted">Comma separated, up to 8 &mdash; these power search.</small>
+    </div>
+
+    <div class="alert alert-danger py-2" id="custom-publish-error" hidden></div>
+
+    <div class="d-flex justify-content-end" style="gap:10px">
+      <button type="button" class="btn btn-link" id="custom-publish-cancel">Cancel</button>
+      <button type="button" class="btn btn-black rounded-0" id="custom-publish-submit">Publish</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/aos.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/customize.js"></script>
+</body>
+</html>

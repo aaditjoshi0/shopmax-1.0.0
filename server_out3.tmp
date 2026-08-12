@@ -1,0 +1,113 @@
+
+  ShopMax running:
+  ----------------------------------------
+  URL   : http://localhost:3000
+  Mode  : Supabase (cloud)
+  ----------------------------------------
+
+[seed] admin user already exists — skipping.
+[seed] products table already has 88 rows — skipping.
+[seed] run "npm run seed -- --force" to append a new generated batch.
+STEP 4 — Request received by server
+STEP 4b — Request headers: {"host":"localhost:3000","connection":"keep-alive","content-type":"application/json","accept":"*/*","accept-language":"*","sec-fetch-mode":"cors","user-agent":"node","accept-encoding":"gzip, deflate","content-length":"69"}
+STEP 4c — Signed cookies: {}
+STEP 4d — Parsed body: {"email":"login_probe_1786462999491@test.com","password":"***"}
+STEP 5 — Email received: login_probe_1786462999491@test.com
+STEP 6 — Calling Supabase signInWithPassword for: login_probe_1786462999491@test.com
+STEP 7 — FULL Supabase response:
+{
+  "data": {
+    "user": {
+      "id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "login_probe_1786462999491@test.com",
+      "email_confirmed_at": "2026-08-11T15:43:21.152545Z",
+      "phone": "",
+      "confirmed_at": "2026-08-11T15:43:21.152545Z",
+      "last_sign_in_at": "2026-08-11T15:43:21.493796471Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email_verified": true
+      },
+      "identities": [
+        {
+          "identity_id": "e38018ab-0d9e-44bd-8454-a256e32e4023",
+          "id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+          "user_id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+          "identity_data": {
+            "email": "login_probe_1786462999491@test.com",
+            "email_verified": false,
+            "phone_verified": false,
+            "sub": "877ab9be-265d-4622-84f0-503eb6b1bd0b"
+          },
+          "provider": "email",
+          "last_sign_in_at": "2026-08-11T15:43:21.147519Z",
+          "created_at": "2026-08-11T15:43:21.147616Z",
+          "updated_at": "2026-08-11T15:43:21.147616Z",
+          "email": "login_probe_1786462999491@test.com"
+        }
+      ],
+      "created_at": "2026-08-11T15:43:21.103099Z",
+      "updated_at": "2026-08-11T15:43:21.50958Z",
+      "is_anonymous": false
+    },
+    "session": {
+      "access_token": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImY5NDNhMzU2LWY2ZGMtNDcyYy04NGMxLWNhMDdmOGI3ZTgxNyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3lkb3pweHZjbm1vcnltcHN6bHNjLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI4NzdhYjliZS0yNjVkLTQ2MjItODRmMC01MDNlYjZiMWJkMGIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzg2NDY2NjAxLCJpYXQiOjE3ODY0NjMwMDEsImVtYWlsIjoibG9naW5fcHJvYmVfMTc4NjQ2Mjk5OTQ5MUB0ZXN0LmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZW1haWxfdmVyaWZpZWQiOnRydWV9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzg2NDYzMDAxfV0sInNlc3Npb25faWQiOiI1OTgwYjZiNS01M2Q2LTQxNDEtOTNmZC1lNzQ4Y2ZlMzU2ZTYiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DvxX686oAXm4zjOVR7ete6SJ7jTG4xwcABCLurl-Se-YoQc6iyYdkVvru4Cewcv9hW0BMyC8scmY1oXdCxgjJQ",
+      "token_type": "bearer",
+      "expires_in": 3600,
+      "expires_at": 1786466601,
+      "refresh_token": "sklkkwwvttgx",
+      "user": {
+        "id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+        "aud": "authenticated",
+        "role": "authenticated",
+        "email": "login_probe_1786462999491@test.com",
+        "email_confirmed_at": "2026-08-11T15:43:21.152545Z",
+        "phone": "",
+        "confirmed_at": "2026-08-11T15:43:21.152545Z",
+        "last_sign_in_at": "2026-08-11T15:43:21.493796471Z",
+        "app_metadata": {
+          "provider": "email",
+          "providers": [
+            "email"
+          ]
+        },
+        "user_metadata": {
+          "email_verified": true
+        },
+        "identities": [
+          {
+            "identity_id": "e38018ab-0d9e-44bd-8454-a256e32e4023",
+            "id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+            "user_id": "877ab9be-265d-4622-84f0-503eb6b1bd0b",
+            "identity_data": {
+              "email": "login_probe_1786462999491@test.com",
+              "email_verified": false,
+              "phone_verified": false,
+              "sub": "877ab9be-265d-4622-84f0-503eb6b1bd0b"
+            },
+            "provider": "email",
+            "last_sign_in_at": "2026-08-11T15:43:21.147519Z",
+            "created_at": "2026-08-11T15:43:21.147616Z",
+            "updated_at": "2026-08-11T15:43:21.147616Z",
+            "email": "login_probe_1786462999491@test.com"
+          }
+        ],
+        "created_at": "2026-08-11T15:43:21.103099Z",
+        "updated_at": "2026-08-11T15:43:21.50958Z",
+        "is_anonymous": false
+      },
+      "weak_password": null
+    }
+  },
+  "error": null
+}
+STEP 7b — Auth succeeded. User ID: 877ab9be-265d-4622-84f0-503eb6b1bd0b
+STEP 9 — Profile role lookup: customer found
+STEP 10 — Session cookie set, responding with user

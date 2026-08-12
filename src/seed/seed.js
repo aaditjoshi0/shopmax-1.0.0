@@ -1,36 +1,70 @@
 // Seed script.
-//  - LOCAL mode: writes the products from products.json into the file store
+//  - LOCAL mode: writes freshly generated products into the file store
 //    (only if there are no products yet), so the site is populated on first run.
-//  - SUPABASE mode: upserts the same products into the products table.
+//  - SUPABASE mode: inserts the same products into the products table, but only
+//    when that table is empty — the catalogue is random per run, so re-upserting
+//    on every boot would just pile up new rows.
+//
+// Products are generated procedurally by ./generateProducts.js — there is no
+// products.json fixture. Tune with env vars:
+//   SEED_PRODUCT_COUNT=80   how many products to build (default 60)
+//   SEED_RANDOM_SEED=12345  fixed PRNG seed for a reproducible catalogue
 //
 // Run with:  npm run seed
 
 const fs = require('fs');
 const path = require('path');
-const products = require('./products.json');
+const { generateProducts } = require('./generateProducts');
 const { supabase, MODE, isConfigured, getServiceClient } = require('../../config/supabase');
+
+const PRODUCT_COUNT = parseInt(process.env.SEED_PRODUCT_COUNT, 10) || 60;
+const RANDOM_SEED = process.env.SEED_RANDOM_SEED ? parseInt(process.env.SEED_RANDOM_SEED, 10) : undefined;
+
+// Boot-time seeding is "only if empty" so a running site is never disturbed.
+// FORCE appends a fresh generated batch to a store that already has products:
+//   npm run seed -- --force     or     SEED_FORCE=1 npm run seed
+const FORCE = process.env.SEED_FORCE === '1' || process.argv.indexOf('--force') !== -1;
+
+// Built lazily so a boot that skips seeding pays nothing for it.
+let _products = null;
+function catalogue() {
+  if (!_products) _products = generateProducts(PRODUCT_COUNT, RANDOM_SEED);
+  return _products;
+}
 
 function seedIfEmpty(verbose) {
   if (MODE === 'local') {
     const store = require('../db/localStore');
     const data = store.reload();
 
-    // Seed products if empty
-    if (data.products.length === 0) {
-      data.products = products.map((p, i) => ({
-        id: i + 1,
-        ...p,
-        created_at: new Date().toISOString()
-      }));
-      if (verbose) console.log('[seed] local store seeded with ' + data.products.length + ' products.');
+    // Seed products if empty (or append a fresh batch when forced).
+    if (data.products.length === 0 || FORCE) {
+      var existingSlugs = {};
+      data.products.forEach(function (p) { existingSlugs[p.slug] = true; });
+      var nextProductId = data.products.reduce(function (m, p) { return Math.max(m, p.id || 0); }, 0);
+      var added = catalogue()
+        .filter(function (p) { return !existingSlugs[p.slug]; })
+        .map(function (p) {
+          return Object.assign({ id: ++nextProductId }, p, { created_at: new Date().toISOString() });
+        });
+      data.products = data.products.concat(added);
+      store.persist();
+      if (verbose) console.log('[seed] local store: ' + added.length + ' generated products added (' + data.products.length + ' total).');
     } else {
-      if (verbose) console.log('[seed] local store already has ' + data.products.length + ' products — skipping.');
+      if (verbose) {
+        console.log('[seed] local store already has ' + data.products.length + ' products — skipping.');
+        console.log('[seed] run "npm run seed -- --force" to append a new generated batch.');
+      }
     }
 
-    // Seed variants from products with sizes/colors
-    if (data.variants.length === 0 && data.products.length > 0) {
+    // Generate variants for any product that does not have them yet.
+    if (data.products.length > 0) {
+      var haveVariants = {};
+      (data.variants || []).forEach(function (v) { haveVariants[v.product_id] = true; });
+      var variantsBefore = data.variants.length;
       var variantId = store.nextId('variant') || 0;
       data.products.forEach(function (p) {
+        if (haveVariants[p.id]) return;
         var sizes = p.sizes || [];
         var colors = p.colors || [];
         if (sizes.length > 0 || colors.length > 0) {
@@ -71,7 +105,9 @@ function seedIfEmpty(verbose) {
       });
       data.counters.variant = variantId;
       store.persist();
-      if (verbose) console.log('[seed] ' + data.variants.length + ' variants generated from products.');
+      if (verbose && data.variants.length > variantsBefore) {
+        console.log('[seed] ' + (data.variants.length - variantsBefore) + ' variants generated (' + data.variants.length + ' total).');
+      }
     }
 
     // Seed admin user if no admin exists
@@ -103,12 +139,17 @@ function seedIfEmpty(verbose) {
       if (verbose) console.log('[seed] admin user created (admin@shopmax.com / Admin@123456)');
     }
 
-    // Seed sample ratings for products
-    if ((data.ratings || []).length === 0 && data.products.length > 0 && data.users.length > 0) {
+    // Seed sample ratings for any product that has none yet.
+    if (data.products.length > 0 && data.users.length > 0) {
       var sampleUserIds = data.users.filter(function (u) { return u.role !== 'admin'; }).map(function (u) { return u.id; });
       if (sampleUserIds.length === 0) sampleUserIds = [data.users[0].id];
-      data.ratings = [];
+      data.ratings = data.ratings || [];
+      var ratingsBefore = data.ratings.length;
+      var rated = {};
+      var nextRatingId = data.ratings.reduce(function (m, r) { return Math.max(m, r.id || 0); }, 0);
+      data.ratings.forEach(function (r) { if (r.target_type === 'product') rated[r.target_id] = true; });
       data.products.forEach(function (p) {
+        if (rated[p.id]) return;
         var numRatings = Math.floor(Math.random() * 3) + 1;
         var usedUsers = {};
         for (var ri = 0; ri < numRatings; ri++) {
@@ -116,7 +157,7 @@ function seedIfEmpty(verbose) {
           if (usedUsers[ruid]) continue;
           usedUsers[ruid] = true;
           data.ratings.push({
-            id: data.ratings.length + 1,
+            id: ++nextRatingId,
             target_type: 'product',
             target_id: p.id,
             user_id: ruid,
@@ -133,13 +174,15 @@ function seedIfEmpty(verbose) {
         }
       });
       store.persist();
-      if (verbose) console.log('[seed] ' + data.ratings.length + ' sample ratings generated.');
+      if (verbose && data.ratings.length > ratingsBefore) {
+        console.log('[seed] ' + (data.ratings.length - ratingsBefore) + ' sample ratings generated.');
+      }
     }
 
     return;
   }
 
-  // SUPABASE mode — upsert products every boot (keeps data in sync with products.json).
+  // SUPABASE mode — insert the generated catalogue when the table is empty.
   if (MODE === 'supabase') {
     (async () => {
 
@@ -182,8 +225,31 @@ function seedIfEmpty(verbose) {
         console.warn('[seed] Add SUPABASE_SERVICE_KEY to .env or create admin@shopmax.com manually in Supabase Dashboard > Authentication > Users.');
       }
 
+      // Writes go through the service client when available so RLS can never
+      // silently swallow the seed; falls back to the anon client otherwise.
+      const db = sb || supabase;
+
+      // The catalogue is regenerated each run, so on a boot-time seed we only
+      // populate an empty table. FORCE (npm run seed -- --force, or SEED_FORCE=1)
+      // appends a fresh batch to a table that already has rows.
+      const { count: existingCount, error: countErr } = await db
+        .from('products').select('id', { count: 'exact', head: true });
+      if (countErr) {
+        console.warn('[seed] could not count products:', countErr.message);
+        return;
+      }
+      if (existingCount > 0 && !FORCE) {
+        if (verbose) {
+          console.log('[seed] products table already has ' + existingCount + ' rows — skipping.');
+          console.log('[seed] run "npm run seed -- --force" to append a new generated batch.');
+        }
+        return;
+      }
+
+      const products = catalogue();
+      let inserted = 0;
       for (const p of products) {
-        const { data: upserted, error } = await supabase.from('products').upsert({
+        const { data: upserted, error } = await db.from('products').upsert({
           name: p.name,
           slug: p.slug,
           description: p.description,
@@ -196,12 +262,14 @@ function seedIfEmpty(verbose) {
           rating: p.rating,
           featured: p.featured,
           colors: p.colors || null,
+          sku: p.sku || '',
           status: p.status || 'published'
         }, { onConflict: 'slug' }).select('id, slug, sizes, colors, stock, price, compare_at_price, sku').single();
         if (error) {
           console.warn('[seed] error on ' + p.slug + ':', error.message);
           continue;
         }
+        inserted++;
         // Generate variants for products with sizes/colors
         if (upserted && ((p.sizes && p.sizes.length > 0) || (p.colors && p.colors.length > 0))) {
           const sizes = p.sizes || [];
@@ -217,7 +285,7 @@ function seedIfEmpty(verbose) {
           const stockPer = Math.floor((p.stock || 100) / combos.length) || 1;
           for (const combo of combos) {
             const sku = p.sku ? p.sku + '-' + combo.size + '-' + combo.color : '';
-            const { error: vErr } = await supabase.from('product_variants').upsert({
+            const { error: vErr } = await db.from('product_variants').upsert({
               product_id: upserted.id,
               sku,
               size: combo.size,
@@ -231,7 +299,7 @@ function seedIfEmpty(verbose) {
           }
         }
       }
-      console.log('[seed] supabase upsert done for ' + products.length + ' products + variants.');
+      console.log('[seed] supabase: ' + inserted + '/' + products.length + ' products written (+ variants).');
     })();
     return;
   }

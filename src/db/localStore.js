@@ -8,14 +8,16 @@ const crypto = require('crypto');
 
 const DATA_FILE = path.join(__dirname, '_localdata.json');
 
-// Shape of the store. Seeded products are loaded from products.json by seed.js.
+// Shape of the store. Products are generated at seed time by seed.js.
 const DEFAULTS = {
   profiles: [],
   products: [],
   carts: [],          // { id, user_id, items: [{ product_id, name, price, image_url, quantity, size, meta }] }
   orders: [],         // { id, user_id, items, shipping, subtotal, total, discount, delivery_charge, coupon_code, status, tracking_no, courier, estimated_delivery, actual_delivery, return_eligible, return_reason, payment_method, payment_id, created_at }
   designs: [],        // { id, user_id, name, canvas_data, thumbnail_url, product_type, created_at }
-  listings: [],       // { id, user_id, title, description, price, image_url, size, category, status, created_at }
+  listings: [],       // { id, user_id, title, description, price, image_url, size, color, category, tags, design_id, base_product_id, design_snapshot, status, likes_count, saves_count, views, created_at, updated_at }
+  listing_likes: [],  // { id, listing_id, user_id, created_at } — public appreciation
+  listing_saves: [],  // { id, listing_id, user_id, created_at } — private wishlist
   variants: [],       // { id, product_id, sku, size, color, price, compare_at_price, stock, status }
   images: [],         // { id, product_id, color, url, alt, sort_order }
   reviews: [],        // { id, product_id, user_id, order_id, user_name, rating, title, review, verified_purchase, created_at, updated_at }
@@ -31,7 +33,7 @@ const DEFAULTS = {
     { code: 'FLAT200',    type: 'fixed',   value: 200, min_cart: 999, max_uses: 300,  used_count: 0, active: true, max_discount: 0, per_user_limit: 0, free_delivery: false, first_order_only: false, description: 'Rs.200 off on orders above Rs.999', start_date: null, end_date: null, created_at: null, updated_at: null }
   ],
   coupon_usage: [], // { id, coupon_code, user_id, order_id, discount_amount, created_at }
-  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1, variant: 1000, image: 1000, coupon_usage: 0 }
+  counters: { product: 100, order: 100, design: 100, listing: 100, user: 1, variant: 1000, image: 1000, coupon_usage: 0, listing_like: 0, listing_save: 0 }
 };
 
 function load() {
