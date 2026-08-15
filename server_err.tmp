@@ -1,13 +1,11 @@
-node:events:486
-      throw er; // Unhandled 'error' event
-      ^
+[error] Expected property name or '}' in JSON at position 1 (line 1 column 2)
+[error] invalid input syntax for type uuid: "last"
 
-Error: listen EADDRINUSE: address already in use :::3000
     at Server.setupListenHandle [as _listen2] (node:net:1940:16)
     at listenInCluster (node:net:1997:12)
     at Server.listen (node:net:2102:7)
     at app.listen (C:\Users\Bhargav Joshi\Desktop\SHOPMAX\shopmax-1.0.0\node_modules\express\lib\application.js:635:24)
-    at Object.<anonymous> (C:\Users\Bhargav Joshi\Desktop\SHOPMAX\shopmax-1.0.0\server.js:275:5)
+    at Object.<anonymous> (C:\Users\Bhargav Joshi\Desktop\SHOPMAX\shopmax-1.0.0\server.js:621:5)
     at Module._compile (node:internal/modules/cjs/loader:1803:14)
     at Object..js (node:internal/modules/cjs/loader:1934:10)
     at Module.load (node:internal/modules/cjs/loader:1524:32)

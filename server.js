@@ -288,7 +288,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SESSION_SECRET));
 
 // --- Login guard: require auth for protected HTML pages ---
-const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html', '/cart.html', '/checkout.html', '/orders.html', '/order-details.html', '/customize.html'];
+const PUBLIC_PAGES = ['/login.html', '/register.html', '/admin-login.html', '/cart.html', '/checkout.html', '/orders.html', '/order-details.html', '/customize.html', '/saved.html'];
 const PUBLIC_ROUTES = ['/product/'];   // product detail pages are public
 app.use((req, res, next) => {
   // Allow API routes, static assets (css/js/images/fonts), and public pages

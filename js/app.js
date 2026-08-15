@@ -163,6 +163,26 @@
     });
   }
 
+  // ---- saved/wishlist badge ----
+  // Total of wishlist (hearts) + saved-for-later (bookmarks). The saved page
+  // pushes the fresh count after it loads both lists; other pages just paint
+  // the cached value (no per-page API calls — avoids hammering the server).
+  function setSavedBadge(n) {
+    n = Math.max(0, Number(n) || 0);
+    document.querySelectorAll('.js-saved-count').forEach(function (el) {
+      el.textContent = String(n);
+      el.hidden = n <= 0;
+    });
+    try { localStorage.setItem('sm-saved-count', String(n)); } catch (_) {}
+  }
+
+  function paintSavedBadgeFromCache() {
+    if (!currentUser) { setSavedBadge(0); return; }   // never show a stale count when logged out
+    var n = 0;
+    try { n = Number(localStorage.getItem('sm-saved-count') || 0) || 0; } catch (_) {}
+    setSavedBadge(n);
+  }
+
   // ---- addToCart helper used across pages ----
   function addToCart(item) {
     console.log('[addToCart] payload:', JSON.stringify(item));
@@ -179,7 +199,7 @@
       { href: '/women.html',      label: 'Women' },
       { href: '/shop.html',       label: 'Home' },
       { href: '/marketplace.html', label: 'Community Marketplace' },
-      { href: '/customize.html', label: 'Customize', accent: true }
+      { href: '/customize.html',  label: 'Customize', accent: true }
     ];
   }
 
@@ -207,6 +227,7 @@
             '<a class="dropdown-item" href="/account.html">My Account</a>' +
             '<a class="dropdown-item" href="/orders.html">My Orders</a>' +
             '<a class="dropdown-item" href="/my-designs.html">My Designs</a>' +
+            '<a class="dropdown-item" href="/saved.html">Wishlist & Saved</a>' +
             (currentUser.role === 'admin' ? '<div class="dropdown-divider"></div><a class="dropdown-item" href="/admin.html">Admin Panel</a>' : '') +
             '<div class="dropdown-divider"></div>' +
             '<a class="dropdown-item" href="#" id="sm-logout-link">Log out</a>' +
@@ -425,6 +446,7 @@
       e.preventDefault();
       api('/api/auth/logout', { method: 'POST' }).then(function () {
         currentUser = null;
+        try { localStorage.removeItem('sm-saved-count'); } catch (_) {}
         window.location.href = '/index.html';
       });
     });
@@ -439,6 +461,7 @@
       if (navHost) navHost.innerHTML = buildNavbar();
       bindChromeAgain();
       refreshCartBadge();
+      paintSavedBadgeFromCache();
     });
   });
 
@@ -501,6 +524,7 @@
     isLoggedIn: isLoggedIn,
     requireLogin: requireLogin,
     benefitBadgesHtml: benefitBadgesHtml,
+    setSavedBadge: setSavedBadge,
     get user() { return currentUser; }
   };
 })();

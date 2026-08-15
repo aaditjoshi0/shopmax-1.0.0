@@ -558,6 +558,23 @@
 .site-menu .sm-nav-cta > a:hover { background: #5b51d6; }
 .site-menu .sm-nav-cta.active > a { background: #4f46c8; }
 
+/* Inline count badge on the navbar "Saved" entry (mirrors the cart badge idea). */
+.sm-nav-badge {
+  display: inline-block;
+  min-width: 16px;
+  padding: 0 5px;
+  margin-left: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #fff;
+  background: #ee4266;
+  border-radius: 10px;
+  vertical-align: super;
+  letter-spacing: 0;
+}
+.sm-nav-badge[hidden] { display: none !important; }
+
 /* profile dropdown */
 .sm-profile.dropdown { position: relative; display: inline-block; }
 .sm-profile .dropdown-menu {
@@ -2990,8 +3007,8 @@
 
 .sm-mk-hero {
   background: linear-gradient(120deg, #f6f5ff 0%, #fdf1f4 100%);
-  padding: 56px 0;
-  margin-bottom: 36px;
+  padding: 10px 0;
+  margin-bottom: 0;
 }
 .sm-mk-hero h1 {
   font-size: 2.4rem;
@@ -3008,7 +3025,7 @@
   gap: 6px;
   flex-wrap: wrap;
   border-bottom: 1px solid #e6e6e6;
-  margin-bottom: 26px;
+  margin-bottom: 8px;
 }
 .sm-mk-tab {
   background: none;
@@ -3038,8 +3055,20 @@
 .sm-mk-count { color: #888; font-size: 14px; margin-left: auto; }
 
 /* card */
-.sm-mk-card { position: relative; }
-.sm-mk-card .product-item { position: relative; overflow: hidden; }
+.sm-mk-card { position: relative; max-width: 85%; }
+/* Compact explore-grid cards: 1/4-width column with proportionally smaller image + text */
+.sm-mk-card .product-item { position: relative; overflow: hidden; margin-bottom: 6px; }
+.sm-mk-card .product-item.md-height { height: 190px; }
+.sm-mk-card .product-item.md-height img { width: 100%; height: 100%; object-fit: cover; }
+.sm-mk-card .sm-mk-designer { font-size: 11px; margin-top: 0; color: #9a9a9a; }
+.sm-mk-card .item-title { font-size: 16px; line-height: 1.35; margin-top: 0; }
+.sm-mk-card .item-title a { display: inline; color: #25262a; }
+.sm-mk-card .item-title a:hover { color: #ee4266; }
+.sm-mk-card .product-price { font-size: 14px; color: #ee4266; }
+.sm-mk-card .sm-mk-meta { font-size: 11px; gap: 10px; margin-top: 2px; color: #b3b3b3; }
+.sm-mk-card .sm-mk-badge { font-size: 9px; padding: 2px 6px; }
+.sm-mk-card .sm-mk-actions { top: 4px; right: 4px; gap: 4px; }
+.sm-mk-card .sm-mk-icon { width: 24px; height: 24px; font-size: 12px; }
 .sm-mk-card .product-item img { transition: transform .35s ease; }
 .sm-mk-card:hover .product-item img { transform: scale(1.04); }
 

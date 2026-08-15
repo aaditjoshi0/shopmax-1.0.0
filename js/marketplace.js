@@ -67,7 +67,7 @@
     var href = '/marketplace-item.html?id=' + l.id;
 
     return '' +
-      '<div class="col-lg-4 col-md-6 item-entry mb-5 sm-mk-card" data-id="' + l.id + '">' +
+      '<div class="col-lg-3 col-md-4 col-6 item-entry mb-4 sm-mk-card" data-id="' + l.id + '">' +
         '<div style="position:relative">' +
           badge +
           '<div class="sm-mk-actions">' +
@@ -98,7 +98,7 @@
   // visually consistent, but with draft actions instead of like/save.
   function draftCardHTML(d) {
     return '' +
-      '<div class="col-lg-4 col-md-6 item-entry mb-5 sm-mk-card" data-draft="' + d.id + '">' +
+      '<div class="col-lg-3 col-md-4 col-6 item-entry mb-4 sm-mk-card" data-draft="' + d.id + '">' +
         '<div style="position:relative">' +
           '<span class="sm-mk-badge">Draft</span>' +
           '<div class="product-item md-height bg-gray d-block">' +
@@ -482,6 +482,12 @@
     // strip drives it and ?tab= deep-links into one.
     var pinned = window.SM_MARKETPLACE_FEED;
     var tab = pinned || SM.qs('tab');
+    // Saved & Liked were consolidated into the unified Saved page; route any
+    // legacy deep-link there instead of loading an unsupported feed here.
+    if (!pinned && (tab === 'saved' || tab === 'liked')) {
+      window.location.href = '/saved.html?tab=' + (tab === 'liked' ? 'wishlist' : 'saved');
+      return;
+    }
     if (tab && ['explore', 'mine', 'saved', 'liked'].indexOf(tab) !== -1) {
       state.feed = tab;
       var btn = document.querySelector('.sm-mk-tab[data-feed="' + tab + '"]');
