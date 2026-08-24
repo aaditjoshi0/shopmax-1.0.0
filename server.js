@@ -600,6 +600,14 @@ app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => 
   }
 });
 
+// --- Catch-all 404 handler: API routes must always return JSON, never HTML ---
+app.use(function (req, res, next) {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Not Found' });
+  }
+  next();
+});
+
 // --- Error-handling middleware (must be after all routes) ---
 app.use((err, req, res, next) => {
   console.error('[error]', err.message || err);
