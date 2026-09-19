@@ -1,77 +1,89 @@
-// Single-project API: reuses the existing Express app (server.js + src/api/*)
-// inside a Next.js Route Handler, so Vercel serves /api/* with no separate
-// Express deployment. Auth (signed cookies), routers and Supabase/local modes
-// are unchanged — requests are forwarded over loopback with cookies intact.
+// Single-project API: runs the existing Express app (server.js + src/api/*)
+// in-process via serverless-http — no TCP listen, so it works in serverless
+// (Vercel) as well as local dev. Auth (signed cookies), routers and
+// Supabase/local modes are unchanged.
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
+const serverlessHttp = require('serverless-http');
 
-function getExpressPort() {
-  if (!globalThis.__shopmaxExpressPort) {
-    globalThis.__shopmaxExpressPort = new Promise((resolve, reject) => {
+let handlerPromise = null;
+function getHandler() {
+  if (!handlerPromise) {
+    handlerPromise = (async () => {
       try {
         const app = require('../../../server.js');
-        const server = app.listen(0, '127.0.0.1', () => {
-          resolve(server.address().port);
+        return serverlessHttp(app, {
+          binary: ['image/*', 'application/pdf', 'application/octet-stream'],
         });
-        server.on('error', reject);
       } catch (e) {
-        reject(e);
+        console.error('[api bridge] backend failed to boot:', e?.stack || e?.message || e);
+        throw e;
       }
-    });
+    })();
   }
-  return globalThis.__shopmaxExpressPort;
+  return handlerPromise;
 }
 
 async function forward(req, context) {
-  const params = await context.params;
-  let port;
+  let handler;
   try {
-    port = await getExpressPort();
+    handler = await getHandler();
   } catch (e) {
     return Response.json({ error: 'API backend failed to start' }, { status: 502 });
   }
+
+  const params = await context.params;
   const url = new URL(req.url);
-  const rest = (params?.path || []).join('/');
-  const target = `http://127.0.0.1:${port}/api/${rest}${url.search}`;
-
-  const headers = new Headers(req.headers);
-  headers.set('host', `127.0.0.1:${port}`);
-  headers.set('x-forwarded-proto', url.protocol.replace(':', '') || 'https');
-  headers.delete('content-length');
-
-  const init = { method: req.method, headers, redirect: 'manual' };
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    init.body = Buffer.from(await req.arrayBuffer());
-    init.duplex = 'half';
-  }
-
-  let upstream;
-  try {
-    upstream = await fetch(target, init);
-  } catch (e) {
-    // Cold-boot race: Express listener may not accept yet — retry once.
-    await new Promise((r) => setTimeout(r, 500));
-    try {
-      upstream = await fetch(target, init);
-    } catch (e2) {
-      return Response.json({ error: 'API backend unreachable' }, { status: 502 });
-    }
-  }
-
-  const out = new Headers();
-  upstream.headers.forEach((value, key) => {
-    if (key === 'set-cookie') return; // re-appended individually below
-    if (['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(key)) return;
-    out.append(key, value);
+  const headers = {};
+  req.headers.forEach((value, key) => {
+    if (key === 'content-length') return; // body is re-encoded below
+    headers[key] = value;
   });
-  for (const c of upstream.headers.getSetCookie?.() ?? []) {
-    out.append('set-cookie', c);
+
+  const hasBody = req.method !== 'GET' && req.method !== 'HEAD';
+  const raw = hasBody ? Buffer.from(await req.arrayBuffer()) : null;
+
+  const event = {
+    httpMethod: req.method,
+    path: '/api/' + ((params && params.path) || []).join('/'),
+    headers,
+    queryStringParameters: Object.fromEntries(url.searchParams),
+    multiValueQueryStringParameters: null,
+    body: raw ? raw.toString('base64') : null,
+    isBase64Encoded: !!raw,
+    requestContext: { identity: { sourceIp: '127.0.0.1' } },
+  };
+
+  let out;
+  try {
+    out = await handler(event, {});
+  } catch (e) {
+    console.error('[api bridge] request failed:', e?.stack || e?.message || e);
+    return Response.json({ error: 'API backend error' }, { status: 502 });
   }
-  return new Response(upstream.body, { status: upstream.status, headers: out });
+
+  const resHeaders = new Headers();
+  for (const [key, value] of Object.entries(out.headers || {})) {
+    if (key.toLowerCase() === 'set-cookie') continue; // appended individually below
+    if (['content-length', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) continue;
+    resHeaders.set(key, value);
+  }
+  const multi = out.multiValueHeaders || {};
+  for (const [key, values] of Object.entries(multi)) {
+    for (const value of [].concat(values)) resHeaders.append(key, value);
+  }
+  if (out.headers && out.headers['set-cookie'] && !multi['set-cookie']) {
+    resHeaders.set('set-cookie', out.headers['set-cookie']);
+  }
+
+  const body = out.isBase64Encoded
+    ? Buffer.from(out.body || '', 'base64')
+    : (out.body ?? '');
+  return new Response(body, { status: out.statusCode || 200, headers: resHeaders });
 }
 
 export const GET = forward;
