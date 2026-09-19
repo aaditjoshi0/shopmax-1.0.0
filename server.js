@@ -554,16 +554,28 @@ app.get('/api/image-proxy', async (req, res) => {
 });
 
 // --- Image upload (admin) ---
+// Disk locally; on read-only hosts (Vercel serverless) multer.diskStorage
+// throws mkdirSync at boot and would take down the whole API — so probe
+// writability first and fall back to memory + Supabase Storage upload.
 const multer = require('multer');
 const crypto = require('crypto');
-const storage = multer.diskStorage({
-  destination: path.join(__dirname, 'images'),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname) || '.jpg';
-    const name = crypto.randomBytes(12).toString('hex') + ext;
-    cb(null, name);
-  }
-});
+const fs = require('fs');
+const IMAGES_DIR = path.join(__dirname, 'images');
+let storage;
+try {
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  fs.accessSync(IMAGES_DIR, fs.constants.W_OK);
+  storage = multer.diskStorage({
+    destination: IMAGES_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname) || '.jpg';
+      const name = crypto.randomBytes(12).toString('hex') + ext;
+      cb(null, name);
+    }
+  });
+} catch (_) {
+  storage = multer.memoryStorage();
+}
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
 
 app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => {
@@ -571,7 +583,22 @@ app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => 
     if (!req.file) return res.status(400).json({ error: 'No image file provided.' });
     const productId = Number(req.body.product_id);
     if (!productId) return res.status(400).json({ error: 'Product ID is required.' });
-    const url = '/images/' + req.file.filename;
+    let url;
+    if (req.file.buffer) {
+      // No writable disk (serverless): store in the public Supabase "designs" bucket.
+      if (MODE !== 'supabase') return res.status(500).json({ error: 'Uploads need a writable disk or Supabase Storage.' });
+      const client = getServiceClient() || supabase;
+      const ext = path.extname(req.file.originalname) || '.jpg';
+      const key = 'products/' + Date.now() + '-' + crypto.randomBytes(8).toString('hex') + ext;
+      const { error: upErr } = await client.storage.from('designs').upload(key, req.file.buffer, {
+        contentType: req.file.mimetype || 'image/jpeg',
+        upsert: false
+      });
+      if (upErr) return res.status(500).json({ error: 'Storage upload failed: ' + upErr.message });
+      url = client.storage.from('designs').getPublicUrl(key).data.publicUrl;
+    } else {
+      url = '/images/' + req.file.filename;
+    }
     const imgData = {
       product_id: productId,
       color: req.body.color || '',
