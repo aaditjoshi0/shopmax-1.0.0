@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '../../lib/api';
+import { api, notifyAuthChanged } from '../../lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function LoginPage() {
     e.preventDefault(); setError('');
     try {
       await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+      notifyAuthChanged();
       router.push('/');
     } catch (err) { setError(err.message); }
   }

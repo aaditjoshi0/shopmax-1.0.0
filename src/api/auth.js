@@ -200,8 +200,8 @@ router.post('/login', async (req, res, next) => {
   try {
     // ── STEP 4: Request received by server ─────────────────────────────────
     console.log('STEP 4 — Request received by server');
-    console.log('STEP 4b — Request headers:', JSON.stringify(req.headers));
-    console.log('STEP 4c — Signed cookies:', JSON.stringify(req.signedCookies));
+    console.log('STEP 4b — Request header names:', Object.keys(req.headers || {}).join(','));
+    console.log('STEP 4c — Signed cookies present:', Object.keys(req.signedCookies || {}).join(',') || '(none)');
 
     var { email, mobile, password } = req.body || {};
     console.log('STEP 4d — Parsed body:', JSON.stringify({ email: email, mobile: mobile, password: password ? '***' : '' }));
@@ -250,12 +250,10 @@ router.post('/login', async (req, res, next) => {
       password: password
     });
 
-    // ── STEP 7: Log FULL Supabase response ─────────────────────────────────
-    console.log('STEP 7 — FULL Supabase response:');
-    console.log(JSON.stringify({
-      data: authResult.data,
-      error: authResult.error
-    }, null, 2));
+    // ── STEP 7: Supabase result (tokens redacted — never log secrets) ──────
+    console.log('STEP 7 — Supabase response: user=' + (authResult.data && authResult.data.user ? authResult.data.user.id : '(none)') +
+      ' has_session=' + !!(authResult.data && authResult.data.session) +
+      ' error=' + (authResult.error ? authResult.error.message : '(none)'));
 
     // ── STEP 8: If error exists, print every field ──────────────────────────
     if (authResult.error) {
@@ -265,9 +263,6 @@ router.post('/login', async (req, res, next) => {
       console.log('  error.status:', e.status);
       console.log('  error.name:', e.name);
       console.log('  error.message:', e.message);
-      console.log('  error.stack:', e.stack);
-      // Log the full error object itself
-      console.log('  Full error object:', JSON.stringify(e, Object.getOwnPropertyNames(e)));
       return res.status(401).json({ error: e.message });
     }
     var u = authResult.data.user;

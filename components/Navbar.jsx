@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../lib/api';
 
 export default function Navbar() {
@@ -8,16 +9,28 @@ export default function Navbar() {
   const [cartCount, setCartCount] = useState(0);
   const [q, setQ] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const pathname = usePathname();
 
-  useEffect(() => {
+  const refresh = useCallback(() => {
     api('/api/auth/me').then((r) => setUser(r.user || null)).catch(() => setUser(null));
     api('/api/cart').then((c) => setCartCount(c.count || 0)).catch(() => setCartCount(0));
   }, []);
+
+  // The Navbar lives in the root layout and does NOT remount on client-side
+  // navigation — re-sync auth + cart on every route change and whenever
+  // login/register/logout fires 'sm-auth-changed'. Otherwise home keeps
+  // showing the logged-out state right after signing in.
+  useEffect(() => {
+    refresh();
+    window.addEventListener('sm-auth-changed', refresh);
+    return () => window.removeEventListener('sm-auth-changed', refresh);
+  }, [pathname, refresh]);
 
   async function logout(e) {
     e.preventDefault();
     try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
     setUser(null);
+    try { window.dispatchEvent(new Event('sm-auth-changed')); } catch {}
     window.location.href = '/';
   }
 
