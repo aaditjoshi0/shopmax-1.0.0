@@ -15,7 +15,12 @@ export default function LoginPage() {
     try {
       await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
       notifyAuthChanged();
-      router.push('/');
+      let next = '/';
+      try {
+        const n = new URLSearchParams(window.location.search).get('next');
+        if (n && n.startsWith('/') && !n.startsWith('//')) next = n;
+      } catch {}
+      router.push(next);
     } catch (err) { setError(err.message); }
   }
 

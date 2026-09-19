@@ -23,7 +23,11 @@ export default function Navbar() {
   useEffect(() => {
     refresh();
     window.addEventListener('sm-auth-changed', refresh);
-    return () => window.removeEventListener('sm-auth-changed', refresh);
+    window.addEventListener('sm-cart-changed', refresh);
+    return () => {
+      window.removeEventListener('sm-auth-changed', refresh);
+      window.removeEventListener('sm-cart-changed', refresh);
+    };
   }, [pathname, refresh]);
 
   async function logout(e) {
