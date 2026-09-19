@@ -1,0 +1,5 @@
+# Vercel upload exclusions (keeps deploys small; remote build regenerates).
+.next/
+*.tmp
+server_test*.log
+cookies.txt

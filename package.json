@@ -9,7 +9,6 @@
     "start": "next start",
     "dev:express": "node server.js",
     "start:express": "node server.js",
-    "dev:full": "concurrently \"PORT=3001 node server.js\" \"NEXT_PUBLIC_API_URL=http://localhost:3001 next dev\"",
     "seed": "node src/seed/seed.js"
   },
   "keywords": [

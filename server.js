@@ -625,18 +625,24 @@ app.get('/product/:id', (req, res) => {
   res.sendFile(path.join(__dirname, 'product.html'));
 });
 
-// Start
-app.listen(PORT, () => {
-  const label = isConfigured() ? 'Supabase (cloud)' : 'LOCAL (file JSON)';
-  console.log('\n  ShopMax running:');
-  console.log('  ----------------------------------------');
-  console.log('  URL   : http://localhost:' + PORT);
-  console.log('  Mode  : ' + label);
-  if (!isConfigured()) {
-    console.log('  Hint  : add SUPABASE_URL + SUPABASE_ANON_KEY to .env to use cloud DB');
-  } else if (!process.env.SUPABASE_SERVICE_KEY) {
-    console.log('  WARN  : SUPABASE_SERVICE_KEY not set — admin APIs will only see own data.');
-    console.log('          Add it to .env from Supabase Dashboard -> Settings -> API -> service_role');
-  }
-  console.log('  ----------------------------------------\n');
-});
+// Start (only when run directly: `node server.js`).
+// When imported (Next.js /api bridge in app/api), the app is reused in-process
+// so a single Vercel deployment serves both pages and API.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    const label = isConfigured() ? 'Supabase (cloud)' : 'LOCAL (file JSON)';
+    console.log('\n  ShopMax running:');
+    console.log('  ----------------------------------------');
+    console.log('  URL   : http://localhost:' + PORT);
+    console.log('  Mode  : ' + label);
+    if (!isConfigured()) {
+      console.log('  Hint  : add SUPABASE_URL + SUPABASE_ANON_KEY to .env to use cloud DB');
+    } else if (!process.env.SUPABASE_SERVICE_KEY) {
+      console.log('  WARN  : SUPABASE_SERVICE_KEY not set — admin APIs will only see own data.');
+      console.log('          Add it to .env from Supabase Dashboard -> Settings -> API -> service_role');
+    }
+    console.log('  ----------------------------------------\n');
+  });
+}
+
+module.exports = app;
