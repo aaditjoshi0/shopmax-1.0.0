@@ -562,6 +562,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const IMAGES_DIR = path.join(__dirname, 'images');
 let storage;
+let uploadToDisk = false;
 try {
   fs.mkdirSync(IMAGES_DIR, { recursive: true });
   fs.accessSync(IMAGES_DIR, fs.constants.W_OK);
@@ -573,9 +574,11 @@ try {
       cb(null, name);
     }
   });
+  uploadToDisk = true;
 } catch (_) {
   storage = multer.memoryStorage();
 }
+console.log('[upload] storage: ' + (uploadToDisk ? 'disk' : 'memory (serverless-safe)'));
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
 
 app.post('/api/admin/upload-image', upload.single('image'), async (req, res) => {
