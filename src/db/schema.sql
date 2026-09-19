@@ -188,6 +188,42 @@ create policy "ratings owner write" on public.ratings for all using (auth.uid() 
 alter table public.products add column if not exists rating_count integer not null default 0;
 
 -- ============================================================================
+-- ACCESSORIES — subcategory + type-specific attributes (additive, idempotent).
+--
+-- Hierarchy:  category='accessories'
+--             -> subcategory  ∈ {footwear, bags, jewellery, fashion_accessories, other}
+--             -> sub_type      ∈ {sneakers, boots, loafers, backpacks, watches,
+--                                  sunglasses, belts, caps, socks, ...}  (level 3)
+--
+-- `attributes` (jsonb) holds type-specific spec data per product, e.g.
+--   footwear: { size_system:'footwear', foot_length_mm:[...], upper_material, sole_material,
+--               heel_height, closure_type, fit, waterproof, occasion }
+--   bags:     { dimensions, capacity, strap_type, strap_length, compartments, closure }
+--   watches:  { case_size, strap_material, dial_color, movement, water_resistance, strap_size }
+--   eyewear:  { frame_color, lens_color, frame_material, lens_material, uv_protection,
+--               frame_shape, bridge_width, lens_width, temple_length, prescription }
+--   jewellery:{ finish, stone_type, ring_size, chain_length, bracelet_size }
+--   belts:    { waist_size, belt_length, buckle_type }
+--   hats:     { size, adjustable, circumference }
+--   socks:    { pack_quantity }
+-- Unrelated / non-accessory products simply leave these columns null/''/('{}'::jsonb).
+-- ============================================================================
+alter table public.products add column if not exists subcategory text default '';
+alter table public.products add column if not exists sub_type    text default '';
+alter table public.products add column if not exists attributes  jsonb default '{}'::jsonb;
+
+create index if not exists products_subcategory_idx on public.products(subcategory) where subcategory <> '';
+create index if not exists products_sub_type_idx     on public.products(sub_type)    where sub_type    <> '';
+
+-- Per-variant attribute overrides (e.g. footwear size-system override per variant,
+-- variant-specific fit/width, variant-specific dimensions).  Backward compatible:
+-- existing rows default to '{}' and are untouched.
+alter table public.product_variants add column if not exists attributes jsonb default '{}'::jsonb;
+-- Per-variant image so a (Black / UK 9) variant can show its own photo without
+-- relying on the color-keyed product_images gallery.  Empty string = use gallery.
+alter table public.product_variants add column if not exists image_url text default '';
+
+-- ============================================================================
 -- ROW LEVEL SECURITY
 -- Public can read products and active listings.
 -- Everything else is owner-only.

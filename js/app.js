@@ -191,15 +191,112 @@
   }
 
   /* ----------------------------------------------------------------------
+   * Accessories taxonomy — single source of truth used by the navbar
+   * dropdown, accessories.html (filters + subcategory nav), admin.html
+   * (subcategory / sub_type selects + accessory attributes section) and
+   * product.js (footwear size guide + spec panel).
+   *
+   * Each subcategory has a stable slug (stored in products.subcategory) and a
+   * list of sub-types whose slugs are stored in products.sub_type.  Labels are
+   * display-only.  Adding new sub-types here automatically updates every UI
+   * that consumes the taxonomy — no schema change required.
+   * -------------------------------------------------------------------- */
+  var ACCESSORIES_TAXONOMY = [
+    {
+      slug: 'footwear', label: 'Footwear', is_footwear: true,
+      types: [
+        { slug: 'sneakers-trainers', label: 'Sneakers / Trainers' },
+        { slug: 'running-shoes',     label: 'Running Shoes' },
+        { slug: 'casual-shoes',      label: 'Casual Shoes' },
+        { slug: 'formal-shoes',       label: 'Formal Shoes' },
+        { slug: 'loafers',            label: 'Loafers' },
+        { slug: 'boots',              label: 'Boots' },
+        { slug: 'sandals',            label: 'Sandals' },
+        { slug: 'slides',             label: 'Slides' },
+        { slug: 'flip-flops',         label: 'Flip-Flops' },
+        { slug: 'heels',              label: 'Heels' },
+        { slug: 'flats',              label: 'Flats' },
+        { slug: 'ballet-flats',       label: 'Ballet Flats' },
+        { slug: 'mules',              label: 'Mules' },
+        { slug: 'sports-shoes',       label: 'Sports Shoes' }
+      ]
+    },
+    {
+      slug: 'bags', label: 'Bags',
+      types: [
+        { slug: 'backpacks',     label: 'Backpacks' },
+        { slug: 'shoulder-bags', label: 'Shoulder Bags' },
+        { slug: 'crossbody-bags',label: 'Crossbody Bags' },
+        { slug: 'tote-bags',     label: 'Tote Bags' },
+        { slug: 'handbags',      label: 'Handbags' },
+        { slug: 'clutches',      label: 'Clutches' },
+        { slug: 'duffle-bags',   label: 'Duffle Bags' },
+        { slug: 'travel-bags',   label: 'Travel Bags' },
+        { slug: 'waist-bum-bags',label: 'Waist / Bum Bags' },
+        { slug: 'laptop-bags',   label: 'Laptop Bags' },
+        { slug: 'wallets',       label: 'Wallets' },
+        { slug: 'card-holders',  label: 'Card Holders' }
+      ]
+    },
+    {
+      slug: 'jewellery', label: 'Jewellery',
+      types: [
+        { slug: 'necklaces',  label: 'Necklaces' },
+        { slug: 'chains',     label: 'Chains' },
+        { slug: 'pendants',   label: 'Pendants' },
+        { slug: 'rings',      label: 'Rings' },
+        { slug: 'bracelets',  label: 'Bracelets' },
+        { slug: 'earrings',   label: 'Earrings' },
+        { slug: 'anklets',    label: 'Anklets' }
+      ]
+    },
+    {
+      slug: 'fashion_accessories', label: 'Fashion Accessories',
+      types: [
+        { slug: 'watches',           label: 'Watches' },
+        { slug: 'sunglasses',        label: 'Sunglasses' },
+        { slug: 'eyeglasses',         label: 'Eyeglasses' },
+        { slug: 'belts',              label: 'Belts' },
+        { slug: 'ties',               label: 'Ties' },
+        { slug: 'bow-ties',           label: 'Bow Ties' },
+        { slug: 'caps',               label: 'Caps' },
+        { slug: 'hats',               label: 'Hats' },
+        { slug: 'beanies',            label: 'Beanies' },
+        { slug: 'scarves',            label: 'Scarves' },
+        { slug: 'gloves',             label: 'Gloves' },
+        { slug: 'hair-accessories',   label: 'Hair Accessories' },
+        { slug: 'socks',              label: 'Socks' }
+      ]
+    },
+    {
+      slug: 'other', label: 'Other',
+      types: [
+        { slug: 'phone-cases',                label: 'Phone Cases' },
+        { slug: 'keychains',                  label: 'Keychains' },
+        { slug: 'small-fashion-accessories',  label: 'Small Fashion Accessories' },
+        { slug: 'travel-accessories',         label: 'Travel Accessories' },
+        { slug: 'gift-accessories',           label: 'Gift Accessories' }
+      ]
+    }
+  ];
+
+  /* ----------------------------------------------------------------------
    * Navbar injection
    * -------------------------------------------------------------------- */
   function navItems() {
+    // Accessories dropdown is built from the taxonomy.  Existing items keep
+    // their original order — Accessories is APPENDED as a new item (no existing
+    // item is moved or renamed).
+    var accessoryChildren = ACCESSORIES_TAXONOMY.map(function (sc) {
+      return { href: '/accessories.html?sub=' + sc.slug, label: sc.label };
+    }).concat([{ href: '/accessories.html', label: 'View All Accessories' }]);
     return [
       { href: '/men.html',        label: 'Men' },
       { href: '/women.html',      label: 'Women' },
       { href: '/shop.html',       label: 'Home' },
       { href: '/marketplace.html', label: 'Community Marketplace' },
-      { href: '/customize.html',  label: 'Customize', accent: true }
+      { href: '/customize.html',  label: 'Customize', accent: true },
+      { href: '/accessories.html', label: 'Accessories', children: accessoryChildren }
     ];
   }
 
@@ -213,7 +310,19 @@
     var lis = items.map(function (it) {
       var active = pathMatches(it.href) ? ' active' : '';
       var cls = it.accent ? ' class="sm-nav-cta' + active + '"' : (active ? ' class="active"' : '');
-      return '<li' + cls + '><a href="' + it.href + '">' + it.label + '</a></li>';
+      // Flat nav item (default)
+      if (!it.children || !it.children.length) {
+        return '<li' + cls + '><a href="' + it.href + '">' + it.label + '</a></li>';
+      }
+      // Dropdown nav item — reuses the existing .has-children > .dropdown CSS
+      // (style.css) and the mobile-menu collapse logic (main.js).
+      var childLis = it.children.map(function (c) {
+        return '<li><a href="' + c.href + '">' + escapeHtml(c.label) + '</a></li>';
+      }).join('');
+      return '<li' + (active ? ' class="has-children active"' : ' class="has-children"') + '>' +
+        '<a href="' + it.href + '">' + it.label + '</a>' +
+        '<ul class="dropdown">' + childLis + '</ul>' +
+        '</li>';
     }).join('');
 
     var profileBtn = currentUser
@@ -254,6 +363,8 @@
               '<a href="/shop.html?q=tops+%26+t-shirts+kids" class="sm-search-item">TOPS & T-SHIRTS KIDS</a>' +
               '<a href="/men.html" class="sm-search-item">MEN</a>' +
               '<a href="/women.html" class="sm-search-item">WOMEN</a>' +
+              '<a href="/accessories.html" class="sm-search-item">ACCESSORIES</a>' +
+              '<a href="/accessories.html?sub=footwear" class="sm-search-item">SHOES & FOOTWEAR</a>' +
             '</div>' +
             '<div id="sm-search-history" style="display:none;">' +
               '<div class="sm-search-history-header">' +
@@ -525,6 +636,28 @@
     requireLogin: requireLogin,
     benefitBadgesHtml: benefitBadgesHtml,
     setSavedBadge: setSavedBadge,
+    ACCESSORIES_TAXONOMY: ACCESSORIES_TAXONOMY,
+    accessoriesSubcategory: function (slug) {
+      for (var i = 0; i < ACCESSORIES_TAXONOMY.length; i++) {
+        if (ACCESSORIES_TAXONOMY[i].slug === slug) return ACCESSORIES_TAXONOMY[i];
+      }
+      return null;
+    },
+    accessoriesTypeLabel: function (subSlug, typeSlug) {
+      var sc = this.accessoriesSubcategory(subSlug);
+      if (!sc) return typeSlug;
+      for (var i = 0; i < sc.types.length; i++) {
+        if (sc.types[i].slug === typeSlug) return sc.types[i].label;
+      }
+      return typeSlug;
+    },
+    accessorizeSlug: function (s) {
+      return String(s == null ? '' : s)
+        .toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    },
     get user() { return currentUser; }
   };
 })();

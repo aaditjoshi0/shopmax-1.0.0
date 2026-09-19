@@ -15,7 +15,15 @@ router.get('/', async (req, res, next) => {
   try {
     if (MODE === 'local') {
       const cats = store.raw.categories || [];
-      return res.json(cats);
+      if (cats.length) return res.json(cats);
+      // Fall back to the standard menu so the admin Product form's category
+      // dropdown is never empty in LOCAL mode (covers Men/Women/Home/Accessories).
+      return res.json([
+        { id: 1, name: 'Men', slug: 'men', description: '', hidden: false },
+        { id: 2, name: 'Women', slug: 'women', description: '', hidden: false },
+        { id: 3, name: 'Home', slug: 'home', description: '', hidden: false },
+        { id: 4, name: 'Accessories', slug: 'accessories', description: 'Footwear, Bags, Jewellery, Watches, Sunglasses & more.', hidden: false }
+      ]);
     }
     const { data, error } = await supabase.from('categories').select('*').order('name');
     if (error) throw error;
@@ -24,7 +32,7 @@ router.get('/', async (req, res, next) => {
       { id: 1, name: 'Men', slug: 'men', description: '', hidden: false },
       { id: 2, name: 'Women', slug: 'women', description: '', hidden: false },
       { id: 3, name: 'Home', slug: 'home', description: '', hidden: false },
-      { id: 4, name: 'Accessories', slug: 'accessories', description: '', hidden: false }
+      { id: 4, name: 'Accessories', slug: 'accessories', description: 'Footwear, Bags, Jewellery, Watches, Sunglasses & more.', hidden: false }
     ];
     res.json((data && data.length) ? data : defaults);
   } catch (e) { next(e); }

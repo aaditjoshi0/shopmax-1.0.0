@@ -264,11 +264,21 @@
       : buildSizeGuideHtml(p);
 
     var tabs = [
-      { id: 'tab-desc', label: 'Description', content: '<div class="sm-tab-desc">' + (desc ? '<p>' + SM.escapeHtml(desc) + '</p>' : '<p>No description available.</p>') + (details ? '<p>' + SM.escapeHtml(details) + '</p>' : '') + '</div>' },
+      { id: 'tab-desc', label: 'Description', content: '<div class="sm-tab-desc">' + (desc ? '<p>' + SM.escapeHtml(desc) + '</p>' : '<p>No description available.</p>') + (details ? '<p>' + SM.escapeHtml(details) + '</p>' : '') + '</div>' }
+    ];
+
+    // Accessory products get a Specifications tab right after Description,
+    // populated from products.attributes (admin form writes type-specific fields).
+    var specsHtml = buildAccessorySpecsHtml(p);
+    if (specsHtml) {
+      tabs.push({ id: 'tab-specs', label: 'Specifications', content: specsHtml });
+    }
+
+    tabs.push(
       { id: 'tab-material', label: 'Material & Care', content: '<div class="sm-tab-material">' + materialContent + '<h4>Care Instructions</h4><ul><li>Machine wash cold with like colors</li><li>Tumble dry low</li><li>Do not bleach</li><li>Iron on low heat if needed</li><li>Do not dry clean</li></ul></div>' },
       { id: 'tab-delivery', label: 'Delivery & Returns', content: deliveryContent + returnContent },
       { id: 'tab-sizeguide', label: 'Size Guide', content: sizeGuideContent }
-    ];
+    );
 
     var tabBtns = tabs.map(function (t, i) {
       return '<li><a href="#' + t.id + '" class="' + (i === 0 ? 'active' : '') + '" data-tab="' + t.id + '">' + t.label + '</a></li>';
@@ -295,6 +305,39 @@
   }
 
   function buildSizeGuideHtml(p) {
+    // Accessory products use category-aware size guides (footwear, belts, hats,
+    // socks, rings).  Non-accessory products keep the existing clothing chart
+    // (chest/waist/length for S/M/L/...) so existing pages are unchanged.
+    var subcat = p.subcategory || (p.attributes && p.attributes.subcategory) || '';
+    var subType = p.sub_type || (p.attributes && p.attributes.sub_type) || '';
+    var isAccessoryType = p.category === 'accessories' || !!subcat;
+
+    if (subcat === 'footwear' || (p.attributes && p.attributes.size_system === 'footwear')) {
+      return buildFootwearSizeGuideHtml(p);
+    }
+    if (subcat === 'fashion_accessories' && (subType === 'belts')) {
+      return buildBeltSizeGuideHtml(p);
+    }
+    if (subcat === 'fashion_accessories' && (subType === 'hats' || subType === 'caps' || subType === 'beanies')) {
+      return buildHatSizeGuideHtml(p);
+    }
+    if (subcat === 'fashion_accessories' && subType === 'socks') {
+      return buildSocksSizeGuideHtml(p);
+    }
+    if (subcat === 'jewellery' && subType === 'rings') {
+      return buildRingSizeGuideHtml(p);
+    }
+    if (isAccessoryType) {
+      // Accessory types without a chart (bags, watches, sung/eyeglasses,
+      // necklaces/chains/pendants/bracelets/earrings/anklets, ties, scarves,
+      // gloves, hair accessories, phone cases, keychains, travel/gift/small
+      // accessories): no meaningful size guide — point users to Specs tab.
+      return '<div class="sm-tab-sizeguide"><p>This product does not use a size chart. ' +
+        'See the <strong>Specifications</strong> tab for full measurements and details.</p>' +
+        '<p>If you are between sizes or unsure about fit, check the table on each product page — ' +
+        'individual brands can vary from the standard guide.</p></div>';
+    }
+    // Default clothing chart (existing behaviour — kept verbatim).
     var sizes = (p.sizes && p.sizes.length) ? p.sizes : ['One Size'];
     if (p.variants && p.variants.length) {
       var vs = [];
@@ -316,6 +359,294 @@
     return '<div class="sm-tab-sizeguide"><p>All measurements are in inches.</p>' +
       '<table class="sm-size-guide-table"><thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Length</th></tr></thead>' +
       '<tbody>' + rows + '</tbody></table></div>';
+  }
+
+  // --------- FOOTWEAR SIZE GUIDE (Men's and Women's separately) ---------
+  // Standard UK/EU/US/Foot Length (mm) conversions.  These are a GUIDE — actual
+  // sizing varies by brand.  A product can override either chart via its
+  // `attributes.footwear_chart_men` / `attributes.footwear_chart_women` arrays
+  // (admin fills them when the brand's own chart differs from this default).
+  var MENS_FOOTWEAR = [
+    { uk:'5',    eu:'38.5', us:'6',    mm:235 },
+    { uk:'5.5',  eu:'39',   us:'6.5',  mm:240 },
+    { uk:'6',    eu:'39.5', us:'7',    mm:245 },
+    { uk:'6.5',  eu:'40',   us:'7.5',  mm:250 },
+    { uk:'7',    eu:'41',   us:'8',    mm:255 },
+    { uk:'7.5',  eu:'42',   us:'8.5',  mm:260 },
+    { uk:'8',    eu:'42.5', us:'9',    mm:265 },
+    { uk:'8.5',  eu:'43',   us:'9.5',  mm:270 },
+    { uk:'9',    eu:'44',   us:'10',   mm:275 },
+    { uk:'9.5',  eu:'44.5', us:'10.5', mm:280 },
+    { uk:'10',   eu:'45',   us:'11',   mm:285 },
+    { uk:'10.5', eu:'45.5', us:'11.5', mm:290 },
+    { uk:'11',   eu:'46',   us:'12',   mm:295 },
+    { uk:'11.5', eu:'46.5', us:'12.5', mm:300 },
+    { uk:'12',   eu:'47',   us:'13',   mm:305 },
+    { uk:'13',   eu:'48',   us:'14',   mm:315 }
+  ];
+  var WOMENS_FOOTWEAR = [
+    { uk:'2',    eu:'35',   us:'4',    mm:210 },
+    { uk:'2.5',  eu:'35.5', us:'4.5',  mm:214 },
+    { uk:'3',    eu:'36',   us:'5',    mm:220 },
+    { uk:'3.5',  eu:'37',   us:'5.5',  mm:225 },
+    { uk:'4',    eu:'37.5', us:'6',    mm:230 },
+    { uk:'4.5',  eu:'38',   us:'6.5',  mm:235 },
+    { uk:'5',    eu:'38.5', us:'7',    mm:238 },
+    { uk:'5.5',  eu:'39',   us:'7.5',  mm:245 },
+    { uk:'6',    eu:'39.5', us:'8',    mm:250 },
+    { uk:'6.5',  eu:'40',   us:'8.5',  mm:255 },
+    { uk:'7',    eu:'41',   us:'9',    mm:260 },
+    { uk:'7.5',  eu:'42',   us:'9.5',  mm:265 },
+    { uk:'8',    eu:'42.5', us:'10',   mm:270 },
+    { uk:'8.5',  eu:'43',   us:'10.5', mm:275 },
+    { uk:'9',    eu:'44',   us:'11',   mm:280 }
+  ];
+  var WIDTH_FIT_OPTIONS = ['Standard', 'Wide', 'Extra Wide'];
+  // Tip shown under both footwear tables — measurement instructions + guidance.
+  var FOOTWEAR_MEASURE_TIP =
+    '<h4 class="sm-fw-measure-title">How to Measure Your Foot</h4>' +
+    '<ol class="sm-fw-measure-steps">' +
+      '<li>Place a sheet of A4 paper flat against a wall, long edge touching it.</li>' +
+      '<li>Stand on the paper with your heel touching the wall. Wear the socks you will use.</li>' +
+      '<li>Mark the tip of your longest toe on the paper.</li>' +
+      '<li>Measure the distance from the wall to the mark in millimetres — that is your foot length.</li>' +
+      '<li>Buy the chart size whose foot length is equal to or just greater than yours.</li>' +
+    '</ol>' +
+    '<div class="sm-fw-measure-note">' +
+      '<strong>If between sizes:</strong> check the product / brand\'s own size chart when available — sizing varies by brand and lasts vary by maker. ' +
+      'For wide feet, choose <em>Wide</em> or <em>Extra Wide</em> options where the product offers them.' +
+    '</div>';
+
+  function footwearTableHtml(chart) {
+    var body = chart.map(function (r) {
+      return '<tr><td class="sm-fw-size">' + SM.escapeHtml(r.uk) + '</td><td>' + SM.escapeHtml(r.eu) + '</td><td>' +
+        SM.escapeHtml(r.us) + '</td><td>' + Number(r.mm) + ' mm (' + (Number(r.mm) / 10).toFixed(1) + ' cm)</td></tr>';
+    }).join('');
+    return '<table class="sm-size-guide-table sm-fw-table"><thead>' +
+        '<tr><th>UK</th><th>EU</th><th>US</th><th>Foot Length</th></tr>' +
+      '</thead><tbody>' + body + '</tbody></table>';
+  }
+
+  function buildFootwearSizeGuideHtml(p) {
+    var gender = (p.gender || 'unisex').toLowerCase();
+    var menChart = (p.attributes && (p.attributes.footwear_chart_men || p.attributes.chart_men)) || MENS_FOOTWEAR;
+    var womenChart = (p.attributes && (p.attributes.footwear_chart_women || p.attributes.chart_women)) || WOMENS_FOOTWEAR;
+    var widthFit = (p.attributes && p.attributes.width_fit) || null;
+
+    var html = '<div class="sm-tab-sizeguide sm-fw-sizeguide">' +
+      '<p class="sm-fw-intro">Footwear sizing — a guide only. Sizes and fits vary by brand, last shape and model. ' +
+      'Always check the brand\'s own size chart on the product page when available.</p>';
+
+    // Show both tables; mark the relevant one for the product's gender as
+    // "default" but keep both visible so unisex customers can use either.
+    var menActive = (gender === 'men' || gender === 'unisex') ? ' sm-fw-active' : '';
+    var womenActive = (gender === 'women') ? ' sm-fw-active' : '';
+    html += '<div class="sm-fw-tables">' +
+        '<div class="sm-fw-block' + menActive + '">' +
+          '<h4 class="sm-fw-block-title">Men\'s Footwear</h4>' +
+          footwearTableHtml(menChart) +
+        '</div>' +
+        '<div class="sm-fw-block' + womenActive + '">' +
+          '<h4 class="sm-fw-block-title">Women\'s Footwear</h4>' +
+          footwearTableHtml(womenChart) +
+        '</div>' +
+      '</div>';
+
+    if (widthFit && widthFit.length) {
+      html += '<div class="sm-fw-width">' +
+        '<h4 class="sm-fw-width-title">Width / Fit options on this product</h4>' +
+        '<div class="sm-fw-width-list">' + widthFit.map(function (w) { return '<span class="sm-fw-width-chip">' + SM.escapeHtml(w) + '</span>'; }).join('') + '</div>' +
+      '</div>';
+    } else {
+      html += '<div class="sm-fw-width sm-fw-width-generic">' +
+        '<strong>Width / Fit:</strong> where available, options are <em>Standard</em>, <em>Wide</em> and <em>Extra Wide</em>. ' +
+        'Not all products offer every width — select at variant level.' +
+      '</div>';
+    }
+
+    html += FOOTWEAR_MEASURE_TIP + '</div>';
+    return html;
+  }
+
+  // --------- BELT SIZE GUIDE ---------
+  function buildBeltSizeGuideHtml() {
+    var rows = [
+      { size:'S',  waist:28, belt:32 },
+      { size:'M',  waist:32, belt:36 },
+      { size:'L',  waist:36, belt:40 },
+      { size:'XL', waist:40, belt:44 },
+      { size:'XXL',waist:44, belt:48 }
+    ];
+    var body = rows.map(function (r) {
+      return '<tr><td>' + r.size + '</td><td>' + r.waist + '"</td><td>' + r.belt + '"</td></tr>';
+    }).join('');
+    return '<div class="sm-tab-sizeguide"><p>Belt length is measured from the buckle prong to the middle hole.</p>' +
+      '<table class="sm-size-guide-table"><thead><tr><th>Size</th><th>Waist (inch)</th><th>Belt Length (inch)</th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table>' +
+      '<p class="sm-fw-measure-note">If between sizes, size up — belts sit better at the middle hole.</p></div>';
+  }
+
+  // --------- HAT / CAP / BEANIE SIZE GUIDE ---------
+  function buildHatSizeGuideHtml() {
+    var rows = [
+      { size:'S/M',  head_inch:21.5, head_cm:55 },
+      { size:'M/L',  head_inch:22.5, head_cm:57 },
+      { size:'L/XL', head_inch:23.5, head_cm:60 },
+      { size:'One Size', head_inch:'Adjustable', head_cm:'Adjustable' }
+    ];
+    var body = rows.map(function (r) {
+      return '<tr><td>' + r.size + '</td><td>' + r.head_inch + '</td><td>' + r.head_cm + '</td></tr>';
+    }).join('');
+    return '<div class="sm-tab-sizeguide"><p>Measure around the widest part of your head (above the ears and eyebrows).</p>' +
+      '<table class="sm-size-guide-table"><thead><tr><th>Size</th><th>Head Circumference (inch)</th><th>Head Circumference (cm)</th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table></div>';
+  }
+
+  // --------- SOCKS SIZE GUIDE ---------
+  function buildSocksSizeGuideHtml() {
+    var rows = [
+      { size:'S',   uk_shoe:'3-5',  eu:'35-38', us:'4-6'  },
+      { size:'M',   uk_shoe:'6-8',  eu:'39-42', us:'7-9'  },
+      { size:'L',   uk_shoe:'9-11', eu:'43-46', us:'10-12'},
+      { size:'XL',  uk_shoe:'12-14',eu:'47-49', us:'13-15'}
+    ];
+    var body = rows.map(function (r) {
+      return '<tr><td>' + r.size + '</td><td>UK ' + r.uk_shoe + '</td><td>EU ' + r.eu + '</td><td>US ' + r.us + '</td></tr>';
+    }).join('');
+    return '<div class="sm-tab-sizeguide"><p>Socks sizing by UK / EU / US shoe size.</p>' +
+      '<table class="sm-size-guide-table"><thead><tr><th>Sock Size</th><th>UK Shoe</th><th>EU Shoe</th><th>US Shoe</th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table></div>';
+  }
+
+  // --------- RING SIZE GUIDE (jewellery) ---------
+  function buildRingSizeGuideHtml() {
+    var rows = [
+      { label:'H 1/2', uk:'H',   eu:'46.8', us:'3.75', mm:14.9 },
+      { label:'I 1/2', uk:'I',   eu:'48.0', us:'4.25', mm:15.3 },
+      { label:'J 1/2', uk:'J',   eu:'49.3', us:'4.75', mm:15.7 },
+      { label:'K 1/2', uk:'K',   eu:'50.6', us:'5.25', mm:16.1 },
+      { label:'L 1/2', uk:'L',   eu:'51.9', us:'5.75', mm:16.5 },
+      { label:'M 1/2', uk:'M',   eu:'53.2', us:'6.25', mm:16.9 },
+      { label:'N 1/2', uk:'N',   eu:'54.5', us:'6.75', mm:17.3 },
+      { label:'O 1/2', uk:'O',   eu:'55.8', us:'7.25', mm:17.7 },
+      { label:'P 1/2', uk:'P',   eu:'57.1', us:'7.75', mm:18.1 },
+      { label:'Q 1/2', uk:'Q',   eu:'58.4', us:'8.25', mm:18.5 },
+      { label:'R 1/2', uk:'R',   eu:'59.7', us:'8.75', mm:19.0 },
+      { label:'S 1/2', uk:'S',   eu:'61.0', us:'9.25', mm:19.4 },
+      { label:'T 1/2', uk:'T',   eu:'62.3', us:'9.75', mm:19.8 },
+      { label:'U 1/2', uk:'U',   eu:'63.6', us:'10.25',mm:20.2 },
+      { label:'V 1/2', uk:'V',   eu:'64.9', us:'10.75',mm:20.6 },
+      { label:'W 1/2', uk:'W',   eu:'66.2', us:'11.25',mm:21.0 },
+      { label:'X 1/2', uk:'X',   eu:'67.5', us:'11.75',mm:21.4 },
+      { label:'Z',     uk:'Z',   eu:'68.8', us:'12.25',mm:21.8 }
+    ];
+    var body = rows.map(function (r) {
+      return '<tr><td>' + r.label + '</td><td>' + r.us + '</td><td>' + r.eu + '</td><td>' + Number(r.mm).toFixed(1) + ' mm</td></tr>';
+    }).join('');
+    return '<div class="sm-tab-sizeguide"><p>Ring sizing — UK letter / US number / EU circumference / inner diameter. Measure the inner diameter or circumference of a ring that fits you.</p>' +
+      '<table class="sm-size-guide-table"><thead><tr><th>UK Letter</th><th>US</th><th>EU (circ.)</th><th>Inner Diameter</th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table>' +
+      '<p class="sm-fw-measure-note">If between sizes, choose the larger size for comfort.</p></div>';
+  }
+
+  // --------- ACCESSORY SPECIFICATIONS PANEL ---------
+  // Renders a definition-list of type-specific attributes pulled from
+  // products.attributes (the admin form writes these).  Returns '' when the
+  // product has no accessory specs so the Specifications tab is not added.
+  function buildAccessorySpecsHtml(p) {
+    if (!p || p.category !== 'accessories') return '';
+    var a = (p.attributes && typeof p.attributes === 'object') ? p.attributes : {};
+    var subcat = p.subcategory || a.subcategory || '';
+    var subType = p.sub_type || a.sub_type || '';
+    var entries = [];
+    function add(label, val) {
+      if (val == null || val === '' || val === false) return;
+      if (Array.isArray(val)) {
+        if (!val.length) return;
+        val = val.join(', ');
+      }
+      entries.push({ label: label, value: val });
+    }
+
+    if (subcat === 'footwear') {
+      add('Size System', a.size_system === 'footwear' ? 'Footwear (UK / EU / US / Length)' : (a.size_system || 'Footwear (UK / EU / US / Length)'));
+      add('Available Sizes', p.sizes && p.sizes.length ? p.sizes.join(', ') : '');
+      add('Upper Material', a.upper_material);
+      add('Sole Material', a.sole_material);
+      add('Heel Height', a.heel_height);
+      add('Closure Type', a.closure_type);
+      add('Fit', a.fit);
+      add('Width / Fit options', a.width_fit);
+      add('Style', a.style);
+      add('Occasion', a.occasion);
+      add('Waterproof', a.waterproof ? 'Yes' : '');
+      add('Material', p.material || a.material);
+    } else if (subcat === 'bags') {
+      add('Dimensions', a.dimensions);
+      add('Capacity', a.capacity);
+      add('Material', p.material || a.material);
+      add('Strap Type', a.strap_type);
+      add('Strap Length', a.strap_length);
+      add('Compartments', a.compartments);
+      add('Closure', a.closure);
+    } else if (subcat === 'fashion_accessories' && (subType === 'watches')) {
+      add('Case Size', a.case_size);
+      add('Strap Material', a.strap_material);
+      add('Dial Color', a.dial_color);
+      add('Movement / Type', a.movement);
+      add('Water Resistance', a.water_resistance);
+      add('Strap Size', a.strap_size);
+    } else if (subcat === 'fashion_accessories' && (subType === 'sunglasses' || subType === 'eyeglasses')) {
+      add('Frame Color', a.frame_color);
+      add('Lens Color', a.lens_color);
+      add('Frame Material', a.frame_material);
+      add('Lens Material', a.lens_material);
+      add('UV Protection', a.uv_protection ? 'Yes' : '');
+      add('Frame Shape', a.frame_shape);
+      add('Bridge Width', a.bridge_width);
+      add('Lens Width', a.lens_width);
+      add('Temple Length', a.temple_length);
+      add('Prescription', a.prescription);
+    } else if (subcat === 'jewellery') {
+      add('Material', p.material || a.material);
+      add('Finish', a.finish);
+      add('Stone Type', a.stone_type);
+      add('Ring Size', a.ring_size);
+      add('Chain Length', a.chain_length);
+      add('Bracelet Size', a.bracelet_size);
+    } else if (subcat === 'fashion_accessories' && subType === 'belts') {
+      add('Material', p.material || a.material);
+      add('Waist Size', a.waist_size);
+      add('Belt Length', a.belt_length);
+      add('Buckle Type', a.buckle_type);
+    } else if (subcat === 'fashion_accessories' && (subType === 'hats' || subType === 'caps' || subType === 'beanies')) {
+      add('Size', a.size);
+      add('Adjustable', a.adjustable ? 'Yes' : 'No');
+      add('Circumference', a.circumference);
+      add('Material', p.material || a.material);
+    } else if (subcat === 'fashion_accessories' && subType === 'socks') {
+      add('Size', a.size);
+      add('UK / EU / US Size', a.size_system_detail);
+      add('Material', p.material || a.material);
+      add('Pack Quantity', a.pack_quantity);
+    } else {
+      // Generic accessory or unknown sub-type — show whatever attributes exist.
+      add('Material', p.material || a.material);
+      Object.keys(a).forEach(function (k) {
+        if (k === 'subcategory' || k === 'sub_type' || k === 'size_system') return;
+        var v = a[k];
+        if (v == null || v === '' || v === false) return;
+        if (Array.isArray(v)) { if (!v.length) return; v = v.join(', '); }
+        // human-readable label
+        add(k.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }), v);
+      });
+    }
+
+    if (!entries.length) return '';
+    var rows = entries.map(function (e) {
+      return '<dt>' + SM.escapeHtml(e.label) + '</dt><dd>' + SM.escapeHtml(String(e.value)) + '</dd>';
+    }).join('');
+    return '<div class="sm-pdp-specs"><dl class="sm-pdp-specs-list">' + rows + '</dl></div>';
   }
 
   function updateVariantUI(p) {

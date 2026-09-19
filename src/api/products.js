@@ -23,12 +23,19 @@ function uniqueSlug(base) {
   return base + '-' + crypto.randomBytes(4).toString('hex');
 }
 
-function localList({ category, q, featured, sort, status, bestseller, new_arrival, admin }) {
+function localList({ category, q, featured, sort, status, bestseller, new_arrival, admin, subcategory, sub_type, gender, brand }) {
   let items = store.raw.products.slice();
   if (!admin) {
     items = items.filter(p => (p.status || 'published') === 'published');
   }
   if (category) items = items.filter(p => p.category === category);
+  if (subcategory) items = items.filter(p => (p.subcategory || '') === subcategory);
+  if (sub_type) items = items.filter(p => (p.sub_type || '') === sub_type);
+  if (gender) items = items.filter(p => (p.gender || 'unisex') === gender || p.gender === 'unisex');
+  if (brand) {
+    const bn = String(brand).toLowerCase();
+    items = items.filter(p => String(p.brand || '').toLowerCase() === bn);
+  }
   if (featured === 'true') items = items.filter(p => p.featured);
   if (bestseller === 'true') items = items.filter(p => p.bestseller);
   if (new_arrival === 'true') items = items.filter(p => p.new_arrival);
@@ -39,14 +46,18 @@ function localList({ category, q, featured, sort, status, bestseller, new_arriva
       p.name.toLowerCase().includes(needle) ||
       (p.description || '').toLowerCase().includes(needle) ||
       (p.sku || '').toLowerCase().includes(needle) ||
-      (p.brand || '').toLowerCase().includes(needle)
+      (p.brand || '').toLowerCase().includes(needle) ||
+      (p.subcategory || '').toLowerCase().includes(needle) ||
+      (p.sub_type || '').toLowerCase().includes(needle)
     );
   }
   switch (sort) {
     case 'price-asc':  items.sort((a, b) => a.price - b.price); break;
     case 'price-desc': items.sort((a, b) => b.price - a.price); break;
     case 'rating':     items.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break;
-    default:           items.sort((a, b) => a.id - b.id);
+    case 'newest':      items.sort((a, b) => b.id - a.id); break;
+    case 'popularity':  items.sort((a, b) => (b.rating_count || 0) - (a.rating_count || 0)); break;
+    default:           items.sort((a, b) => b.id - a.id);
   }
   items.forEach(function (p) {
     p.rating_count = p.rating_count || 0;
@@ -54,9 +65,13 @@ function localList({ category, q, featured, sort, status, bestseller, new_arriva
   return items;
 }
 
-async function supabaseList({ category, q, featured, sort, status, bestseller, new_arrival, admin }) {
+async function supabaseList({ category, q, featured, sort, status, bestseller, new_arrival, admin, subcategory, sub_type, gender, brand }) {
   let query = supabase.from('products').select('*');
   if (category) query = query.eq('category', category);
+  if (subcategory) query = query.eq('subcategory', subcategory);
+  if (sub_type) query = query.eq('sub_type', sub_type);
+  if (gender) query = query.or(`gender.eq.${gender},gender.eq.unisex,gender.is.null`);
+  if (brand) query = query.ilike('brand', brand);
   if (featured === 'true') query = query.eq('featured', true);
   if (bestseller === 'true') query = query.eq('bestseller', true);
   if (new_arrival === 'true') query = query.eq('new_arrival', true);
@@ -68,12 +83,14 @@ async function supabaseList({ category, q, featured, sort, status, bestseller, n
   }
   if (q) {
     const needle = q.toLowerCase();
-    query = query.or(`name.ilike.%${needle}%,description.ilike.%${needle}%,sku.ilike.%${needle}%,brand.ilike.%${needle}%`);
+    query = query.or(`name.ilike.%${needle}%,description.ilike.%${needle}%,sku.ilike.%${needle}%,brand.ilike.%${needle}%,subcategory.ilike.%${needle}%,sub_type.ilike.%${needle}%`);
   }
   switch (sort) {
     case 'price-asc':  query = query.order('price', { ascending: true }); break;
     case 'price-desc': query = query.order('price', { ascending: false }); break;
     case 'rating':     query = query.order('rating', { ascending: false }); break;
+    case 'popularity': query = query.order('rating_count', { ascending: false }); break;
+    case 'newest':      query = query.order('id', { ascending: false }); break;
     default:           query = query.order('id', { ascending: false });
   }
   const { data, error } = await query;
@@ -88,7 +105,7 @@ async function supabaseList({ category, q, featured, sort, status, bestseller, n
 router.get('/categories/summary', async (req, res, next) => {
   try {
     if (MODE === 'local') {
-      const counts = { men: 0, women: 0, home: 0 };
+      const counts = { men: 0, women: 0, home: 0, accessories: 0 };
       store.raw.products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
       return res.json(counts);
     }
@@ -96,7 +113,7 @@ router.get('/categories/summary', async (req, res, next) => {
     if (error) {
       // fallback if RPC missing
       const { data: all } = await supabase.from('products').select('category');
-      const counts = { men: 0, women: 0, home: 0 };
+      const counts = { men: 0, women: 0, home: 0, accessories: 0 };
       (all || []).forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
       return res.json(counts);
     }
@@ -107,10 +124,10 @@ router.get('/categories/summary', async (req, res, next) => {
 // GET /api/products
 router.get('/', async (req, res, next) => {
   try {
-    const { category, q, featured, sort, status, bestseller, new_arrival, admin } = req.query;
+    const { category, q, featured, sort, status, bestseller, new_arrival, admin, subcategory, sub_type, gender, brand } = req.query;
     const items = MODE === 'local'
-      ? localList({ category, q, featured, sort, status, bestseller, new_arrival, admin })
-      : await supabaseList({ category, q, featured, sort, status, bestseller, new_arrival, admin });
+      ? localList({ category, q, featured, sort, status, bestseller, new_arrival, admin, subcategory, sub_type, gender, brand })
+      : await supabaseList({ category, q, featured, sort, status, bestseller, new_arrival, admin, subcategory, sub_type, gender, brand });
     res.json(items);
   } catch (e) { next(e); }
 });
@@ -241,7 +258,10 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       delivery_info: b.delivery_info || '',
       return_policy: b.return_policy || '',
       size_guide: b.size_guide || '',
-      benefits: b.benefits || []
+      benefits: b.benefits || [],
+      subcategory: b.subcategory || '',
+      sub_type: b.sub_type || '',
+      attributes: b.attributes || {}
     };
 
     if (MODE === 'local') {
@@ -267,7 +287,7 @@ router.post('/', getUser, requireAdmin, async (req, res, next) => {
       created_at: now,
       updated_at: now
     };
-    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits'];
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits','subcategory','sub_type','attributes'];
     let { data, error } = await supabase.from('products').insert(insertPayload).select().single();
     if (error && (error.code === 'PGRST204' || error.code === '42703')) {
       // Columns don't exist in schema — retry without them
@@ -293,7 +313,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     if (MODE === 'local') {
       const p = store.raw.products.find(p => p.id === id);
       if (!p) return res.status(404).json({ error: 'Product not found.' });
-      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price','material','fabric','delivery_info','return_policy','size_guide','benefits'];
+      const fields = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price','material','fabric','delivery_info','return_policy','size_guide','benefits','subcategory','sub_type','attributes'];
       fields.forEach(f => {
         if (b[f] !== undefined) p[f] = b[f];
       });
@@ -308,7 +328,7 @@ router.put('/:id', getUser, requireAdmin, async (req, res, next) => {
     }
 
     const updates = {};
-    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits'];
+    const EXTRA_COLS = ['material','fabric','delivery_info','return_policy','size_guide','benefits','subcategory','sub_type','attributes'];
     const allowed = ['name','description','price','compare_at_price','category','image_url','stock','sizes','rating','rating_count','featured','colors','brand','sku','tags','status','gender','bestseller','new_arrival','discount_price'].concat(EXTRA_COLS);
     allowed.forEach(f => {
       if (b[f] !== undefined) updates[f] = b[f];

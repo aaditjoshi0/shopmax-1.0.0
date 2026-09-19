@@ -55,7 +55,9 @@ router.post('/products/:productId/variants', getUser, requireAdmin, async (req, 
       price: Number(b.price) || 0,
       compare_at_price: b.compare_at_price != null ? Number(b.compare_at_price) : null,
       stock: Number(b.stock) || 0,
-      status: b.status || 'published'
+      status: b.status || 'published',
+      attributes: b.attributes || {},
+      image_url: b.image_url || ''
     };
 
     if (MODE === 'local') {
@@ -74,7 +76,13 @@ router.post('/products/:productId/variants', getUser, requireAdmin, async (req, 
     }
 
     const client = getServiceClient() || req.supabase || supabase;
-    const { data, error } = await client.from('product_variants').insert(variant).select();
+    // Retry without attributes/image_url if those columns aren't migrated yet
+    let { data, error } = await client.from('product_variants').insert(variant).select();
+    if (error && (error.code === 'PGRST204' || error.code === '42703')) {
+      const slim = Object.assign({}, variant); delete slim.attributes; delete slim.image_url;
+      const retry = await client.from('product_variants').insert(slim).select();
+      data = retry.data; error = retry.error;
+    }
     if (error) {
       if (error.code === '23505') return res.status(409).json({ error: 'A variant with that size + color or SKU already exists.' });
       throw error;
@@ -94,7 +102,7 @@ router.put('/products/:productId/variants/:id', getUser, requireAdmin, async (re
     if (MODE === 'local') {
       const v = store.raw.variants.find(x => x.id === vid && x.product_id === pid);
       if (!v) return res.status(404).json({ error: 'Variant not found.' });
-      const allowed = ['sku','size','color','price','compare_at_price','stock','status'];
+      const allowed = ['sku','size','color','price','compare_at_price','stock','status','attributes','image_url'];
       allowed.forEach(f => { if (b[f] !== undefined) v[f] = b[f]; });
       v.updated_at = new Date().toISOString();
       store.persist();
@@ -102,12 +110,17 @@ router.put('/products/:productId/variants/:id', getUser, requireAdmin, async (re
     }
 
     const updates = {};
-    ['sku','size','color','price','compare_at_price','stock','status'].forEach(f => {
+    ['sku','size','color','price','compare_at_price','stock','status','attributes','image_url'].forEach(f => {
       if (b[f] !== undefined) updates[f] = b[f];
     });
     updates.updated_at = new Date().toISOString();
     const client = getServiceClient() || req.supabase || supabase;
-    const { data, error } = await client.from('product_variants').update(updates).eq('id', vid).eq('product_id', pid).select();
+    let { data, error } = await client.from('product_variants').update(updates).eq('id', vid).eq('product_id', pid).select();
+    if (error && (error.code === 'PGRST204' || error.code === '42703') && updates.attributes !== undefined) {
+      const slim = Object.assign({}, updates); delete slim.attributes; delete slim.image_url;
+      const retry = await client.from('product_variants').update(slim).eq('id', vid).eq('product_id', pid).select();
+      data = retry.data; error = retry.error;
+    }
     if (error) throw error;
     if (!data || data.length === 0) return res.status(404).json({ error: 'Variant not found.' });
     res.json({ variant: data[0] });
